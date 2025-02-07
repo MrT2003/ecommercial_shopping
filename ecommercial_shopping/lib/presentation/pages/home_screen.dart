@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:ecommercial_shopping/presentation/pages/cart_screen.dart';
 import 'package:ecommercial_shopping/presentation/pages/product_detail_screen.dart';
 import 'package:flutter/material.dart';
