@@ -11,6 +11,7 @@ client = AsyncIOMotorClient(MONGO_URI)
 db = client[DB_NAME]
 
 product_collection = db.get_collection("Product")
+category_collection = db.get_collection("Category")
 
 async def get_database():
     return db
