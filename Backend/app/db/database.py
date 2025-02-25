@@ -12,6 +12,9 @@ db = client[DB_NAME]
 
 product_collection = db.get_collection("Product")
 category_collection = db.get_collection("Category")
+cart_collection = db.get_collection("Cart")
+order_collection = db.get_collection("Order")
+user_collection = db.get_collection("User")
 
 async def get_database():
     return db
