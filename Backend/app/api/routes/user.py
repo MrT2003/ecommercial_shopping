@@ -9,5 +9,5 @@ router = APIRouter()
 async def get_users():
     carts = await CartService.get_carts()  # Must return a list of Category
     if not carts:
-        raise HTTPException(status_code=404, detail="No ca found")
+        raise HTTPException(status_code=404, detail="No cart found")
     return carts
