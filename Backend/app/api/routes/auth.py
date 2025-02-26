@@ -4,6 +4,7 @@ from app.models.user import UserCreate, UserDB
 from app.services.AuthService import AuthService
 from app.db.database import get_database
 from pydantic import BaseModel
+from typing import Optional
 
 router = APIRouter()
 
@@ -26,7 +27,7 @@ async def signup(user_data: UserCreate, db: AsyncIOMotorClient = Depends(get_dat
         raise HTTPException(status_code=400, detail="Email đã tồn tại")
     return new_user
 
-# Route đăng nhập và trả về JWT token
+#http://127.0.0.1:8000/api/auth/login
 @router.post("/login", response_model=TokenResponse)
 async def login(login_data: LoginRequest, db: AsyncIOMotorDatabase = Depends(get_database)):
     """Đăng nhập và trả về JWT token"""
@@ -38,3 +39,24 @@ async def login(login_data: LoginRequest, db: AsyncIOMotorDatabase = Depends(get
     access_token = AuthService.create_access_token(data={"sub": user.email})
 
     return TokenResponse(access_token=access_token, token_type="bearer")
+
+#http://127.0.0.1:8000/api/auth/logout
+@router.post("/logout")
+async def logout():
+    return {"message": "Logged out successfully"}
+
+
+class UpdateProfileRequest(BaseModel):
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    address: Optional[str] = None
+
+@router.put("/update-profile")
+async def update_profile(user_id: str, update_data: UpdateProfileRequest):
+    """API cập nhật thông tin cá nhân"""
+    updated_user = await AuthService.update_user_profile(user_id, update_data.dict())
+
+    if not updated_user:
+        raise HTTPException(status_code=404, detail="User không tồn tại")
+
+    return {"message": "Cập nhật thành công", "user": updated_user}

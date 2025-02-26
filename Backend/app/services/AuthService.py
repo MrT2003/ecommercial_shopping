@@ -8,12 +8,20 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta
 
 class AuthService:
+    # Cấu hình mật khẩu
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    # Cấu hình JWT
+    SECRET_KEY = "your-secret-key"  # Thay thế với một khóa bí mật của bạn
+    ALGORITHM = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-    #Create Account
     @staticmethod
     async def hash_password(password: str) -> str:
-        salt = bcrypt.gensalt()
-        return bcrypt.hashpw(password.encode("utf-8"), salt).decode("utf-8")
+        return AuthService.pwd_context.hash(password)
+
+    @staticmethod
+    async def verify_password(plain_password: str, hashed_password: str) -> bool:
+        return AuthService.pwd_context.verify(plain_password, hashed_password)
 
     @staticmethod
     async def register_user(db: AsyncIOMotorDatabase, user_data: UserCreate):
@@ -24,7 +32,7 @@ class AuthService:
         hashed_password = await AuthService.hash_password(user_data.password)
 
         new_user = UserDB(
-            id=str(ObjectId()),  # Chuyển _id thành ObjectId
+            id=str(ObjectId()),
             name=user_data.name,
             email=user_data.email,
             password=hashed_password,
@@ -32,51 +40,51 @@ class AuthService:
             address=user_data.address,
         )
 
-        # Chuyển đổi lại `_id` về dạng ObjectId khi insert vào MongoDB
         new_user_dict = new_user.dict(by_alias=True)
-        new_user_dict["_id"] = ObjectId(new_user_dict["_id"])  # Chuyển về ObjectId trước khi insert
+        new_user_dict["_id"] = ObjectId(new_user_dict["_id"])
 
         result = await user_collection.insert_one(new_user_dict)
 
-        # Lấy lại user đã insert và trả về
-        new_user_dict["_id"] = str(result.inserted_id)  # Convert ObjectId thành string để trả về
+        new_user_dict["_id"] = str(result.inserted_id)
         return new_user_dict
-    
-    #Login Account and sent token
-# Cấu hình mật khẩu
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-# Cấu hình JWT
-SECRET_KEY = "your-secret-key"  # Thay thế với một khóa bí mật của bạn
-ALGORITHM = "HS256"  # Thuật toán mã hóa JWT
-ACCESS_TOKEN_EXPIRE_MINUTES = 30  # Thời gian hết hạn của token (ví dụ 30 phút)
-
-class AuthService:
-    @staticmethod
-    async def hash_password(password: str) -> str:
-        return pwd_context.hash(password)
 
     @staticmethod
-    async def verify_password(plain_password: str, hashed_password: str) -> bool:
-        return pwd_context.verify(plain_password, hashed_password)
+    async def authenticate_user(db: AsyncIOMotorDatabase, email: str, password: str):
+        user = await user_collection.find_one({"email": email})
+        if not user:
+            return None
+
+        if not await AuthService.verify_password(password, user["password"]):
+            return None
+
+        return UserDB(**user)
 
     @staticmethod
     def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
-        if expires_delta:
-            expire = datetime.utcnow() + expires_delta
-        else:
-            expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-        
         to_encode = data.copy()
-        to_encode.update({"exp": expire})  # Thêm thời gian hết hạn vào token
-        encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+        expire = datetime.utcnow() + (expires_delta if expires_delta else timedelta(minutes=30))
+        to_encode.update({"exp": expire})
+        encoded_jwt = jwt.encode(to_encode, AuthService.SECRET_KEY, algorithm=AuthService.ALGORITHM)
         return encoded_jwt
+    
 
     @staticmethod
-    async def authenticate_user(db: AsyncIOMotorDatabase, email: str, password: str) -> Optional[UserDB]:
-        user = await db.users.find_one({"email": email})
-        if not user:
-            return None  # Không tìm thấy user
-        if not await AuthService.verify_password(password, user["password"]):
-            return None  # Mật khẩu không đúng
-        return UserDB(**user)  # Trả về user nếu xác thực thành công
+    async def update_user_profile(user_id: str, update_data: dict):
+        """Cập nhật thông tin cá nhân của user"""
+        existing_user = await user_collection.find_one({"_id": ObjectId(user_id)})
+        if not existing_user:
+            return None  # Trả về None nếu user không tồn tại
+
+        # Loại bỏ các giá trị None để tránh cập nhật rỗng
+        update_data = {k: v for k, v in update_data.items() if v is not None}
+
+        # Cập nhật dữ liệu
+        await user_collection.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$set": update_data}
+        )
+
+        # Lấy lại user sau khi cập nhật và chuyển `_id` thành string
+        updated_user = await user_collection.find_one({"_id": ObjectId(user_id)})
+        updated_user["_id"] = str(updated_user["_id"])  # Chuyển ObjectId thành string
+        return updated_user
