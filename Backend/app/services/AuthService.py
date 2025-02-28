@@ -88,3 +88,22 @@ class AuthService:
         updated_user = await user_collection.find_one({"_id": ObjectId(user_id)})
         updated_user["_id"] = str(updated_user["_id"])  # Chuyển ObjectId thành string
         return updated_user
+    
+    @staticmethod
+    async def reset_password(email: str, new_password: str):
+        """Đặt lại mật khẩu mới"""
+        user = await user_collection.find_one({"email": email})
+        if not user:
+            return None  # Không tìm thấy user
+
+        # Hash mật khẩu mới
+        hashed_password = AuthService.pwd_context.hash(new_password)
+
+        # Cập nhật mật khẩu trong database
+        await user_collection.update_one(
+            {"email": email},
+            {"$set": {"password": hashed_password}}
+        )
+
+        return {"message": "Mật khẩu đã được đặt lại thành công"}
+

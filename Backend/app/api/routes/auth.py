@@ -18,6 +18,15 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str
 
+class UpdateProfileRequest(BaseModel):
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    address: Optional[str] = None
+
+class ResetPasswordRequest(BaseModel):
+    email: str
+    new_password: str
+
 #http://127.0.0.1:8000/api/auth/signup
 @router.post("/signup", response_model=UserDB)
 async def signup(user_data: UserCreate, db: AsyncIOMotorClient = Depends(get_database)):
@@ -45,12 +54,7 @@ async def login(login_data: LoginRequest, db: AsyncIOMotorDatabase = Depends(get
 async def logout():
     return {"message": "Logged out successfully"}
 
-
-class UpdateProfileRequest(BaseModel):
-    name: Optional[str] = None
-    phone: Optional[str] = None
-    address: Optional[str] = None
-
+#http://127.0.0.1:8000/api/auth/update-profile
 @router.put("/update-profile")
 async def update_profile(user_id: str, update_data: UpdateProfileRequest):
     """API cập nhật thông tin cá nhân"""
@@ -60,3 +64,15 @@ async def update_profile(user_id: str, update_data: UpdateProfileRequest):
         raise HTTPException(status_code=404, detail="User không tồn tại")
 
     return {"message": "Cập nhật thành công", "user": updated_user}
+
+
+#http://127.0.0.1:8000/api/auth/reset-password
+@router.post("/reset-password")
+async def reset_password(data: ResetPasswordRequest):
+    """API đặt lại mật khẩu mới"""
+    result = await AuthService.reset_password(data.email, data.new_password)
+    
+    if not result:
+        raise HTTPException(status_code=404, detail="Email không tồn tại")
+    
+    return result
