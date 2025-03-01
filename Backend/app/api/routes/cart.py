@@ -34,7 +34,6 @@ class UpdateCartRequest(BaseModel):
     product_id: str
     quantity: int
 
-# Endpoint cập nhật số lượng sản phẩm trong giỏ hàng
 @router.put("/update")
 async def update_cart(request: UpdateCartRequest):
     response = await CartService.update_cart_item(

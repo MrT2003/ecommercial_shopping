@@ -15,24 +15,38 @@ async def get_all_orders():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Lỗi server: {str(e)}")
 
-@router.get("/{order_id}", response_description="Lấy đơn hàng theo ID", response_model=Order)
-async def get_order_by_id(order_id: str):
+@router.get("/{order_id}", response_description="Xem chi tiết đơn hàng", response_model=Order)
+async def get_order_detail(order_id: str):
     try:
+        # Call the service method
         order = await OrderService.get_order_by_id(order_id)
+        
         if not order:
-            raise HTTPException(status_code=404, detail=f"Không tìm thấy đơn hàng với ID: {order_id}")
+            raise HTTPException(status_code=404, detail="Không tìm thấy đơn hàng")
+            
         return order
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Lỗi server: {str(e)}")
 
-@router.post("/create/{user_id}", response_description="Tạo đơn hàng mới")
-async def create_order(user_id: str, order_data: Dict[str, Any] = Body(...)):
+
+@router.post("/", response_description="Tạo đơn hàng mới", response_model=Order)
+async def create_order(
+    user_id: str,
+    shipping_address: Dict[str, Any] = Body(...),
+    billing_address: Dict[str, Any] = Body(...),
+    payment_method: str = Body(...)
+):
     try:
-        created_order = await OrderService.create_order(user_id, order_data)
-        if not created_order:
-            raise HTTPException(status_code=500, detail="Không thể tạo đơn hàng")
-        return created_order
-    except ValueError as ve:
-        raise HTTPException(status_code=400, detail=str(ve))
+        order = await OrderService.create_order(
+            user_id=user_id,
+            shipping_address=shipping_address,
+            billing_address=billing_address,
+            payment_method=payment_method
+        )
+        return order
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Lỗi server: {str(e)}")

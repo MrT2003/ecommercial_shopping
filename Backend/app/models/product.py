@@ -4,7 +4,6 @@ from pydantic import BaseModel, Field
 from pydantic_core.core_schema import ValidationInfo
 from pydantic import GetCoreSchemaHandler
 
-# Custom ObjectId class
 class PyObjectId(ObjectId):
     @classmethod
     def __get_pydantic_core_schema__(cls, source, handler: GetCoreSchemaHandler):
@@ -15,9 +14,8 @@ class PyObjectId(ObjectId):
         
         return handler(source).copy(update={"function": validate})
 
-# Product model with Pydantic
 class Product(BaseModel):
-    id: Optional[str] = Field(alias="_id", default=None)  # Đổi PyObjectId -> str
+    id: Optional[str] = Field(alias="_id", default=None) 
     name: str
     description: str
     category_id: str
@@ -31,4 +29,4 @@ class Product(BaseModel):
 
     class Config:
         arbitrary_types_allowed = True
-        json_encoders = {ObjectId: str}  # Chuyển ObjectId thành string khi JSON serialize
+        json_encoders = {ObjectId: str} 

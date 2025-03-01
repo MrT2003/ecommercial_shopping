@@ -16,7 +16,6 @@ class PyObjectId(ObjectId):
 
     @classmethod
     def __get_pydantic_json_schema__(cls, schema_generator, schema):
-        # Thêm tham số schema và trả về schema cho OpenAPI
         return {"type": "string"}
     
     @classmethod
@@ -27,7 +26,7 @@ class PyObjectId(ObjectId):
                 core_schema.is_instance_schema(ObjectId),
                 core_schema.str_schema(),
             ]),
-            serialization=core_schema.plain_serializer_function_ser_schema(  # Sửa tên phương thức này
+            serialization=core_schema.plain_serializer_function_ser_schema( 
                 lambda x: str(x)
             ),
         )

@@ -9,7 +9,7 @@ class ProductService:
     async def get_all_products():
         products = []
         async for product in product_collection.find():
-            product["_id"] = str(product["_id"])  # Convert ObjectId to str
+            product["_id"] = str(product["_id"]) 
             products.append(product)
         return products
     
@@ -22,11 +22,10 @@ class ProductService:
     
     @staticmethod
     async def search_products(query: str) -> List[Product]:
-        """Tìm kiếm sản phẩm theo tên (không phân biệt hoa thường)"""
         products = []
-        regex_query = {"$regex": query, "$options": "i"}  # Tìm kiếm không phân biệt hoa thường
+        regex_query = {"$regex": query, "$options": "i"} 
         async for product in product_collection.find({"name": regex_query}):
-            product["_id"] = str(product["_id"])  # Convert ObjectId to string
+            product["_id"] = str(product["_id"]) 
             products.append(product)
         return products
     

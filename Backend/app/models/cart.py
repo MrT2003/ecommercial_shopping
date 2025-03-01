@@ -2,7 +2,6 @@ from typing import Annotated, Any, List
 from pydantic import BaseModel, Field, BeforeValidator
 from bson import ObjectId
 
-# Define the validator function
 def validate_object_id(v: Any) -> str:
     if isinstance(v, ObjectId):
         return str(v)
@@ -10,7 +9,6 @@ def validate_object_id(v: Any) -> str:
         return v
     raise ValueError("Invalid ObjectId")
 
-# Create a type with validation
 PyObjectId = Annotated[str, BeforeValidator(validate_object_id)]
 
 class CartItem(BaseModel):

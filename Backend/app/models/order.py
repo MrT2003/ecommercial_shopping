@@ -1,9 +1,7 @@
-# app/models/order.py
-from typing import Annotated, Any, List, Optional
+from typing import Annotated, Any, List, Optional, Dict
 from pydantic import BaseModel, Field, BeforeValidator
 from bson import ObjectId
 
-# Hàm kiểm tra ObjectId hợp lệ
 def validate_object_id(v: Any) -> str:
     if isinstance(v, ObjectId):
         return str(v)
@@ -11,26 +9,26 @@ def validate_object_id(v: Any) -> str:
         return v
     raise ValueError("Invalid ObjectId")
 
-# Kiểu dữ liệu ObjectId cho Pydantic
 PyObjectId = Annotated[str, BeforeValidator(validate_object_id)]
 
 class Address(BaseModel):
     address: str
     city: str
     country: str
+    postal_code: Optional[str] = None
 
 class OrderItem(BaseModel):
-    product_id: PyObjectId
+    product: PyObjectId  # Changed from product_id to match service class
     quantity: int
     price: float
 
 class Order(BaseModel):
     id: PyObjectId = Field(default_factory=lambda: str(ObjectId()), alias="_id")
-    user_id: PyObjectId
+    user_id: PyObjectId = Field() 
     items: List[OrderItem]
     total_price: float
     status: str  # pending, completed, cancelled
-    payment_method: str  # credit_card, paypal, bank_transfer, etc.
+    payment_method: str  # credit_card, paypal, bank_transfer
     payment_status: str  # pending, completed, failed
     shipping_address: Address
     billing_address: Address
@@ -43,7 +41,7 @@ class Order(BaseModel):
                 "user_id": "67be899eabfe0be00df5b9dd",
                 "items": [
                     {
-                        "product_id": "67b3011e64ce74113d1500a8",
+                        "product": "67b3011e64ce74113d1500a8",  # Changed from product_id
                         "quantity": 2,
                         "price": 8.99
                     }

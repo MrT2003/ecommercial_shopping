@@ -1,3 +1,4 @@
+import datetime
 from app.db.database import order_collection, cart_collection
 from bson import ObjectId
 from typing import List, Dict, Any
@@ -6,73 +7,141 @@ import logging
 logger = logging.getLogger(__name__)
 
 class OrderService:
-
     @staticmethod
     async def get_all_orders() -> List[Dict[str, Any]]:
-        """Lấy tất cả đơn hàng từ database"""
         orders = []
-        async for order in order_collection.find():
-            order["_id"] = str(order["_id"])
-            order["user_id"] = str(order["user_id"])
-            for item in order.get("items", []):
-                item["product_id"] = str(item["product_id"])
-            orders.append(order)
-        return orders
+        try:
+            async for order in order_collection.find():
+                # Đảm bảo các ID được chuyển đổi sang string
+                if "_id" in order:
+                    order["_id"] = str(order["_id"])
+                
+                # Chuyển đổi user field thành user_id nếu cần
+                if "user" in order and "user_id" not in order:
+                    order["user_id"] = str(order["user"])
+                    del order["user"]
+                elif "user_id" in order:
+                    order["user_id"] = str(order["user_id"])
+                
+                # Đảm bảo chuyển đổi ID sản phẩm trong items
+                if "items" in order and isinstance(order["items"], list):
+                    for item in order["items"]:
+                        if "product_id" in item and "product" not in item:
+                            item["product"] = str(item["product_id"])
+                            del item["product_id"]
+                        elif "product" in item:
+                            item["product"] = str(item["product"])
+                
+                # Kiểm tra và thêm các trường bắt buộc nếu thiếu
+                if "payment_status" not in order:
+                    order["payment_status"] = "pending"
+                
+                if "shipping_address" not in order:
+                    order["shipping_address"] = {
+                        "address": "",
+                        "city": "",
+                        "country": ""
+                    }
+                
+                if "billing_address" not in order:
+                    order["billing_address"] = {
+                        "address": "",
+                        "city": "",
+                        "country": ""
+                    }
+                    
+                orders.append(order)
+            return orders
+        except Exception as e:
+            logger.error(f"Error in get_all_orders: {str(e)}")
+            raise
 
     @staticmethod
     async def get_order_by_id(order_id: str) -> Dict[str, Any]:
-        """Lấy đơn hàng theo ID"""
-        order = await order_collection.find_one({"_id": ObjectId(order_id)})
-        if order:
+        try:
+            if not ObjectId.is_valid(order_id):
+                raise ValueError("Order ID không hợp lệ")
+                
+            order = await order_collection.find_one({"_id": ObjectId(order_id)})
+            
+            if not order:
+                return None
+            
+            # Process the order to ensure it matches the Pydantic model
+            # Convert ObjectIds to strings
             order["_id"] = str(order["_id"])
-            order["user_id"] = str(order["user_id"])
-            for item in order.get("items", []):
-                item["product_id"] = str(item["product_id"])
+            
+            # Handle user_id field
+            if "user" in order and "user_id" not in order:
+                order["user_id"] = str(order["user"])
+                del order["user"]
+            elif "user_id" in order:
+                order["user_id"] = str(order["user_id"])
+                
+            # Process items
+            if "items" in order and isinstance(order["items"], list):
+                for item in order["items"]:
+                    if "product_id" in item and "product" not in item:
+                        item["product"] = str(item["product_id"])
+                        del item["product_id"]
+                    elif "product" in item:
+                        item["product"] = str(item["product"])
+            
+            # Add missing required fields
+            if "payment_status" not in order:
+                order["payment_status"] = "pending"
+            
+            if "shipping_address" not in order:
+                order["shipping_address"] = {
+                    "address": "",
+                    "city": "",
+                    "country": ""
+                }
+            
+            if "billing_address" not in order:
+                order["billing_address"] = {
+                    "address": "",
+                    "city": "",
+                    "country": ""
+                }
+                
             return order
-        return None
+        except ValueError as e:
+            logger.error(f"Invalid order ID: {str(e)}")
+            raise
+        except Exception as e:
+            logger.error(f"Error in get_order_detail: {str(e)}")
+            raise
 
     @staticmethod
-    async def create_order(user_id: str, order_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Tạo đơn hàng mới từ giỏ hàng của user"""
+    async def create_order(user_id: str, shipping_address: Dict[str, Any], billing_address: Dict[str, Any], payment_method: str) -> Dict[str, Any]:
         try:
-            # 1. Lấy giỏ hàng của user
-            cart = await cart_collection.find_one({"user": ObjectId(user_id)})
-            if not cart or "items" not in cart or len(cart["items"]) == 0:
-                raise ValueError("Giỏ hàng trống, không thể tạo đơn hàng.")
+            cart = await cart_collection.find_one({"user": ObjectId(user_id)})  # Thử tìm theo `user`
+            if not cart:
+                cart = await cart_collection.find_one({"user_id": ObjectId(user_id)})  # Nếu trước đó lưu bằng `user_id`
 
-            # 2. Tạo dữ liệu đơn hàng từ giỏ hàng
-            order_data["user_id"] = ObjectId(user_id)
-            order_data["items"] = cart["items"]
-
-            # Kiểm tra và chuyển đổi 'product_id' thành ObjectId nếu cần
-            for item in order_data["items"]:
-                product_id = item.get("product_id")
-                if not product_id:
-                    raise ValueError("product_id không được để trống.")
-                if isinstance(product_id, str) and ObjectId.is_valid(product_id):
-                    item["product_id"] = ObjectId(product_id)  # Chuyển đổi chuỗi thành ObjectId
-                elif not ObjectId.is_valid(product_id):
-                    raise ValueError(f"Invalid product_id: {product_id}")
-
-            order_data["total_price"] = sum(item["price"] * item["quantity"] for item in cart["items"])
-            order_data["status"] = "pending"
-            order_data["payment_status"] = "pending"
-
-            # 3. Lưu đơn hàng vào database
-            result = await order_collection.insert_one(order_data)
-
-            # # 4. Xóa giỏ hàng sau khi tạo đơn hàng
-            # await cart_collection.delete_one({"user": ObjectId(user_id)})
-
-            # 5. Lấy đơn hàng vừa tạo
-            created_order = await order_collection.find_one({"_id": result.inserted_id})
-            if created_order:
-                created_order["_id"] = str(created_order["_id"])
-                created_order["user_id"] = str(created_order["user_id"])
-                for item in created_order["items"]:
-                    item["product_id"] = str(item["product_id"])
-
-            return created_order
+            print(cart) 
+            if not cart or "items" not in cart or not cart["items"]:
+                raise ValueError("Giỏ hàng trống, không thể tạo đơn hàng")
+            
+            total_price = sum(item["price"] * item["quantity"] for item in cart["items"])
+            
+            new_order = {
+                "user_id": ObjectId(user_id),
+                "items": cart["items"],
+                "total_price": total_price,
+                "status": "pending",
+                "payment_method": payment_method,
+                "payment_status": "pending",
+                "shipping_address": shipping_address,
+                "billing_address": billing_address,
+            }
+            
+            result = await order_collection.insert_one(new_order)
+            new_order["_id"] = str(result.inserted_id)
+            await cart_collection.delete_one({"user_id": ObjectId(user_id)})
+            
+            return new_order
         except Exception as e:
-            logger.error(f"Error in create_order: {str(e)}")
-            raise e
+            logger.error(f"Lỗi khi tạo đơn hàng: {str(e)}")
+            raise

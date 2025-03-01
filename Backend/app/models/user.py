@@ -2,7 +2,6 @@ from typing import Optional, List, Any, Annotated
 from pydantic import BaseModel, EmailStr, Field, BeforeValidator
 from bson import ObjectId
 
-# Định nghĩa hàm validate riêng biệt
 def validate_object_id(v):
     if not ObjectId.is_valid(v):
         raise ValueError("Invalid ObjectId")
@@ -17,11 +16,10 @@ class UserCreate(BaseModel):
     phone: Optional[str] = None
     address: Optional[str] = None
 
-# Schema User lưu vào database (Có thêm _id)
 class UserDB(UserCreate):
     id: PyObjectId = Field(default_factory=lambda: str(ObjectId()), alias="_id")
-    role: str = "customer"  # Mặc định là khách hàng
-    orders: List = []  # Danh sách đơn hàng
+    role: str = "customer"
+    orders: List = []
 
     model_config = {
         "populate_by_alias": True,

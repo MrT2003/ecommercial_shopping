@@ -8,9 +8,7 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta
 
 class AuthService:
-    # Cấu hình mật khẩu
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-    # Cấu hình JWT
     SECRET_KEY = "your-secret-key"  # Thay thế với một khóa bí mật của bạn
     ALGORITHM = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES = 30
@@ -70,23 +68,19 @@ class AuthService:
 
     @staticmethod
     async def update_user_profile(user_id: str, update_data: dict):
-        """Cập nhật thông tin cá nhân của user"""
         existing_user = await user_collection.find_one({"_id": ObjectId(user_id)})
         if not existing_user:
-            return None  # Trả về None nếu user không tồn tại
-
+            return None 
         # Loại bỏ các giá trị None để tránh cập nhật rỗng
         update_data = {k: v for k, v in update_data.items() if v is not None}
-
         # Cập nhật dữ liệu
         await user_collection.update_one(
             {"_id": ObjectId(user_id)},
             {"$set": update_data}
         )
-
         # Lấy lại user sau khi cập nhật và chuyển `_id` thành string
         updated_user = await user_collection.find_one({"_id": ObjectId(user_id)})
-        updated_user["_id"] = str(updated_user["_id"])  # Chuyển ObjectId thành string
+        updated_user["_id"] = str(updated_user["_id"]) 
         return updated_user
     
     @staticmethod
@@ -94,16 +88,13 @@ class AuthService:
         """Đặt lại mật khẩu mới"""
         user = await user_collection.find_one({"email": email})
         if not user:
-            return None  # Không tìm thấy user
-
+            return None 
         # Hash mật khẩu mới
         hashed_password = AuthService.pwd_context.hash(new_password)
-
         # Cập nhật mật khẩu trong database
         await user_collection.update_one(
             {"email": email},
             {"$set": {"password": hashed_password}}
         )
-
         return {"message": "Mật khẩu đã được đặt lại thành công"}
 
