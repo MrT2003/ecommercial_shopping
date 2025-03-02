@@ -138,6 +138,23 @@ class CartScreen extends StatelessWidget {
                       '12.99', 'assets/images/pizza.jpg'),
                   _buildCartItem('Chicken Burger', 'Large size - Extra cheese',
                       '12.99', 'assets/images/wings.jpg'),
+
+                  //           CartItem(
+                  //   name: 'Chicken Burger',
+                  //   description: 'Large size - Extra cheese',
+                  //   price: '12.99',
+                  //   imageUrl: 'assets/images/salad.jpg',
+                  //   quantity: 1,
+                  //   onIncrement: () {
+                  //     // Tăng số lượng
+                  //     print('Tăng số lượng Chicken Burger');
+                  //   },
+                  //   onDecrement: () {
+                  //     // Giảm số lượng
+                  //     print('Giảm số lượng Chicken Burger');
+                  //   },
+                  // ),
+
                   SizedBox(height: 20),
                 ],
               ),

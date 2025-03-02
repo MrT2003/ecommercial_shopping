@@ -1,10 +1,19 @@
 import 'package:ecommercial_shopping/presentation/pages/cart_screen.dart';
 import 'package:ecommercial_shopping/presentation/pages/product_detail_screen.dart';
+import 'package:ecommercial_shopping/presentation/widgets/home/_build_category_chip.dart';
+import 'package:ecommercial_shopping/presentation/widgets/home/_build_food_card.dart';
+import 'package:ecommercial_shopping/presentation/widgets/home/_build_recommend_item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String selectedCategory = "All";
 
   @override
   Widget build(BuildContext context) {
@@ -86,22 +95,60 @@ class HomeScreen extends StatelessWidget {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    _buildCategoryChip("All", true),
-                    _buildCategoryChip("Pizza", false),
-                    _buildCategoryChip("Burger", false),
-                    _buildCategoryChip("Shawarma", false),
-                    _buildCategoryChip("Salad", false),
-                    _buildCategoryChip("Wings", false),
-
-                    //     _buildCategoryChip(
-                    //   label: "All",
-                    //   isSelected: selectedCategory == "All",
-                    //   onTap: () {
-                    //     setState(() {
-                    //       selectedCategory = "All";
-                    //     });
-                    //   },
-                    // ),
+                    BuildCategoryChip(
+                      label: "All",
+                      isSelected: selectedCategory == "All",
+                      onTap: () {
+                        setState(() {
+                          selectedCategory = "All";
+                        });
+                      },
+                    ),
+                    BuildCategoryChip(
+                      label: "Pizza",
+                      isSelected: selectedCategory == "Pizza",
+                      onTap: () {
+                        setState(() {
+                          selectedCategory = "Pizza";
+                        });
+                      },
+                    ),
+                    BuildCategoryChip(
+                      label: "Burger",
+                      isSelected: selectedCategory == "Burger",
+                      onTap: () {
+                        setState(() {
+                          selectedCategory = "Burger";
+                        });
+                      },
+                    ),
+                    BuildCategoryChip(
+                      label: "Shawarma",
+                      isSelected: selectedCategory == "Shawarma",
+                      onTap: () {
+                        setState(() {
+                          selectedCategory = "Shawarma";
+                        });
+                      },
+                    ),
+                    BuildCategoryChip(
+                      label: "Salad",
+                      isSelected: selectedCategory == "Salad",
+                      onTap: () {
+                        setState(() {
+                          selectedCategory = "Salad";
+                        });
+                      },
+                    ),
+                    BuildCategoryChip(
+                      label: "Wings",
+                      isSelected: selectedCategory == "Wings",
+                      onTap: () {
+                        setState(() {
+                          selectedCategory = "Wings";
+                        });
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -119,35 +166,46 @@ class HomeScreen extends StatelessWidget {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    _buildFoodCard("Pepperoni Pizza", "12.99",
-                        "assets/images/pizza.jpg", "4.5", "20-25 min", context),
-                    _buildFoodCard(
-                        "Pepperoni Pizza",
-                        "12.99",
-                        "assets/images/burger.jpg",
-                        "4.5",
-                        "20-25 min",
-                        context),
-                    _buildFoodCard("Pepperoni Pizza", "12.99",
-                        "assets/images/salad.jpg", "4.5", "20-25 min", context),
-                    _buildFoodCard("Pepperoni Pizza", "12.99",
-                        "assets/images/wings.jpg", "4.5", "20-25 min", context),
-                    _buildFoodCard(
-                        "Pepperoni Pizza",
-                        "12.99",
-                        "assets/images/shawarma.jpg",
-                        "4.5",
-                        "20-25 min",
-                        context),
-
-                    //                         _buildFoodCard(
-                    //   name: "Pepperoni Pizza",
-                    //   price: "12.99",
-                    //   imageUrl: "assets/images/pizza.jpg",
-                    //   rating: "4.5",
-                    //   deliveryTime: "20-25 min",
-                    //   destinationScreen: ProductDetailScreen(),
-                    // ),
+                    BuildFoodCard(
+                      name: "Pepperoni Pizza",
+                      price: "12.99",
+                      imageUrl: "assets/images/pizza.jpg",
+                      rating: "4.5",
+                      deliveryTime: "20-25 min",
+                      destinationScreen: ProductDetailScreen(),
+                    ),
+                    BuildFoodCard(
+                      name: "Pepperoni Pizza",
+                      price: "12.99",
+                      imageUrl: "assets/images/pizza.jpg",
+                      rating: "4.5",
+                      deliveryTime: "20-25 min",
+                      destinationScreen: ProductDetailScreen(),
+                    ),
+                    BuildFoodCard(
+                      name: "Pepperoni Pizza",
+                      price: "12.99",
+                      imageUrl: "assets/images/pizza.jpg",
+                      rating: "4.5",
+                      deliveryTime: "20-25 min",
+                      destinationScreen: ProductDetailScreen(),
+                    ),
+                    BuildFoodCard(
+                      name: "Pepperoni Pizza",
+                      price: "12.99",
+                      imageUrl: "assets/images/pizza.jpg",
+                      rating: "4.5",
+                      deliveryTime: "20-25 min",
+                      destinationScreen: ProductDetailScreen(),
+                    ),
+                    BuildFoodCard(
+                      name: "Pepperoni Pizza",
+                      price: "12.99",
+                      imageUrl: "assets/images/pizza.jpg",
+                      rating: "4.5",
+                      deliveryTime: "20-25 min",
+                      destinationScreen: ProductDetailScreen(),
+                    ),
                   ],
                 ),
               ),
@@ -160,250 +218,48 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 15),
-              _buildRecommendItem("Pepperoni Pizza", "12.99",
-                  "assets/images/shawarma.jpg", "4.5", "20-25 min"),
-              _buildRecommendItem("Pepperoni Pizza", "12.99",
-                  "assets/images/wings.jpg", "4.5", "20-25 min"),
-
-              //            _buildRecommendItem(
-              //   name: "Pepperoni Pizza",
-              //   price: "12.99",
-              //   imageUrl: "assets/images/shawarma.jpg",
-              //   rating: "4.5",
-              //   deliveryTime: "20-25 min",
-              //   onTap: () {
-              //     // Xử lý khi nhấp vào toàn bộ item
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(builder: (context) => ProductDetailScreen()),
-              //     );
-              //   },
-              //   onAddTap: () {
-              //     // Xử lý khi nhấp vào nút thêm
-              //     print("Add to cart: Pepperoni Pizza");
-              //     // Hoặc có thể thêm vào giỏ hàng
-              //   },
-              // ),
+              BuildRecommendItem(
+                name: "Pepperoni Pizza",
+                price: "12.99",
+                imageUrl: "assets/images/shawarma.jpg",
+                rating: "4.5",
+                deliveryTime: "20-25 min",
+                onTap: () {
+                  // Xử lý khi nhấp vào toàn bộ item
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProductDetailScreen()),
+                  );
+                },
+                // onAddTap: () {
+                //   // Xử lý khi nhấp vào nút thêm
+                //   print("Add to cart: Pepperoni Pizza");
+                //   // Hoặc có thể thêm vào giỏ hàng
+                // },
+              ),
+              BuildRecommendItem(
+                name: "Pepperoni Pizza",
+                price: "12.99",
+                imageUrl: "assets/images/shawarma.jpg",
+                rating: "4.5",
+                deliveryTime: "20-25 min",
+                onTap: () {
+                  // Xử lý khi nhấp vào toàn bộ item
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProductDetailScreen()),
+                  );
+                },
+                // onAddTap: () {
+                //   // Xử lý khi nhấp vào nút thêm
+                //   print("Add to cart: Pepperoni Pizza");
+                //   // Hoặc có thể thêm vào giỏ hàng
+                // },
+              ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCategoryChip(String label, bool isSelected) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8.0),
-      child: Chip(
-          backgroundColor: isSelected ? Colors.deepOrange : Colors.white,
-          label: Text(
-            label,
-            style: TextStyle(
-              color: isSelected ? Colors.white : Colors.black,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            ),
-          )),
-    );
-  }
-
-  Widget _buildRecommendItem(String name, String price, String imageUrl,
-      String rating, String deliveryTime) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 1,
-              blurRadius: 5,
-            )
-          ]),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.horizontal(
-              left: Radius.circular(20),
-            ),
-            child: Image.asset(
-              imageUrl,
-              height: 100,
-              width: 100,
-              fit: BoxFit.cover,
-            ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                        size: 16,
-                      ),
-                      Text(
-                        " $rating",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        " - $deliveryTime",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 5),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "\$$price",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.deepOrange,
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: Colors.deepOrange,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Icon(
-                          Icons.add,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFoodCard(String name, String price, String imageUrl,
-      String rating, String deliveryTime, BuildContext context) {
-    return InkWell(
-      onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProductDetailScreen(),
-          )),
-      child: Container(
-        width: 180,
-        margin: EdgeInsets.only(right: 16),
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                spreadRadius: 1,
-                blurRadius: 5,
-              )
-            ]),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              child: Image.asset(
-                imageUrl,
-                height: 120,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                  SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                        size: 16,
-                      ),
-                      Text(
-                        " $rating",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        " - $deliveryTime",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "\$$price",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.deepOrange,
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: Colors.deepOrange,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Icon(
-                          Icons.add,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                      )
-                    ],
-                  )
-                ],
-              ),
-            )
-          ],
         ),
       ),
     );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class _buildFoodCard extends StatelessWidget {
+class BuildFoodCard extends StatelessWidget {
   final String name;
   final String price;
   final String imageUrl;
@@ -9,8 +9,8 @@ class _buildFoodCard extends StatelessWidget {
   final VoidCallback? onTap;
   final Widget? destinationScreen;
 
-  const _buildFoodCard({
-    Key? key,
+  const BuildFoodCard({
+    super.key,
     required this.name,
     required this.price,
     required this.imageUrl,
@@ -18,7 +18,7 @@ class _buildFoodCard extends StatelessWidget {
     required this.deliveryTime,
     this.onTap,
     this.destinationScreen,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

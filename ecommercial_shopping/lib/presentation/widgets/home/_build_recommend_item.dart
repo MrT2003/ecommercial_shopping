@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class _buildRecommendItem extends StatelessWidget {
+class BuildRecommendItem extends StatelessWidget {
   final String name;
   final String price;
   final String imageUrl;
@@ -9,7 +9,7 @@ class _buildRecommendItem extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onAddTap;
 
-  const _buildRecommendItem({
+  const BuildRecommendItem({
     super.key,
     required this.name,
     required this.price,
