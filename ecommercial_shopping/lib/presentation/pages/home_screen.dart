@@ -92,6 +92,16 @@ class HomeScreen extends StatelessWidget {
                     _buildCategoryChip("Shawarma", false),
                     _buildCategoryChip("Salad", false),
                     _buildCategoryChip("Wings", false),
+
+                    //     _buildCategoryChip(
+                    //   label: "All",
+                    //   isSelected: selectedCategory == "All",
+                    //   onTap: () {
+                    //     setState(() {
+                    //       selectedCategory = "All";
+                    //     });
+                    //   },
+                    // ),
                   ],
                 ),
               ),
@@ -129,6 +139,15 @@ class HomeScreen extends StatelessWidget {
                         "4.5",
                         "20-25 min",
                         context),
+
+                    //                         _buildFoodCard(
+                    //   name: "Pepperoni Pizza",
+                    //   price: "12.99",
+                    //   imageUrl: "assets/images/pizza.jpg",
+                    //   rating: "4.5",
+                    //   deliveryTime: "20-25 min",
+                    //   destinationScreen: ProductDetailScreen(),
+                    // ),
                   ],
                 ),
               ),
@@ -145,6 +164,26 @@ class HomeScreen extends StatelessWidget {
                   "assets/images/shawarma.jpg", "4.5", "20-25 min"),
               _buildRecommendItem("Pepperoni Pizza", "12.99",
                   "assets/images/wings.jpg", "4.5", "20-25 min"),
+
+              //            _buildRecommendItem(
+              //   name: "Pepperoni Pizza",
+              //   price: "12.99",
+              //   imageUrl: "assets/images/shawarma.jpg",
+              //   rating: "4.5",
+              //   deliveryTime: "20-25 min",
+              //   onTap: () {
+              //     // Xử lý khi nhấp vào toàn bộ item
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(builder: (context) => ProductDetailScreen()),
+              //     );
+              //   },
+              //   onAddTap: () {
+              //     // Xử lý khi nhấp vào nút thêm
+              //     print("Add to cart: Pepperoni Pizza");
+              //     // Hoặc có thể thêm vào giỏ hàng
+              //   },
+              // ),
             ],
           ),
         ),
