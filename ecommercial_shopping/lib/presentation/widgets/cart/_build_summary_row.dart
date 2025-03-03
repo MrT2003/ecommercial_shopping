@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class _buildSummaryRow extends StatelessWidget {
+class BuildSummaryRow extends StatelessWidget {
   final String label;
   final String amount;
   final bool isTotal;
@@ -9,7 +9,7 @@ class _buildSummaryRow extends StatelessWidget {
   final double? fontSize;
   final FontWeight? fontWeight;
 
-  const _buildSummaryRow({
+  const BuildSummaryRow({
     super.key,
     required this.label,
     required this.amount,

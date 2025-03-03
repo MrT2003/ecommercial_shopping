@@ -1,3 +1,6 @@
+import 'package:ecommercial_shopping/presentation/widgets/checkout/_build_order_item.dart';
+import 'package:ecommercial_shopping/presentation/widgets/checkout/_build_payment_option.dart';
+import 'package:ecommercial_shopping/presentation/widgets/checkout/_build_section_card.dart';
 import 'package:flutter/material.dart';
 
 class CheckoutScreen extends StatefulWidget {
@@ -55,33 +58,64 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   padding: EdgeInsets.all(16),
                   child: Column(
                     children: [
-                      _buildSectionCard(
-                        'Order Summary',
-                        Column(
+                      BuildSectionCard(
+                        title: 'Order Summary',
+                        content: Column(
                           children: [
-                            _buildOrderItem('Pepperoni Pizza', '\$12.99',
-                                'Larger - Extra Cheese'),
+                            BuildOrderItem(
+                              name: 'Pepperoni Pizza',
+                              price: '\$12.99',
+                              description: 'Larger - Extra Cheese',
+                            ),
                             Divider(height: 20),
-                            _buildOrderItem('Chicken Burger', '\$8.99',
-                                'Larger - Extra Cheese'),
+                            BuildOrderItem(
+                              name: 'Chicken Burger',
+                              price: '\$8.99',
+                              description: 'Larger - Extra Cheese',
+                            ),
                           ],
                         ),
                       ),
                       SizedBox(height: 20),
-                      _buildSectionCard(
-                        'Payment Method',
-                        Column(
+                      BuildSectionCard(
+                        title: 'Payment Method',
+                        content: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               children: [
-                                _buildPaymentOption(
-                                    0, 'Credit Card', Icons.credit_card),
+                                BuildPaymentOption(
+                                  index: 0,
+                                  title: 'Credit Card',
+                                  icon: Icons.credit_card,
+                                  selectedPaymentMethod: _selectedPaymentMethod,
+                                  onPaymentMethodChanged: (index) {
+                                    setState(
+                                        () => _selectedPaymentMethod = index);
+                                  },
+                                ),
                                 SizedBox(width: 12),
-                                _buildPaymentOption(1, 'Paypal', Icons.payment),
+                                BuildPaymentOption(
+                                  index: 1,
+                                  title: 'Paypal',
+                                  icon: Icons.payment,
+                                  selectedPaymentMethod: _selectedPaymentMethod,
+                                  onPaymentMethodChanged: (index) {
+                                    setState(
+                                        () => _selectedPaymentMethod = index);
+                                  },
+                                ),
                                 SizedBox(width: 12),
-                                _buildPaymentOption(
-                                    2, 'COD', Icons.home_filled),
+                                BuildPaymentOption(
+                                  index: 2,
+                                  title: 'COD',
+                                  icon: Icons.home_filled,
+                                  selectedPaymentMethod: _selectedPaymentMethod,
+                                  onPaymentMethodChanged: (index) {
+                                    setState(
+                                        () => _selectedPaymentMethod = index);
+                                  },
+                                ),
                               ],
                             ),
                             if (_selectedPaymentMethod == 0) ...[
@@ -110,9 +144,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ),
                       ),
                       SizedBox(height: 20),
-                      _buildSectionCard(
-                        'Additional Notes',
-                        TextField(
+                      BuildSectionCard(
+                        title: 'Additional Notes',
+                        content: TextField(
                           maxLines: 3,
                           decoration: InputDecoration(
                             hintText: 'Add notes for your order (optional)',
@@ -185,37 +219,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               ),
             ],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSectionCard(String title, Widget content) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 16),
-          content,
         ],
       ),
     );

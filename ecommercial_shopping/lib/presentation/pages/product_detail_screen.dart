@@ -1,3 +1,6 @@
+import 'package:ecommercial_shopping/presentation/widgets/detail/_build_extra_item.dart';
+import 'package:ecommercial_shopping/presentation/widgets/detail/_build_info_chip.dart';
+import 'package:ecommercial_shopping/presentation/widgets/detail/_build_size_button.dart';
 import 'package:flutter/material.dart';
 
 class ProductDetailScreen extends StatelessWidget {
@@ -122,9 +125,12 @@ class ProductDetailScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _buildInfoChip(Icons.access_time, "20-25 min"),
-                        _buildInfoChip(Icons.local_fire_department, "150 cal"),
-                        _buildInfoChip(Icons.location_on, "1.2 km"),
+                        BuildInfoChip(
+                            icon: Icons.access_time, label: "20-25 min"),
+                        BuildInfoChip(
+                            icon: Icons.local_fire_department,
+                            label: "150 cal"),
+                        BuildInfoChip(icon: Icons.location_on, label: "1.2 km"),
                       ],
                     ),
                     SizedBox(height: 12),
@@ -154,11 +160,29 @@ class ProductDetailScreen extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        _buildSizeButton("S", false),
-                        SizedBox(width: 12),
-                        _buildSizeButton("M", true),
-                        SizedBox(width: 12),
-                        _buildSizeButton("L", false),
+                        BuildSizeButton(
+                          size: "S",
+                          isSelected: false,
+                          onTap: () {
+                            // Handle size selection
+                          },
+                        ),
+                        const SizedBox(width: 12),
+                        BuildSizeButton(
+                          size: "M",
+                          isSelected: true,
+                          onTap: () {
+                            // Handle size selection
+                          },
+                        ),
+                        const SizedBox(width: 12),
+                        BuildSizeButton(
+                          size: "L",
+                          isSelected: false,
+                          onTap: () {
+                            // Handle size selection
+                          },
+                        ),
                       ],
                     ),
                     SizedBox(height: 20),
@@ -170,9 +194,18 @@ class ProductDetailScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 12),
-                    _buildExtraItem("Extra Cheese", "2.50"),
-                    _buildExtraItem("Double Pepperoni", "3.00"),
-                    _buildExtraItem("Mushroom", "1.50"),
+                    BuildExtraItem(
+                      name: "Extra Cheese",
+                      price: "2.50",
+                    ),
+                    BuildExtraItem(
+                      name: "Double Pepperoni",
+                      price: "3.00",
+                    ),
+                    BuildExtraItem(
+                      name: "Mushroom",
+                      price: "1.50",
+                    ),
                     SizedBox(height: 100),
                   ],
                 ),
@@ -245,98 +278,6 @@ class ProductDetailScreen extends StatelessWidget {
             )
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildInfoChip(IconData icon, String label) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            icon,
-            size: 16,
-            color: Colors.grey[600],
-          ),
-          SizedBox(
-            width: 4,
-          ),
-          Text(
-            label,
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontWeight: FontWeight.w500,
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSizeButton(String size, bool isSelected) {
-    return InkWell(
-      onTap: () {},
-      child: Container(
-        width: 80,
-        padding: EdgeInsets.symmetric(vertical: 12),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.deepOrange : Colors.grey[100],
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Center(
-          child: Text(
-            size,
-            style: TextStyle(
-              color: isSelected ? Colors.white : Colors.grey[600],
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildExtraItem(String name, String price) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
-      child: Row(
-        children: [
-          Container(
-            width: 24,
-            height: 24,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade300),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(
-              Icons.add,
-              size: 16,
-              color: Colors.deepOrange,
-            ),
-          ),
-          SizedBox(width: 12),
-          Text(
-            name,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          Spacer(),
-          Text(
-            '+\$$price',
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
       ),
     );
   }

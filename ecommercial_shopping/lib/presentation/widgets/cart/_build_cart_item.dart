@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class _buildCartItem extends StatelessWidget {
+class BuildCartItem extends StatelessWidget {
   final String name;
   final String description;
   final String price;
@@ -10,7 +10,7 @@ class _buildCartItem extends StatelessWidget {
   final Function()? onDecrement;
   final Function()? onRemove;
 
-  const _buildCartItem({
+  const BuildCartItem({
     super.key,
     required this.name,
     required this.description,

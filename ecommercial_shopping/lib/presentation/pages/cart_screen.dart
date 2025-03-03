@@ -1,4 +1,6 @@
 import 'package:ecommercial_shopping/presentation/pages/checkout_screen.dart';
+import 'package:ecommercial_shopping/presentation/widgets/cart/_build_cart_item.dart';
+import 'package:ecommercial_shopping/presentation/widgets/cart/_build_summary_row.dart';
 import 'package:flutter/material.dart';
 
 class CartScreen extends StatelessWidget {
@@ -132,29 +134,51 @@ class CartScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 12),
-                  _buildCartItem('Chicken Burger', 'Large size - Extra cheese',
-                      '12.99', 'assets/images/salad.jpg'),
-                  _buildCartItem('Chicken Burger', 'Large size - Extra cheese',
-                      '12.99', 'assets/images/pizza.jpg'),
-                  _buildCartItem('Chicken Burger', 'Large size - Extra cheese',
-                      '12.99', 'assets/images/wings.jpg'),
-
-                  //           CartItem(
-                  //   name: 'Chicken Burger',
-                  //   description: 'Large size - Extra cheese',
-                  //   price: '12.99',
-                  //   imageUrl: 'assets/images/salad.jpg',
-                  //   quantity: 1,
-                  //   onIncrement: () {
-                  //     // Tăng số lượng
-                  //     print('Tăng số lượng Chicken Burger');
-                  //   },
-                  //   onDecrement: () {
-                  //     // Giảm số lượng
-                  //     print('Giảm số lượng Chicken Burger');
-                  //   },
-                  // ),
-
+                  BuildCartItem(
+                    name: 'Chicken Burger',
+                    description: 'Large size - Extra cheese',
+                    price: '12.99',
+                    imageUrl: 'assets/images/salad.jpg',
+                    quantity: 1,
+                    onIncrement: () {
+                      // Tăng số lượng
+                      print('Tăng số lượng Chicken Burger');
+                    },
+                    onDecrement: () {
+                      // Giảm số lượng
+                      print('Giảm số lượng Chicken Burger');
+                    },
+                  ),
+                  BuildCartItem(
+                    name: 'Chicken Burger',
+                    description: 'Large size - Extra cheese',
+                    price: '12.99',
+                    imageUrl: 'assets/images/salad.jpg',
+                    quantity: 1,
+                    onIncrement: () {
+                      // Tăng số lượng
+                      print('Tăng số lượng Chicken Burger');
+                    },
+                    onDecrement: () {
+                      // Giảm số lượng
+                      print('Giảm số lượng Chicken Burger');
+                    },
+                  ),
+                  BuildCartItem(
+                    name: 'Chicken Burger',
+                    description: 'Large size - Extra cheese',
+                    price: '12.99',
+                    imageUrl: 'assets/images/salad.jpg',
+                    quantity: 1,
+                    onIncrement: () {
+                      // Tăng số lượng
+                      print('Tăng số lượng Chicken Burger');
+                    },
+                    onDecrement: () {
+                      // Giảm số lượng
+                      print('Giảm số lượng Chicken Burger');
+                    },
+                  ),
                   SizedBox(height: 20),
                 ],
               ),
@@ -178,13 +202,28 @@ class CartScreen extends StatelessWidget {
             ),
             child: Column(
               children: [
-                _buildSummaryRow('Subtotal', '28.94'),
+                BuildSummaryRow(
+                  label: 'Subtotal',
+                  amount: '28.94',
+                ),
                 SizedBox(height: 8),
-                _buildSummaryRow('Delivery Fee', '2.50'),
+                BuildSummaryRow(
+                  label: 'Delivery Fee',
+                  amount: '2.00',
+                ),
                 SizedBox(height: 8),
-                _buildSummaryRow('Tax', '2.99'),
-                Divider(height: 24),
-                _buildSummaryRow('Total', '34.32', isTotal: true),
+                BuildSummaryRow(
+                  label: 'Tax',
+                  amount: '1.85',
+                ),
+                SizedBox(height: 16),
+                Divider(),
+                SizedBox(height: 8),
+                BuildSummaryRow(
+                  label: 'Total',
+                  amount: '32.79',
+                  isTotal: true,
+                ),
                 SizedBox(height: 20),
                 SizedBox(
                   width: double.infinity,
@@ -215,128 +254,6 @@ class CartScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildCartItem(
-    String name,
-    String description,
-    String price,
-    String imageUrl,
-  ) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 16),
-      padding: EdgeInsets.all(12),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 1,
-              blurRadius: 5,
-            ),
-          ]),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-            child: Image.asset(
-              imageUrl,
-              width: 80,
-              height: 80,
-              fit: BoxFit.cover,
-            ),
-          ),
-          SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  description,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '\$$price',
-                      style: TextStyle(
-                        color: Colors.deepOrange,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                          color: Colors.grey[100],
-                          borderRadius: BorderRadius.circular(12)),
-                      child: Row(
-                        children: [
-                          IconButton(
-                            onPressed: () {},
-                            iconSize: 20,
-                            color: Colors.deepOrange,
-                            icon: Icon(Icons.remove),
-                          ),
-                          Text(
-                            '1',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
-                          ),
-                          IconButton(
-                            onPressed: () {},
-                            color: Colors.deepOrange,
-                            iconSize: 20,
-                            icon: Icon(Icons.add),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSummaryRow(String label, String amount, {bool isTotal = false}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: isTotal ? Colors.black : Colors.grey[600],
-            fontSize: isTotal ? 18 : 16,
-            fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-          ),
-        ),
-        Text(
-          '\$$amount',
-          style: TextStyle(
-            color: isTotal ? Colors.deepOrange : Colors.black,
-            fontSize: isTotal ? 20 : 16,
-            fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-          ),
-        ),
-      ],
     );
   }
 }
