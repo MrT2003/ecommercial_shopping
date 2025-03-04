@@ -8,6 +8,7 @@ class BuildRecommendItem extends StatelessWidget {
   final String deliveryTime;
   final VoidCallback? onTap;
   final VoidCallback? onAddTap;
+  final Widget? destinationScreen;
 
   const BuildRecommendItem({
     super.key,
@@ -18,6 +19,7 @@ class BuildRecommendItem extends StatelessWidget {
     required this.deliveryTime,
     this.onTap,
     this.onAddTap,
+    this.destinationScreen,
   });
 
   @override
@@ -43,7 +45,7 @@ class BuildRecommendItem extends StatelessWidget {
               borderRadius: BorderRadius.horizontal(
                 left: Radius.circular(20),
               ),
-              child: Image.asset(
+              child: Image.network(
                 imageUrl,
                 height: 100,
                 width: 100,

@@ -1,6 +1,8 @@
+import 'package:ecommercial_shopping/presentation/widgets/cart/_build_summary_row.dart';
 import 'package:ecommercial_shopping/presentation/widgets/checkout/_build_order_item.dart';
 import 'package:ecommercial_shopping/presentation/widgets/checkout/_build_payment_option.dart';
 import 'package:ecommercial_shopping/presentation/widgets/checkout/_build_section_card.dart';
+import 'package:ecommercial_shopping/presentation/widgets/checkout/_build_text_field.dart';
 import 'package:flutter/material.dart';
 
 class CheckoutScreen extends StatefulWidget {
@@ -120,25 +122,37 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ),
                             if (_selectedPaymentMethod == 0) ...[
                               SizedBox(height: 20),
-                              _buildTextField('Cart Number',
-                                  'XXXX XXXX XXXX XXXX', Icons.credit_card),
+                              BuildTextField(
+                                label: "Cart Number",
+                                hint: "XXXX XXXX XXXX XXXX",
+                                icon: Icons.credit_card,
+                              ),
                               SizedBox(height: 16),
                               Row(
                                 children: [
                                   Expanded(
-                                      child: _buildTextField('Expiry Date',
-                                          'MM/YY', Icons.calendar_today)),
+                                    child: BuildTextField(
+                                      label: "Expiry Date",
+                                      hint: "MM/YY",
+                                      icon: Icons.calendar_today,
+                                    ),
+                                  ),
                                   SizedBox(width: 16),
                                   Expanded(
-                                      child: _buildTextField(
-                                          'CVV', 'XXX', Icons.lock_outline)),
+                                    child: BuildTextField(
+                                      label: "CVV",
+                                      hint: "XXX",
+                                      icon: Icons.lock_outline,
+                                    ),
+                                  ),
                                 ],
                               ),
                               SizedBox(height: 16),
-                              _buildTextField(
-                                  'Card Holder Name',
-                                  'Enter card holder name',
-                                  Icons.person_outlined)
+                              BuildTextField(
+                                label: "Card Holder Name",
+                                hint: "Enter card holder name",
+                                icon: Icons.person_outlined,
+                              ),
                             ]
                           ],
                         ),
@@ -185,13 +199,26 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ),
                 child: Column(
                   children: [
-                    _buildSummaryRow('Subtotal', '28.94'),
+                    BuildSummaryRow(
+                      label: 'Subtotal',
+                      amount: '28.94',
+                    ),
                     SizedBox(height: 8),
-                    _buildSummaryRow('Delivery Fee', '2.50'),
+                    BuildSummaryRow(
+                      label: 'Delivery Fee',
+                      amount: '2.50',
+                    ),
                     SizedBox(height: 8),
-                    _buildSummaryRow('Tax', '2.99'),
+                    BuildSummaryRow(
+                      label: 'Tax',
+                      amount: '2.99',
+                    ),
                     Divider(height: 24),
-                    _buildSummaryRow('Total', '34.32', isTotal: true),
+                    BuildSummaryRow(
+                      label: 'Total',
+                      amount: '34.32',
+                      isTotal: true,
+                    ),
                     SizedBox(height: 20),
                     SizedBox(
                       width: double.infinity,
@@ -221,132 +248,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildOrderItem(String name, String price, String description) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                name,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-              Text(
-                description,
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 14,
-                ),
-              ),
-            ],
-          ),
-        ),
-        Text(
-          price,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.deepOrange,
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _buildPaymentOption(int index, String title, IconData icon) {
-    final isSelected = _selectedPaymentMethod == index;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => setState(() => _selectedPaymentMethod = index),
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 12),
-          decoration: BoxDecoration(
-            color: isSelected ? Colors.deepOrange : Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isSelected ? Colors.deepOrange : Colors.grey.shade300,
-            ),
-          ),
-          child: Column(
-            children: [
-              Icon(
-                icon,
-                color: isSelected ? Colors.white : Colors.grey[600],
-              ),
-              SizedBox(height: 4),
-              Text(
-                title,
-                style: TextStyle(
-                  color: isSelected ? Colors.white : Colors.grey[600],
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField(String label, String hint, IconData icon) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(height: 8),
-        TextField(
-          decoration: InputDecoration(
-              hintText: hint,
-              prefixIcon: Icon(icon, color: Colors.deepOrange),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey.shade300),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey.shade300),
-              )),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSummaryRow(String label, String amount, {bool isTotal = false}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: isTotal ? Colors.black : Colors.grey[600],
-            fontSize: isTotal ? 18 : 16,
-            fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-          ),
-        ),
-        Text(
-          '\$$amount',
-          style: TextStyle(
-            color: isTotal ? Colors.deepOrange : Colors.black,
-            fontSize: isTotal ? 20 : 16,
-            fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-          ),
-        ),
-      ],
     );
   }
 }
