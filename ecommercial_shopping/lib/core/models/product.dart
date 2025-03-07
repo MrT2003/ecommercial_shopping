@@ -25,19 +25,35 @@ class Product {
     required this.categoryId,
   });
 
+  // factory Product.fromJson(Map<String, dynamic> json) {
+  //   return Product(
+  //     id: json['_id'],
+  //     name: json['name'],
+  //     description: json['description'],
+  //     rates: (json['rates'] as num).toDouble(),
+  //     price: (json['price'] as num).toDouble(),
+  //     distance: (json['distance'] as num).toDouble(),
+  //     calories: json['calories'],
+  //     preparationTime: json['preparationTime'],
+  //     tags: List<String>.from(json['tags']),
+  //     imageUrl: json['imageURL'],
+  //     categoryId: json['category_id'],
+  //   );
+  // }
+
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      id: json['_id'],
-      name: json['name'],
-      description: json['description'],
-      rates: (json['rates'] as num).toDouble(),
-      price: (json['price'] as num).toDouble(),
-      distance: (json['distance'] as num).toDouble(),
-      calories: json['calories'],
-      preparationTime: json['preparationTime'],
-      tags: List<String>.from(json['tags']),
-      imageUrl: json['imageURL'],
-      categoryId: json['category_id'],
+      id: json['_id'] ?? '',
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      rates: (json['rates'] as num?)?.toDouble() ?? 0.0,
+      price: (json['price'] as num?)?.toDouble() ?? 0.0,
+      distance: (json['distance'] as num?)?.toDouble() ?? 0.0,
+      calories: json['calories'] ?? 0,
+      preparationTime: json['preparationTime'] ?? '',
+      tags: List<String>.from(json['tags'] ?? []),
+      imageUrl: json['imageURL'] ?? '',
+      categoryId: json['category_id'] ?? '',
     );
   }
 }

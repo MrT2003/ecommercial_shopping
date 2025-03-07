@@ -25,7 +25,17 @@ class BuildRecommendItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: onTap ??
+          () {
+            if (destinationScreen != null) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => destinationScreen!,
+                ),
+              );
+            }
+          },
       child: Container(
         margin: EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(

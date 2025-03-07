@@ -1,3 +1,4 @@
+import 'package:ecommercial_shopping/core/providers/category_provider.dart';
 import 'package:ecommercial_shopping/core/providers/product_provider.dart';
 import 'package:ecommercial_shopping/presentation/pages/cart_screen.dart';
 import 'package:ecommercial_shopping/presentation/pages/product_detail_screen.dart';
@@ -13,7 +14,8 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productAsync = ref.watch(productsProvider);
-    String selectedCategory = "All";
+    final categoryAsync = ref.watch(categoriesProvider);
+    final selectedCategory = ref.watch(selectedCategoryProvider);
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
@@ -88,69 +90,28 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
               SizedBox(height: 20),
-              // SizedBox(
-              //   height: 40,
-              //   child: ListView(
-              //     scrollDirection: Axis.horizontal,
-              //     children: [
-              //       BuildCategoryChip(
-              //         label: "All",
-              //         isSelected: selectedCategory == "All",
-              //         onTap: () {
-              //           setState(() {
-              //             selectedCategory = "All";
-              //           });
-              //         },
-              //       ),
-              //       BuildCategoryChip(
-              //         label: "Pizza",
-              //         isSelected: selectedCategory == "Pizza",
-              //         onTap: () {
-              //           setState(() {
-              //             selectedCategory = "Pizza";
-              //           });
-              //         },
-              //       ),
-              //       BuildCategoryChip(
-              //         label: "Burger",
-              //         isSelected: selectedCategory == "Burger",
-              //         onTap: () {
-              //           setState(() {
-              //             selectedCategory = "Burger";
-              //           });
-              //         },
-              //       ),
-              //       BuildCategoryChip(
-              //         label: "Shawarma",
-              //         isSelected: selectedCategory == "Shawarma",
-              //         onTap: () {
-              //           setState(() {
-              //             selectedCategory = "Shawarma";
-              //           });
-              //         },
-              //       ),
-              //       BuildCategoryChip(
-              //         label: "Salad",
-              //         isSelected: selectedCategory == "Salad",
-              //         onTap: () {
-              //           setState(() {
-              //             selectedCategory = "Salad";
-              //           });
-              //         },
-              //       ),
-              //       BuildCategoryChip(
-              //         label: "Wings",
-              //         isSelected: selectedCategory == "Wings",
-              //         onTap: () {
-              //           setState(() {
-              //             selectedCategory = "Wings";
-              //           });
-              //         },
-              //       ),
-              //     ],
-              //   ),
-              // ),
-
+              SizedBox(
+                height: 40,
+                child: categoryAsync.when(
+                  data: (categories) => ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: categories.length,
+                    itemBuilder: (context, index) {
+                      final category = categories[index];
+                      return BuildCategoryChip(
+                        label: category.name,
+                        isSelected: selectedCategory == category.name,
+                        onTap: () {
+                          ref.read(selectedCategoryProvider.notifier).state =
+                              category.name;
+                        },
+                      );
+                    },
+                  ),
+                  loading: () => Center(child: CircularProgressIndicator()),
+                  error: (error, stack) => Center(child: Text('Error: $error')),
+                ),
+              ),
               SizedBox(height: 20),
               Text(
                 "Popular Now",
@@ -163,21 +124,25 @@ class HomeScreen extends ConsumerWidget {
               SizedBox(
                 height: 240,
                 child: productAsync.when(
-                  data: (products) => ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: products.length,
-                    itemBuilder: (context, index) {
-                      final product = products[index];
-                      return BuildFoodCard(
-                        name: product.name,
-                        price: product.price.toString(),
-                        imageUrl: product.imageUrl,
-                        rating: product.rates.toString(),
-                        deliveryTime: product.preparationTime,
-                        destinationScreen: const ProductDetailScreen(),
-                      );
-                    },
-                  ),
+                  data: (products) {
+                    final productsToShow = products.take(10).toList();
+                    return ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: productsToShow.length,
+                      itemBuilder: (context, index) {
+                        final product = productsToShow[index];
+                        return BuildFoodCard(
+                          name: product.name,
+                          price: product.price.toString(),
+                          imageUrl: product.imageUrl,
+                          rating: product.rates.toString(),
+                          deliveryTime: product.preparationTime,
+                          destinationScreen:
+                              ProductDetailScreen(product: product),
+                        );
+                      },
+                    );
+                  },
                   loading: () => Center(child: CircularProgressIndicator()),
                   error: (error, stack) => Center(child: Text('Error: $error')),
                 ),
@@ -204,7 +169,8 @@ class HomeScreen extends ConsumerWidget {
                                 imageUrl: product.imageUrl,
                                 rating: product.rates.toString(),
                                 deliveryTime: product.preparationTime,
-                                destinationScreen: const ProductDetailScreen(),
+                                destinationScreen:
+                                    ProductDetailScreen(product: product),
                               ))
                           .toList(),
                     ),
