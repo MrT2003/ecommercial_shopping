@@ -1,4 +1,6 @@
 import 'package:ecommercial_shopping/presentation/pages/home_screen.dart';
+import 'package:ecommercial_shopping/presentation/pages/signin_screen.dart';
+import 'package:ecommercial_shopping/presentation/pages/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,8 +13,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -22,7 +22,12 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Poppins',
       ),
       debugShowCheckedModeBanner: false,
-      home: const HomeScreen(),
+      initialRoute: '/signin',
+      routes: {
+        '/signup': (context) => SignupScreen(),
+        '/signin': (context) => SigninScreen(),
+        '/home': (context) => HomeScreen(),
+      },
     );
   }
 }
