@@ -35,4 +35,19 @@ class ApiService {
       throw Exception("Error: $e");
     }
   }
+
+  Future<List<Category>> fetchCarts() async {
+    try {
+      final response = await http.get(Uri.parse('$baseUrl/carts/'));
+
+      if (response.statusCode == 200) {
+        List<dynamic> jsonData = json.decode(response.body);
+        return jsonData.map((json) => Category.fromJson(json)).toList();
+      } else {
+        throw Exception("Failed to load carts");
+      }
+    } catch (e) {
+      throw Exception("Error: $e");
+    }
+  }
 }

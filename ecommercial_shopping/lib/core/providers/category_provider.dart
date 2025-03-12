@@ -8,3 +8,5 @@ final categoriesProvider = FutureProvider<List<Category>>((ref) async {
   final apiService = ref.read(apiServiceProvider);
   return apiService.fetchCategories();
 });
+
+final selectedCategoryProvider = StateProvider<String>((ref) => "All");

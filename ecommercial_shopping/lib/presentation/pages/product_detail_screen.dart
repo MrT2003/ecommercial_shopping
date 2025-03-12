@@ -1,10 +1,12 @@
+import 'package:ecommercial_shopping/core/models/product.dart';
 import 'package:ecommercial_shopping/presentation/widgets/detail/_build_extra_item.dart';
 import 'package:ecommercial_shopping/presentation/widgets/detail/_build_info_chip.dart';
 import 'package:ecommercial_shopping/presentation/widgets/detail/_build_size_button.dart';
 import 'package:flutter/material.dart';
 
 class ProductDetailScreen extends StatelessWidget {
-  const ProductDetailScreen({super.key});
+  final Product product;
+  const ProductDetailScreen({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +22,8 @@ class ProductDetailScreen extends StatelessWidget {
               background: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.asset(
-                    "assets/images/burger.jpg",
+                  Image.network(
+                    product.imageUrl,
                     fit: BoxFit.cover,
                   ),
                   Container(
@@ -84,7 +86,7 @@ class ProductDetailScreen extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            "Pepperoni pizza",
+                            product.name,
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
@@ -109,7 +111,7 @@ class ProductDetailScreen extends StatelessWidget {
                               ),
                               SizedBox(width: 4),
                               Text(
-                                "4.5",
+                                product.rates.toString(),
                                 style: TextStyle(
                                     color: Colors.deepOrange,
                                     fontWeight: FontWeight.bold),
@@ -126,11 +128,14 @@ class ProductDetailScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         BuildInfoChip(
-                            icon: Icons.access_time, label: "20-25 min"),
+                            icon: Icons.access_time,
+                            label: product.preparationTime.toString()),
                         BuildInfoChip(
                             icon: Icons.local_fire_department,
-                            label: "150 cal"),
-                        BuildInfoChip(icon: Icons.location_on, label: "1.2 km"),
+                            label: product.calories.toString()),
+                        BuildInfoChip(
+                            icon: Icons.location_on,
+                            label: product.distance.toString()),
                       ],
                     ),
                     SizedBox(height: 12),
@@ -143,7 +148,7 @@ class ProductDetailScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      "The area was initially part of Cambodian states until it became part of the Vietnamese Nguyễn lords in 1698, due to Đại Việt's expansionist policy of Nam tiến.",
+                      product.description,
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey[600],
@@ -244,7 +249,7 @@ class ProductDetailScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "\$12.99",
+                  "Price: \$${product.price}",
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,

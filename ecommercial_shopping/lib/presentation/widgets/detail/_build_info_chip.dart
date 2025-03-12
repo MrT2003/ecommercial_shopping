@@ -46,13 +46,13 @@ class BuildInfoChip extends StatelessWidget {
             width: 4,
           ),
           Text(
-            label,
+            "$label km",
             style: TextStyle(
               color: textColor ?? Colors.grey[600],
               fontWeight: fontWeight ?? FontWeight.w500,
               fontSize: fontSize,
             ),
-          )
+          ),
         ],
       ),
     );
