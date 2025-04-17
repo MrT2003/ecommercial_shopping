@@ -53,7 +53,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<UserAuth?>> {
         password: password,
       );
 
-      if (user.id.isNotEmpty) {
+      if (user.userId.isNotEmpty) {
         state = AsyncValue.data(user);
       } else {
         throw Exception("Signin failed: Invalid user data");

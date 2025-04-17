@@ -1,3 +1,4 @@
+import 'package:ecommercial_shopping/core/providers/auth_provider.dart';
 import 'package:ecommercial_shopping/core/providers/category_provider.dart';
 import 'package:ecommercial_shopping/core/providers/product_provider.dart';
 import 'package:ecommercial_shopping/presentation/pages/cart_screen.dart';
@@ -13,6 +14,13 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authStateProvider);
+    final userId = authState.when(
+      data: (user) => user?.userId ?? '',
+      loading: () => '',
+      error: (_, __) => '',
+    );
+
     final productAsync = ref.watch(productsProvider);
     final categoryAsync = ref.watch(categoriesProvider);
     final selectedCategory = ref.watch(selectedCategoryProvider);
@@ -132,6 +140,8 @@ class HomeScreen extends ConsumerWidget {
                       itemBuilder: (context, index) {
                         final product = productsToShow[index];
                         return BuildFoodCard(
+                          userId: userId,
+                          id: product.id,
                           name: product.name,
                           price: product.price.toString(),
                           imageUrl: product.imageUrl,

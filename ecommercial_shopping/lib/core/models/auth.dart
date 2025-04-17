@@ -1,5 +1,5 @@
 class UserAuth {
-  final String id;
+  final String userId;
   final String name;
   final String email;
   final String password;
@@ -9,7 +9,7 @@ class UserAuth {
   final List<dynamic> orders; // Danh sách đơn hàng (để trống ban đầu)
 
   UserAuth({
-    required this.id,
+    required this.userId,
     required this.name,
     required this.email,
     required this.password,
@@ -21,7 +21,7 @@ class UserAuth {
 
   factory UserAuth.fromJson(Map<String, dynamic> json) {
     return UserAuth(
-      id: json['_id'],
+      userId: json['_id'],
       name: json['name'],
       email: json['email'],
       password: json['password'],
@@ -34,7 +34,7 @@ class UserAuth {
 
   Map<String, dynamic> toJson() {
     return {
-      "_id": id,
+      "_id": userId,
       "name": name,
       "email": email,
       "password": password,
