@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class BuildCartItem extends StatelessWidget {
+  final String userId;
   final String name;
   final String description;
   final String price;
@@ -12,6 +13,7 @@ class BuildCartItem extends StatelessWidget {
 
   const BuildCartItem({
     super.key,
+    required this.userId,
     required this.name,
     required this.description,
     required this.price,
@@ -42,7 +44,7 @@ class BuildCartItem extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(15),
-            child: Image.asset(
+            child: Image.network(
               imageUrl,
               width: 80,
               height: 80,

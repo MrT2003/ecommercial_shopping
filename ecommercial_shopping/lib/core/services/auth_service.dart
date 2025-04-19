@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:ecommercial_shopping/core/models/auth.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   static const String _baseUrl = "http://10.0.2.2:8000/api/auth";
@@ -31,7 +32,7 @@ class AuthService {
       final Map<String, dynamic> responseData = jsonDecode(responseBody);
 
       if (responseData.containsKey('_id')) {
-        return UserAuth.fromJson(responseData);
+        return UserAuth.fromResponseJson(responseData);
       } else {
         throw Exception("Signup failed: Missing '_id' in response");
       }
@@ -53,12 +54,24 @@ class AuthService {
       }),
     );
 
+    final responseBody = response.body;
+    print("Signin response: $responseBody");
+
     if (response.statusCode == 200 || response.statusCode == 201) {
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
-      return UserAuth.fromJson(responseData);
+      final Map<String, dynamic> responseData = jsonDecode(responseBody);
+
+      final userAuth =
+          UserAuth.fromResponseJson(responseData); // Parse user + token
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('access_token', userAuth.accessToken ?? "");
+
+      return userAuth;
+    } else if (response.statusCode == 401) {
+      throw Exception("Sai email hoặc mật khẩu");
     } else {
       throw Exception(
-          "Signin failed: ${response.statusCode} - ${response.body}");
+          "Đăng nhập thất bại: ${response.statusCode} - $responseBody");
     }
   }
 }

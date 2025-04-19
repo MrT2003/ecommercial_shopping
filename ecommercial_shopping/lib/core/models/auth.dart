@@ -6,7 +6,8 @@ class UserAuth {
   final String? phone;
   final String? address;
   final String role;
-  final List<dynamic> orders; // Danh sách đơn hàng (để trống ban đầu)
+  final List<dynamic> orders;
+  final String? accessToken; // Thêm accessToken
 
   UserAuth({
     required this.userId,
@@ -17,18 +18,21 @@ class UserAuth {
     this.address,
     required this.role,
     required this.orders,
+    this.accessToken, // Thêm accessToken vào constructor
   });
 
-  factory UserAuth.fromJson(Map<String, dynamic> json) {
+  factory UserAuth.fromResponseJson(Map<String, dynamic> json) {
+    final user = json['user'];
     return UserAuth(
-      userId: json['_id'],
-      name: json['name'],
-      email: json['email'],
-      password: json['password'],
-      phone: json['phone'],
-      address: json['address'],
-      role: json['role'],
-      orders: json['orders'] ?? [],
+      userId: user['_id'],
+      name: user['name'],
+      email: user['email'],
+      password: user['password'],
+      phone: user['phone'],
+      address: user['address'],
+      role: user['role'],
+      orders: user['orders'] ?? [],
+      accessToken: json['access_token'], // Lưu access_token
     );
   }
 
@@ -42,6 +46,7 @@ class UserAuth {
       "address": address,
       "role": role,
       "orders": orders,
+      "access_token": accessToken, // Đảm bảo lưu token khi cần
     };
   }
 }

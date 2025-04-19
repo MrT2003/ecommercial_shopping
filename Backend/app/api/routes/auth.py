@@ -34,7 +34,16 @@ async def signup(user_data: UserCreate, db: AsyncIOMotorClient = Depends(get_dat
     return new_user
 
 #http://127.0.0.1:8000/api/auth/login
-@router.post("/login", response_model=TokenResponse)
+# @router.post("/login", response_model=TokenResponse)
+# async def login(login_data: LoginRequest, db: AsyncIOMotorDatabase = Depends(get_database)):
+#     user = await AuthService.authenticate_user(db, login_data.email, login_data.password)
+#     if not user:
+#         raise HTTPException(status_code=401, detail="Sai email hoặc mật khẩu")
+
+#     access_token = AuthService.create_access_token(data={"sub": user.email})
+
+#     return TokenResponse(access_token=access_token, token_type="bearer")
+@router.post("/login")
 async def login(login_data: LoginRequest, db: AsyncIOMotorDatabase = Depends(get_database)):
     user = await AuthService.authenticate_user(db, login_data.email, login_data.password)
     if not user:
@@ -42,7 +51,22 @@ async def login(login_data: LoginRequest, db: AsyncIOMotorDatabase = Depends(get
 
     access_token = AuthService.create_access_token(data={"sub": user.email})
 
-    return TokenResponse(access_token=access_token, token_type="bearer")
+    return {
+    "access_token": access_token,
+    "token_type": "bearer",
+    "user": {
+        "_id": user.id,
+        "name": user.name,
+        "email": user.email,
+        "password": user.password,  # Thêm dòng này
+        "phone": user.phone,
+        "address": user.address,
+        "role": user.role,          # Thêm dòng này
+        "orders": user.orders       # Thêm dòng này
+        }
+    }
+
+
 
 #http://127.0.0.1:8000/api/auth/logout
 @router.post("/logout")

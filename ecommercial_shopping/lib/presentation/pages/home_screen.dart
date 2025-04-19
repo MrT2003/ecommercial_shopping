@@ -130,7 +130,7 @@ class HomeScreen extends ConsumerWidget {
               ),
               SizedBox(height: 15),
               SizedBox(
-                height: 240,
+                height: 280,
                 child: productAsync.when(
                   data: (products) {
                     final productsToShow = products.take(10).toList();
