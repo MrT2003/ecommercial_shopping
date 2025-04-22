@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class BuildCartItem extends StatelessWidget {
+class BuildCartItem extends ConsumerWidget {
+  final String userId;
   final String name;
   final String description;
-  final String price;
+  final double price;
   final String imageUrl;
   final int quantity;
   final Function()? onIncrement;
@@ -12,18 +14,19 @@ class BuildCartItem extends StatelessWidget {
 
   const BuildCartItem({
     super.key,
+    required this.userId,
     required this.name,
     required this.description,
     required this.price,
     required this.imageUrl,
-    this.quantity = 1,
+    required this.quantity,
     this.onIncrement,
     this.onDecrement,
     this.onRemove,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       margin: EdgeInsets.only(bottom: 16),
       padding: EdgeInsets.all(12),

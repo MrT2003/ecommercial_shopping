@@ -93,19 +93,29 @@ class SigninScreen extends ConsumerWidget {
                         password: _passwordCon.text,
                       );
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Sign in successful'),
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
-                  Future.delayed(const Duration(seconds: 2), () {
-                    Navigator.pushReplacementNamed(context, '/home');
-                  });
+                  final authUser = ref.read(authStateProvider).value;
+                  if (authUser != null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Sign in successful'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                    Future.delayed(const Duration(seconds: 2), () {
+                      Navigator.pushReplacementNamed(context, '/home');
+                    });
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Đăng nhập thất bại'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  }
                 } catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Sign in failed: $e'),
+                      content: Text('Đăng nhập thất bại: $e'),
                       duration: const Duration(seconds: 2),
                     ),
                   );
@@ -113,7 +123,7 @@ class SigninScreen extends ConsumerWidget {
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Please fill all fields'),
+                    content: Text('Vui lòng nhập đầy đủ email và mật khẩu'),
                     duration: Duration(seconds: 2),
                   ),
                 );

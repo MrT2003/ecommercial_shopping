@@ -1,16 +1,22 @@
+import 'package:ecommercial_shopping/core/providers/cart_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class BuildFoodCard extends StatelessWidget {
+class BuildFoodCard extends ConsumerWidget {
+  final String userId;
+  final String id;
   final String name;
-  final String price;
+  final double price;
   final String imageUrl;
-  final String rating;
+  final double rating;
   final String deliveryTime;
   final VoidCallback? onTap;
   final Widget? destinationScreen;
 
   const BuildFoodCard({
     super.key,
+    required this.userId,
+    required this.id,
     required this.name,
     required this.price,
     required this.imageUrl,
@@ -21,7 +27,7 @@ class BuildFoodCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
       onTap: onTap ??
           () {
@@ -114,12 +120,28 @@ class BuildFoodCard extends StatelessWidget {
                           color: Colors.deepOrange,
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: Icon(
-                          Icons.add,
+                        child: IconButton(
+                          icon: Icon(Icons.add), // Đúng định dạng
                           color: Colors.white,
-                          size: 20,
+                          iconSize: 20, // Sử dụng iconSize thay vì size
+                          onPressed: () async {
+                            print("DEBUG: Giá trị price nhận được: $price");
+                            final result = await ref.read(cartAddProvider({
+                              'userId': userId,
+                              'productId': id,
+                              'quantity': 1,
+                              'price': price,
+                              'name': name,
+                            }).future);
+
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(result
+                                  ? 'Thêm thành công!'
+                                  : 'Thêm thất bại.'),
+                            ));
+                          },
                         ),
-                      )
+                      ),
                     ],
                   )
                 ],

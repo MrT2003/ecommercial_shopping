@@ -1,13 +1,25 @@
+import 'package:ecommercial_shopping/core/models/cart.dart';
+import 'package:ecommercial_shopping/core/providers/auth_provider.dart';
+import 'package:ecommercial_shopping/core/providers/cart_provider.dart';
 import 'package:ecommercial_shopping/presentation/pages/checkout_screen.dart';
 import 'package:ecommercial_shopping/presentation/widgets/cart/_build_cart_item.dart';
 import 'package:ecommercial_shopping/presentation/widgets/cart/_build_summary_row.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends ConsumerWidget {
   const CartScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authStateProvider);
+    final userId = authState.when(
+      data: (user) => user?.userId ?? '',
+      loading: () => '',
+      error: (_, __) => '',
+    );
+
+    final cartAsync = ref.watch(cartProvider);
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
@@ -125,7 +137,9 @@ class CartScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+                  // ---------------- Address Above --------------------------- //
                   SizedBox(height: 20),
+                  // ---------------- Products Below --------------------------- //
                   Text(
                     'Order Items',
                     style: TextStyle(
@@ -134,51 +148,45 @@ class CartScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 12),
-                  BuildCartItem(
-                    name: 'Chicken Burger',
-                    description: 'Large size - Extra cheese',
-                    price: '12.99',
-                    imageUrl: 'assets/images/salad.jpg',
-                    quantity: 1,
-                    onIncrement: () {
-                      // Tăng số lượng
-                      print('Tăng số lượng Chicken Burger');
-                    },
-                    onDecrement: () {
-                      // Giảm số lượng
-                      print('Giảm số lượng Chicken Burger');
-                    },
-                  ),
-                  BuildCartItem(
-                    name: 'Chicken Burger',
-                    description: 'Large size - Extra cheese',
-                    price: '12.99',
-                    imageUrl: 'assets/images/salad.jpg',
-                    quantity: 1,
-                    onIncrement: () {
-                      // Tăng số lượng
-                      print('Tăng số lượng Chicken Burger');
-                    },
-                    onDecrement: () {
-                      // Giảm số lượng
-                      print('Giảm số lượng Chicken Burger');
-                    },
-                  ),
-                  BuildCartItem(
-                    name: 'Chicken Burger',
-                    description: 'Large size - Extra cheese',
-                    price: '12.99',
-                    imageUrl: 'assets/images/salad.jpg',
-                    quantity: 1,
-                    onIncrement: () {
-                      // Tăng số lượng
-                      print('Tăng số lượng Chicken Burger');
-                    },
-                    onDecrement: () {
-                      // Giảm số lượng
-                      print('Giảm số lượng Chicken Burger');
-                    },
-                  ),
+                  SizedBox(
+                      height: 240,
+                      child: cartAsync.when(
+                        data: (carts) {
+                          final cart = carts.firstWhere(
+                            (cart) => cart.userId == userId,
+                            orElse: () => Cart(
+                                id: '', userId: '', items: [], totalPrice: 0),
+                          );
+                          final items = cart.items;
+                          return ListView.builder(
+                            itemCount: items.length,
+                            itemBuilder: (context, index) {
+                              final item = items[index];
+                              return BuildCartItem(
+                                userId: userId,
+                                name: item.name,
+                                description: 'Large size - Extra cheese',
+                                price: item.price,
+                                imageUrl: 'assets/images/salad.jpg',
+                                quantity: item.quantity,
+                                onIncrement: () {
+                                  print(
+                                      'Tăng số lượng ${item.name} cho user $userId');
+                                },
+                                onDecrement: () {
+                                  print(
+                                      'Giảm số lượng ${item.name} cho user $userId');
+                                },
+                              );
+                            },
+                          );
+                        },
+                        loading: () =>
+                            Center(child: CircularProgressIndicator()),
+                        error: (error, stack) =>
+                            Center(child: Text('Error: $error')),
+                      )),
+
                   SizedBox(height: 20),
                 ],
               ),

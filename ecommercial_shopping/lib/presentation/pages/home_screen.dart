@@ -1,3 +1,4 @@
+import 'package:ecommercial_shopping/core/providers/auth_provider.dart';
 import 'package:ecommercial_shopping/core/providers/category_provider.dart';
 import 'package:ecommercial_shopping/core/providers/product_provider.dart';
 import 'package:ecommercial_shopping/presentation/pages/cart_screen.dart';
@@ -13,6 +14,13 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authStateProvider);
+    final userId = authState.when(
+      data: (user) => user?.userId ?? '',
+      loading: () => '',
+      error: (_, __) => '',
+    );
+
     final productAsync = ref.watch(productsProvider);
     final categoryAsync = ref.watch(categoriesProvider);
     final selectedCategory = ref.watch(selectedCategoryProvider);
@@ -122,7 +130,7 @@ class HomeScreen extends ConsumerWidget {
               ),
               SizedBox(height: 15),
               SizedBox(
-                height: 240,
+                height: 280,
                 child: productAsync.when(
                   data: (products) {
                     final productsToShow = products.take(10).toList();
@@ -132,10 +140,12 @@ class HomeScreen extends ConsumerWidget {
                       itemBuilder: (context, index) {
                         final product = productsToShow[index];
                         return BuildFoodCard(
+                          userId: userId,
+                          id: product.id,
                           name: product.name,
-                          price: product.price.toString(),
+                          price: product.price,
                           imageUrl: product.imageUrl,
-                          rating: product.rates.toString(),
+                          rating: product.rates,
                           deliveryTime: product.preparationTime,
                           destinationScreen:
                               ProductDetailScreen(product: product),
@@ -164,10 +174,12 @@ class HomeScreen extends ConsumerWidget {
                       children: products
                           .take(4)
                           .map((product) => BuildRecommendItem(
+                                userId: userId,
+                                id: product.id,
                                 name: product.name,
-                                price: product.price.toString(),
+                                price: product.price,
                                 imageUrl: product.imageUrl,
-                                rating: product.rates.toString(),
+                                rating: product.rates,
                                 deliveryTime: product.preparationTime,
                                 destinationScreen:
                                     ProductDetailScreen(product: product),
