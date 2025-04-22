@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class BuildCartItem extends StatelessWidget {
+class BuildCartItem extends ConsumerWidget {
   final String userId;
   final String name;
   final String description;
-  final String price;
+  final double price;
   final String imageUrl;
   final int quantity;
   final Function()? onIncrement;
@@ -18,14 +19,14 @@ class BuildCartItem extends StatelessWidget {
     required this.description,
     required this.price,
     required this.imageUrl,
-    this.quantity = 1,
+    required this.quantity,
     this.onIncrement,
     this.onDecrement,
     this.onRemove,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       margin: EdgeInsets.only(bottom: 16),
       padding: EdgeInsets.all(12),
@@ -44,7 +45,7 @@ class BuildCartItem extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(15),
-            child: Image.network(
+            child: Image.asset(
               imageUrl,
               width: 80,
               height: 80,

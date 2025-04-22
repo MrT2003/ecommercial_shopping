@@ -10,7 +10,7 @@ class CartService {
     required String productId,
     required int quantity,
     required double price,
-    required double name,
+    required String name,
   }) async {
     try {
       final response = await http.post(
@@ -40,14 +40,18 @@ class CartService {
   Future<List<Cart>> fetchProductsInCart() async {
     try {
       final response = await http.get(Uri.parse('$_baseUrl/'));
+      print("Status code: ${response.statusCode}");
+      print("Body: ${response.body}");
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         List<dynamic> jsonData = json.decode(response.body);
         return jsonData.map((json) => Cart.fromJson(json)).toList();
       } else {
-        throw Exception("Failed to load products");
+        throw Exception(
+            "Failed to load products: ${response.statusCode} - ${response.body}");
       }
     } catch (e) {
+      print("Exception in fetchProductsInCart: $e");
       throw Exception("Error: $e");
     }
   }

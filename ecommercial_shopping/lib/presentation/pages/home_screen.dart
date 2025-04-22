@@ -143,9 +143,9 @@ class HomeScreen extends ConsumerWidget {
                           userId: userId,
                           id: product.id,
                           name: product.name,
-                          price: product.price.toString(),
+                          price: product.price,
                           imageUrl: product.imageUrl,
-                          rating: product.rates.toString(),
+                          rating: product.rates,
                           deliveryTime: product.preparationTime,
                           destinationScreen:
                               ProductDetailScreen(product: product),
@@ -174,10 +174,12 @@ class HomeScreen extends ConsumerWidget {
                       children: products
                           .take(4)
                           .map((product) => BuildRecommendItem(
+                                userId: userId,
+                                id: product.id,
                                 name: product.name,
-                                price: product.price.toString(),
+                                price: product.price,
                                 imageUrl: product.imageUrl,
-                                rating: product.rates.toString(),
+                                rating: product.rates,
                                 deliveryTime: product.preparationTime,
                                 destinationScreen:
                                     ProductDetailScreen(product: product),

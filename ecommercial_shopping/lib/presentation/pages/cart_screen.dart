@@ -166,7 +166,7 @@ class CartScreen extends ConsumerWidget {
                                 userId: userId,
                                 name: item.name,
                                 description: 'Large size - Extra cheese',
-                                price: item.price.toStringAsFixed(2),
+                                price: item.price,
                                 imageUrl: 'assets/images/salad.jpg',
                                 quantity: item.quantity,
                                 onIncrement: () {

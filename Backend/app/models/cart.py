@@ -15,6 +15,7 @@ class CartItem(BaseModel):
     product: PyObjectId = Field(..., alias="product")
     quantity: int
     price: float
+    name: str | None = None
 
 class Cart(BaseModel):
     cart_id: PyObjectId = Field(default_factory=lambda: str(ObjectId()), alias="_id")

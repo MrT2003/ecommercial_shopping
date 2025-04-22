@@ -50,7 +50,7 @@ class CartItem {
       productId: json['product'],
       quantity: json['quantity'],
       price: (json['price'] as num).toDouble(),
-      name: json['name'],
+      name: json['name'] ?? 'No name',
     );
   }
 
