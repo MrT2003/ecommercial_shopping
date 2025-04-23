@@ -1,4 +1,4 @@
-from app.db.database import cart_collection
+from app.db.database import cart_collection, product_collection
 from bson import ObjectId
 
 class CartService:
@@ -7,53 +7,105 @@ class CartService:
         carts = []
         async for cart in cart_collection.find():
             cart["_id"] = str(cart["_id"])
+            if "user" in cart:
+                cart["user"] = str(cart["user"])
+
+            # Make sure cart has items array
+            if "items" not in cart:
+                cart["items"] = []
+
             for item in cart.get("items", []):
-                if "product" in item and isinstance(item["product"], ObjectId):
+                # Ensure product ID is converted to string
+                if isinstance(item.get("product"), ObjectId):
                     item["product"] = str(item["product"])
+                
+                # Always add name and image fields, even if product not found
+                if "name" not in item:
+                    item["name"] = ""
+                if "image" not in item:
+                    item["image"] = ""
+                
+                try:
+                    product_id = item["product"]
+                    if ObjectId.is_valid(product_id):
+                        product = await product_collection.find_one({"_id": ObjectId(product_id)})
+                        if product:
+                            item["name"] = product.get("name", item["name"])
+                            # chỉ cập nhật image nếu trong item chưa có hoặc đang là rỗng
+                            if not item.get("image"):
+                                item["image"] = product.get("image", "")
+                    else:
+                        print(f"Invalid ObjectId for product: {product_id}")
+                except Exception as e:
+                    print(f"Error fetching product {item.get('product')}: {e}")
+
             carts.append(cart)
         return carts
+
     
     @staticmethod
-    async def add_to_cart(user_id: str, product_id: str, quantity: int, price: float):
-        user_oid = ObjectId(user_id)
-        product_oid = ObjectId(product_id)
+    async def add_to_cart(user_id: str, product_id: str, quantity: int, price: float, name: str, image: str):
+        try:
+            user_oid = ObjectId(user_id)
+            product_oid = ObjectId(product_id)
 
-        cart = await cart_collection.find_one({"user": user_oid})
+            cart = await cart_collection.find_one({"user": user_oid})
 
-        if cart:
-            item_found = False
-            for item in cart["items"]:
-                if isinstance(item["product"], ObjectId) and item["product"] == product_oid:
-                    item["quantity"] += quantity
-                    item["price"] = price
-                    item_found = True
-                    break
-                elif isinstance(item["product"], str) and item["product"] == product_id:
-                    item["quantity"] += quantity
-                    item["price"] = price
-                    item_found = True
-                    break
-            
-            if not item_found:
-                cart["items"].append({"product": product_oid, "quantity": quantity, "price": price})
-        else:
-            cart = {
-                "user": user_oid,
-                "items": [{"product": product_oid, "quantity": quantity, "price": price}],
-                "total_price": quantity * price
-            }
+            if cart:
+                # Xử lý cart đã tồn tại
+                items = cart.get("items", [])
+                item_found = False
 
-        # Update total price
-        cart["total_price"] = sum(item["quantity"] * item["price"] for item in cart["items"])
+                for item in items:
+                    item_product = item.get("product")
+                    if ((isinstance(item_product, ObjectId) and item_product == product_oid) or
+                        (isinstance(item_product, str) and item_product == product_id)):
+                        item["quantity"] += quantity
+                        item["price"] = price
+                        item["name"] = name
+                        item["image"] = image
+                        item_found = True
+                        break
 
-        # Save to database
-        if "_id" in cart:
-            await cart_collection.update_one({"_id": cart["_id"]}, {"$set": cart})
-        else:
-            await cart_collection.insert_one(cart)
+                if not item_found:
+                    items.append({
+                        "product": product_oid,
+                        "quantity": quantity,
+                        "price": price,
+                        "name": name,
+                        "image": image,
+                    })
 
-        return {"message": "Product added to cart successfully!"}
-    
+                total_price = sum(item["quantity"] * item["price"] for item in items)
+
+                await cart_collection.update_one(
+                    {"_id": cart["_id"]},
+                    {"$set": {
+                        "items": items,
+                        "total_price": total_price
+                    }}
+                )
+            else:
+                # Tạo cart mới
+                new_cart = {
+                    "user": user_oid,
+                    "items": [{
+                        "product": product_oid,
+                        "quantity": quantity,
+                        "price": price,
+                        "name": name,
+                        "image": image,
+                    }],
+                    "total_price": quantity * price
+                }
+
+                await cart_collection.insert_one(new_cart)
+
+            return {"message": "Product added to cart successfully!"}
+        except Exception as e:
+            print(f"Error in add_to_cart: {e}")
+            return {"error": f"Failed to add product to cart: {str(e)}"}
+
     @staticmethod
     async def update_cart_item(user_id: str, product_id: str, quantity: int):
         try:

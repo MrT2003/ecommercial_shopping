@@ -14,6 +14,7 @@ final cartAddProvider = FutureProvider.family
     quantity: params['quantity'],
     price: params['price'],
     name: params['name'],
+    image: params['image'],
   );
 });
 

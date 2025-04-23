@@ -167,15 +167,33 @@ class CartScreen extends ConsumerWidget {
                                 name: item.name,
                                 description: 'Large size - Extra cheese',
                                 price: item.price,
-                                imageUrl: 'assets/images/salad.jpg',
+                                imageUrl: item.image,
                                 quantity: item.quantity,
-                                onIncrement: () {
-                                  print(
-                                      'Tăng số lượng ${item.name} cho user $userId');
+                                // Chuyển medthod sang provider
+                                onIncrement: () async {
+                                  final updatedQuantity = item.quantity + 1;
+                                  await ref
+                                      .read(cartServiceProvider)
+                                      .updateCartItem(
+                                        userId: userId,
+                                        productId: item.productId,
+                                        quantity: updatedQuantity,
+                                      );
+                                  ref.invalidate(
+                                      cartProvider); // Refresh lại provider để load giỏ hàng mới
                                 },
-                                onDecrement: () {
-                                  print(
-                                      'Giảm số lượng ${item.name} cho user $userId');
+                                onDecrement: () async {
+                                  if (item.quantity > 1) {
+                                    final updatedQuantity = item.quantity - 1;
+                                    await ref
+                                        .read(cartServiceProvider)
+                                        .updateCartItem(
+                                          userId: userId,
+                                          productId: item.productId,
+                                          quantity: updatedQuantity,
+                                        );
+                                    ref.invalidate(cartProvider);
+                                  }
                                 },
                               );
                             },
@@ -219,11 +237,11 @@ class CartScreen extends ConsumerWidget {
                   label: 'Delivery Fee',
                   amount: '2.00',
                 ),
-                SizedBox(height: 8),
-                BuildSummaryRow(
-                  label: 'Tax',
-                  amount: '1.85',
-                ),
+                // SizedBox(height: 8),
+                // BuildSummaryRow(
+                //   label: 'Tax',
+                //   amount: '1.85',
+                // ),
                 SizedBox(height: 16),
                 Divider(),
                 SizedBox(height: 8),

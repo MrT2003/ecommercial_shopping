@@ -137,6 +137,7 @@ class BuildRecommendItem extends ConsumerWidget {
                                   'quantity': 1,
                                   'price': price,
                                   'name': name,
+                                  'image': imageUrl
                                 }).future);
 
                                 ScaffoldMessenger.of(context)
