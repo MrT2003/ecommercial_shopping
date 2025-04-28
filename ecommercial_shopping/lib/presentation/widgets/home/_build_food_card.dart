@@ -140,7 +140,7 @@ class BuildFoodCard extends ConsumerWidget {
                               'name': name,
                               'image': imageUrl,
                             }).future);
-
+                            ref.invalidate(cartProvider);
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(result
                                   ? 'Thêm thành công!'

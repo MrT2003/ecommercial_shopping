@@ -8,3 +8,14 @@ final productsProvider = FutureProvider<List<Product>>((ref) async {
   final apiService = ref.read(apiServiceProvider);
   return apiService.fetchProducts();
 });
+
+final searchQueryProvider = StateProvider<String>((ref) => '');
+
+final searchProductsProvider = FutureProvider<List<Product>>((ref) async {
+  final query = ref.watch(searchQueryProvider);
+  if (query.isEmpty) {
+    return []; // Nếu chưa search gì thì trả về list rỗng
+  }
+  final apiService = ref.read(apiServiceProvider);
+  return apiService.fetchProductsByName(query);
+});

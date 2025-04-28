@@ -21,6 +21,23 @@ class ApiService {
     }
   }
 
+  Future<List<Product>> fetchProductsByName(String query) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/products/search?query=$query'),
+      );
+
+      if (response.statusCode == 200) {
+        List jsonData = json.decode(response.body);
+        return jsonData.map((json) => Product.fromJson(json)).toList();
+      } else {
+        throw Exception("Failed to load products");
+      }
+    } catch (e) {
+      throw Exception("Error: $e");
+    }
+  }
+
   Future<List<Category>> fetchCategories() async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/categories/'));
