@@ -1,17 +1,21 @@
+import 'package:ecommercial_shopping/core/providers/product_provider.dart';
+import 'package:ecommercial_shopping/presentation/pages/product_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SearchScreen extends StatelessWidget {
+class SearchScreen extends ConsumerWidget {
   const SearchScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final searchProducts = ref.watch(searchProductsProvider);
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(
-          color: Colors.deepOrange, // Đặt màu cho icon "arrow back"
+          color: Colors.deepOrange,
         ),
         elevation: 0,
         title: Container(
@@ -31,7 +35,6 @@ class SearchScreen extends StatelessWidget {
                 borderSide: BorderSide.none,
               ),
               focusedBorder: OutlineInputBorder(
-                // Thêm viền màu cam khi focus
                 borderRadius: BorderRadius.circular(15),
                 borderSide: BorderSide(
                   color: Colors.deepOrange,
@@ -39,7 +42,6 @@ class SearchScreen extends StatelessWidget {
                 ),
               ),
               enabledBorder: OutlineInputBorder(
-                // Viền mặc định khi không focus
                 borderRadius: BorderRadius.circular(15),
                 borderSide: BorderSide(
                   color: Colors.deepOrange,
@@ -48,11 +50,60 @@ class SearchScreen extends StatelessWidget {
               ),
               contentPadding: EdgeInsets.symmetric(vertical: 10),
             ),
+            onChanged: (value) {
+              ref.read(searchQueryProvider.notifier).state = value;
+            },
           ),
         ),
       ),
-      body: Center(
-        child: Text("Your content here"),
+      body: searchProducts.when(
+        data: (products) {
+          if (products.isEmpty) {
+            return Center(child: Text('No products found.'));
+          }
+          return ListView.builder(
+            padding: EdgeInsets.all(10),
+            itemCount: products.length,
+            itemBuilder: (context, index) {
+              final product = products[index];
+              return Card(
+                child: ListTile(
+                    leading: Image.network(product.imageUrl,
+                        width: 50, height: 50, fit: BoxFit.cover),
+                    title: Text(product.name),
+                    subtitle: Text("\$${product.price.toStringAsFixed(2)}"),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  ProductDetailScreen(product: product),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            const begin =
+                                Offset(1.0, 0.0); // Trượt từ phải sang
+                            const end = Offset.zero;
+                            const curve = Curves.ease;
+
+                            var tween = Tween(begin: begin, end: end)
+                                .chain(CurveTween(curve: curve));
+                            var offsetAnimation = animation.drive(tween);
+
+                            return SlideTransition(
+                              position: offsetAnimation,
+                              child: child,
+                            );
+                          },
+                        ),
+                      );
+                    }),
+              );
+            },
+          );
+        },
+        loading: () => Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(child: Text('Error: $error')),
       ),
     );
   }
