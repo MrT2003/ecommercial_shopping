@@ -18,7 +18,7 @@ class Product(BaseModel):
     id: Optional[str] = Field(alias="_id", default=None) 
     name: str
     description: str
-    category_id: str
+    category: List[str] 
     rates: float
     price: float
     distance: float
