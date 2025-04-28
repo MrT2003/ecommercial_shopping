@@ -28,12 +28,3 @@ async def get_product_by_id(product_id: str):
     if product is None:
         raise HTTPException(status_code=404, detail="Product not found")
     return product
-
-
-
-
-# @router.post("/", response_model=Product)
-# async def create_product(product: Product):
-#     """API tạo sản phẩm mới"""
-#     new_product = await ProductService.create_product(product)
-#     return new_product
