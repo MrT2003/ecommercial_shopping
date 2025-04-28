@@ -2,7 +2,9 @@ import 'package:ecommercial_shopping/core/providers/auth_provider.dart';
 import 'package:ecommercial_shopping/core/providers/category_provider.dart';
 import 'package:ecommercial_shopping/core/providers/product_provider.dart';
 import 'package:ecommercial_shopping/presentation/pages/cart_screen.dart';
+import 'package:ecommercial_shopping/presentation/pages/category_detail_screen.dart';
 import 'package:ecommercial_shopping/presentation/pages/product_detail_screen.dart';
+import 'package:ecommercial_shopping/presentation/pages/search_screen.dart';
 import 'package:ecommercial_shopping/presentation/widgets/home/_build_category_chip.dart';
 import 'package:ecommercial_shopping/presentation/widgets/home/_build_food_card.dart';
 import 'package:ecommercial_shopping/presentation/widgets/home/_build_recommend_item.dart';
@@ -33,7 +35,7 @@ class HomeScreen extends ConsumerWidget {
         leading: IconButton(
           onPressed: () {},
           icon: Icon(Icons.menu),
-          color: Colors.black,
+          color: Colors.deepOrange,
         ),
         actions: [
           Padding(
@@ -76,6 +78,7 @@ class HomeScreen extends ConsumerWidget {
               ),
               SizedBox(height: 20),
               Container(
+                height: 45,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
@@ -87,13 +90,29 @@ class HomeScreen extends ConsumerWidget {
                       )
                     ]),
                 child: TextField(
+                  readOnly: true,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SearchScreen(),
+                      ),
+                    );
+                  },
                   decoration: InputDecoration(
                     hintText: "Search your favourite food",
-                    prefixIcon: Icon(Icons.search),
-                    suffixIcon: Icon(Icons.filter_alt),
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: Colors.deepOrange,
+                    ),
+                    suffixIcon: Icon(
+                      Icons.filter_alt,
+                      color: Colors.deepOrange,
+                    ),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                         borderSide: BorderSide.none),
+                    contentPadding: EdgeInsets.symmetric(vertical: 10),
                   ),
                 ),
               ),
@@ -112,6 +131,13 @@ class HomeScreen extends ConsumerWidget {
                         onTap: () {
                           ref.read(selectedCategoryProvider.notifier).state =
                               category.name;
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CategoryDetailScreen(
+                                  categoryName: category.name),
+                            ),
+                          );
                         },
                       );
                     },
@@ -130,7 +156,7 @@ class HomeScreen extends ConsumerWidget {
               ),
               SizedBox(height: 15),
               SizedBox(
-                height: 280,
+                height: 270,
                 child: productAsync.when(
                   data: (products) {
                     final productsToShow = products.take(10).toList();

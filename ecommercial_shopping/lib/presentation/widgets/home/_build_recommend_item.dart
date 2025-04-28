@@ -120,7 +120,8 @@ class BuildRecommendItem extends ConsumerWidget {
                         GestureDetector(
                           onTap: onAddTap,
                           child: Container(
-                            padding: EdgeInsets.all(6),
+                            width: 40,
+                            height: 40,
                             decoration: BoxDecoration(
                               color: Colors.deepOrange,
                               borderRadius: BorderRadius.circular(8),

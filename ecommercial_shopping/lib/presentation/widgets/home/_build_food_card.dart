@@ -42,15 +42,17 @@ class BuildFoodCard extends ConsumerWidget {
           },
       child: Container(
         width: 180,
-        margin: EdgeInsets.only(right: 16),
+        margin: EdgeInsets.only(right: 16, bottom: 16),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
+              // color: Colors.grey.withOpacity(0.1),
+              color: Colors.black12,
               spreadRadius: 1,
               blurRadius: 5,
+              offset: Offset(2, 2),
             )
           ],
         ),
@@ -77,6 +79,9 @@ class BuildFoodCard extends ConsumerWidget {
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
+                    overflow: TextOverflow
+                        .ellipsis, // Thêm dấu "..." khi text quá dài
+                    maxLines: 1, // Giới hạn số dòng là 1
                   ),
                   SizedBox(height: 5),
                   Row(
@@ -115,7 +120,8 @@ class BuildFoodCard extends ConsumerWidget {
                         ),
                       ),
                       Container(
-                        padding: EdgeInsets.all(4),
+                        width: 40,
+                        height: 40,
                         decoration: BoxDecoration(
                           color: Colors.deepOrange,
                           borderRadius: BorderRadius.circular(8),
