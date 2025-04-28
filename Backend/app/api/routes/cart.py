@@ -3,6 +3,8 @@ from pydantic import BaseModel
 from app.models.cart import Cart
 from app.services.CartService import CartService
 from fastapi import APIRouter, HTTPException
+from pprint import pprint
+
 
 router = APIRouter()
 
@@ -10,6 +12,7 @@ router = APIRouter()
 @router.get("/", response_model=List[Cart])
 async def get_carts():
     carts = await CartService.get_carts()
+
     if not carts:
         raise HTTPException(status_code=404, detail="No cart found")
     return carts
@@ -20,11 +23,13 @@ class AddToCartRequest(BaseModel):
     product_id: str
     quantity: int
     price: float
+    name: str
+    image: str
     
 @router.post("/add")
 async def add_to_cart(request: AddToCartRequest):
     response = await CartService.add_to_cart(
-        request.user_id, request.product_id, request.quantity, request.price
+        request.user_id, request.product_id, request.quantity, request.price, request.name, request.image
     )
     return response
 

@@ -11,6 +11,7 @@ class CartService {
     required int quantity,
     required double price,
     required String name,
+    required String image,
   }) async {
     try {
       final response = await http.post(
@@ -22,6 +23,7 @@ class CartService {
           "quantity": quantity,
           "price": price,
           "name": name,
+          "image": image,
         }),
       );
 
@@ -53,6 +55,26 @@ class CartService {
     } catch (e) {
       print("Exception in fetchProductsInCart: $e");
       throw Exception("Error: $e");
+    }
+  }
+
+  Future<void> updateCartItem({
+    required String userId,
+    required String productId,
+    required int quantity,
+  }) async {
+    final response = await http.put(
+      Uri.parse('$_baseUrl/update'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'user_id': userId,
+        'product_id': productId,
+        'quantity': quantity,
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception(jsonDecode(response.body)['detail']);
     }
   }
 }
