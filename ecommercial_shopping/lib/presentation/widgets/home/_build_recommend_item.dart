@@ -120,7 +120,8 @@ class BuildRecommendItem extends ConsumerWidget {
                         GestureDetector(
                           onTap: onAddTap,
                           child: Container(
-                            padding: EdgeInsets.all(6),
+                            width: 40,
+                            height: 40,
                             decoration: BoxDecoration(
                               color: Colors.deepOrange,
                               borderRadius: BorderRadius.circular(8),
@@ -137,6 +138,7 @@ class BuildRecommendItem extends ConsumerWidget {
                                   'quantity': 1,
                                   'price': price,
                                   'name': name,
+                                  'image': imageUrl
                                 }).future);
 
                                 ScaffoldMessenger.of(context)

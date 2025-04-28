@@ -37,12 +37,14 @@ class CartItem {
   final int quantity;
   final double price;
   final String name;
+  final String image;
 
   CartItem({
     required this.productId,
     required this.quantity,
     required this.price,
     required this.name,
+    required this.image,
   });
 
   factory CartItem.fromJson(Map<String, dynamic> json) {
@@ -51,6 +53,7 @@ class CartItem {
       quantity: json['quantity'],
       price: (json['price'] as num).toDouble(),
       name: json['name'] ?? 'No name',
+      image: json['image'],
     );
   }
 
@@ -60,6 +63,7 @@ class CartItem {
       'quantity': quantity,
       'price': price,
       'name': name,
+      'image': image,
     };
   }
 }

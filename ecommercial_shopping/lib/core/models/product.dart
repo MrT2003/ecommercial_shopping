@@ -9,7 +9,7 @@ class Product {
   final String preparationTime;
   final List<String> tags;
   final String imageUrl;
-  final String categoryId;
+  final List<String> category;
 
   Product({
     required this.id,
@@ -22,24 +22,8 @@ class Product {
     required this.preparationTime,
     required this.tags,
     required this.imageUrl,
-    required this.categoryId,
+    required this.category,
   });
-
-  // factory Product.fromJson(Map<String, dynamic> json) {
-  //   return Product(
-  //     id: json['_id'],
-  //     name: json['name'],
-  //     description: json['description'],
-  //     rates: (json['rates'] as num).toDouble(),
-  //     price: (json['price'] as num).toDouble(),
-  //     distance: (json['distance'] as num).toDouble(),
-  //     calories: json['calories'],
-  //     preparationTime: json['preparationTime'],
-  //     tags: List<String>.from(json['tags']),
-  //     imageUrl: json['imageURL'],
-  //     categoryId: json['category_id'],
-  //   );
-  // }
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
@@ -53,7 +37,7 @@ class Product {
       preparationTime: json['preparationTime'] ?? '',
       tags: List<String>.from(json['tags'] ?? []),
       imageUrl: json['imageURL'] ?? '',
-      categoryId: json['category_id'] ?? '',
+      category: List<String>.from(json['category'] ?? []),
     );
   }
 }
