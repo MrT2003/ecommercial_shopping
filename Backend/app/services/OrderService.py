@@ -114,7 +114,7 @@ class OrderService:
             raise
 
     @staticmethod
-    async def create_order(user_id: str, shipping_address: Dict[str, Any], billing_address: Dict[str, Any], payment_method: str) -> Dict[str, Any]:
+    async def create_order(user_id: str, shipping_address: Dict[str, Any], payment_method: str) -> Dict[str, Any]:
         try:
             cart = await cart_collection.find_one({"user": ObjectId(user_id)})  # Thử tìm theo `user`
             if not cart:
@@ -124,17 +124,14 @@ class OrderService:
             if not cart or "items" not in cart or not cart["items"]:
                 raise ValueError("Giỏ hàng trống, không thể tạo đơn hàng")
             
-            total_price = sum(item["price"] * item["quantity"] for item in cart["items"])
             
             new_order = {
                 "user_id": ObjectId(user_id),
                 "items": cart["items"],
-                "total_price": total_price,
-                "status": "pending",
+                "total_price": cart['total_price'],
                 "payment_method": payment_method,
                 "payment_status": "pending",
                 "shipping_address": shipping_address,
-                "billing_address": billing_address,
             }
             
             result = await order_collection.insert_one(new_order)

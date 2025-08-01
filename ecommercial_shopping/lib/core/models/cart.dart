@@ -12,13 +12,20 @@ class Cart {
   });
 
   factory Cart.fromJson(Map<String, dynamic> json) {
+    var itemsJson = json['items'] as List? ?? [];
+    List<CartItem> itemsList =
+        itemsJson.map((item) => CartItem.fromJson(item)).toList();
+
+    // Tính total price nếu backend không có hoặc null
+    double calculatedTotal =
+        itemsList.fold(0.0, (sum, item) => sum + (item.price * item.quantity));
+
     return Cart(
-      id: json['_id'],
-      userId: json['user'],
-      items: (json['items'] as List)
-          .map((item) => CartItem.fromJson(item))
-          .toList(),
-      totalPrice: (json['total_price'] as num).toDouble(),
+      id: json['_id'] ?? '', // Backend dùng _id thay vì id
+      userId: json['user'] ?? '', // Backend dùng user thay vì user_id
+      items: itemsList,
+      totalPrice: json['total_price']?.toDouble() ??
+          calculatedTotal, // Fallback nếu backend không có total_price
     );
   }
 
@@ -49,11 +56,12 @@ class CartItem {
 
   factory CartItem.fromJson(Map<String, dynamic> json) {
     return CartItem(
-      productId: json['product'],
-      quantity: json['quantity'],
-      price: (json['price'] as num).toDouble(),
-      name: json['name'] ?? 'No name',
-      image: json['image'],
+      productId:
+          json['product'] ?? '', // Backend dùng product thay vì product_id
+      quantity: json['quantity'] ?? 0,
+      price: (json['price'] ?? 0).toDouble(),
+      name: json['name'] ?? '',
+      image: json['image'] ?? '',
     );
   }
 

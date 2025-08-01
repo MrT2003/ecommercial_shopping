@@ -46,8 +46,28 @@ class CartService {
       print("Body: ${response.body}");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        // Kiểm tra xem response body có rỗng không
+        if (response.body.isEmpty) {
+          return [];
+        }
+
         List<dynamic> jsonData = json.decode(response.body);
-        return jsonData.map((json) => Cart.fromJson(json)).toList();
+
+        // Kiểm tra từng item trong jsonData
+        List<Cart> carts = [];
+        for (var item in jsonData) {
+          try {
+            Cart cart = Cart.fromJson(item as Map<String, dynamic>);
+            carts.add(cart);
+          } catch (e) {
+            print("Error parsing cart item: $e");
+            print("Item data: $item");
+            // Bỏ qua item lỗi và tiếp tục
+            continue;
+          }
+        }
+
+        return carts;
       } else {
         throw Exception(
             "Failed to load products: ${response.statusCode} - ${response.body}");
@@ -63,18 +83,101 @@ class CartService {
     required String productId,
     required int quantity,
   }) async {
-    final response = await http.put(
-      Uri.parse('$_baseUrl/update'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'user_id': userId,
-        'product_id': productId,
-        'quantity': quantity,
-      }),
-    );
+    try {
+      final response = await http.put(
+        Uri.parse('$_baseUrl/update'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'user_id': userId,
+          'product_id': productId,
+          'quantity': quantity,
+        }),
+      );
 
-    if (response.statusCode != 200) {
-      throw Exception(jsonDecode(response.body)['detail']);
+      print("Update response status: ${response.statusCode}");
+      print("Update response body: ${response.body}");
+
+      if (response.statusCode != 200) {
+        throw Exception(jsonDecode(response.body)['detail'] ?? 'Update failed');
+      }
+    } catch (e) {
+      print("Exception in updateCartItem: $e");
+      throw Exception("Error updating cart: $e");
     }
   }
+
+  // Get total price directly from backend
+  Future<double> getTotalPrice(String userId) async {
+    try {
+      final carts = await fetchProductsInCart();
+
+      // Find the cart for the specific user
+      final userCart = carts.where((cart) => cart.userId == userId);
+
+      if (userCart.isEmpty) {
+        return 0.0;
+      }
+
+      // Tính tổng từ tất cả cart của user (nếu có nhiều cart)
+      double total = 0.0;
+      for (var cart in userCart) {
+        total += cart.totalPrice;
+      }
+
+      return total;
+    } catch (e) {
+      print("Error getting total price: $e");
+      throw Exception("Error getting total price: $e");
+    }
+  }
+
+//   // Get user's cart with total price
+//   Future<Cart?> getUserCart(String userId) async {
+//     try {
+//       final carts = await fetchProductsInCart();
+
+//       // Find cart by userId
+//       for (var cart in carts) {
+//         if (cart.userId == userId) {
+//           return cart;
+//         }
+//       }
+
+//       // Return empty cart if not found
+//       return Cart(
+//         id: '',
+//         userId: userId,
+//         items: [],
+//         totalPrice: 0.0,
+//       );
+//     } catch (e) {
+//       print("Error getting user cart: $e");
+//       throw Exception("Error getting user cart: $e");
+//     }
+//   }
+
+//   // Remove item from cart
+//   Future<bool> removeFromCart({
+//     required String userId,
+//     required String productId,
+//   }) async {
+//     try {
+//       final response = await http.delete(
+//         Uri.parse("$_baseUrl/remove"),
+//         headers: {"Content-Type": "application/json"},
+//         body: jsonEncode({
+//           "user_id": userId,
+//           "product_id": productId,
+//         }),
+//       );
+
+//       print("Remove response status: ${response.statusCode}");
+//       print("Remove response body: ${response.body}");
+
+//       return response.statusCode == 200;
+//     } catch (e) {
+//       print("Exception in removeFromCart: $e");
+//       return false;
+//     }
+//   }
 }

@@ -15,7 +15,6 @@ class Address(BaseModel):
     address: str
     city: str
     country: str
-    postal_code: Optional[str] = None
 
 class OrderItem(BaseModel):
     product: PyObjectId  # Changed from product_id to match service class
@@ -31,7 +30,6 @@ class Order(BaseModel):
     payment_method: str  # credit_card, paypal, bank_transfer
     payment_status: str  # pending, completed, failed
     shipping_address: Address
-    billing_address: Address
 
     model_config = {
         "populate_by_name": True,
@@ -47,7 +45,6 @@ class Order(BaseModel):
                     }
                 ],
                 "total_price": 17.98,
-                "status": "pending",
                 "payment_method": "paypal",
                 "payment_status": "pending",
                 "shipping_address": {
@@ -55,11 +52,6 @@ class Order(BaseModel):
                     "city": "Hanoi",
                     "country": "Vietnam",
                 },
-                "billing_address": {
-                    "address": "456 Another St",
-                    "city": "Hanoi",
-                    "country": "Vietnam",
-                }
             }
         }
     }

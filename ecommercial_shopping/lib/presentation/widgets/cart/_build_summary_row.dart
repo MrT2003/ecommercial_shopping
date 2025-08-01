@@ -29,7 +29,7 @@ class BuildSummaryRow extends StatelessWidget {
           label,
           style: TextStyle(
             color: labelColor ?? (isTotal ? Colors.black : Colors.grey[600]),
-            fontSize: fontSize ?? (isTotal ? 18 : 16),
+            fontSize: fontSize ?? (isTotal ? 25 : 16),
             fontWeight:
                 fontWeight ?? (isTotal ? FontWeight.bold : FontWeight.normal),
           ),

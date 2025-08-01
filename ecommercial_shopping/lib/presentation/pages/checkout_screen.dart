@@ -1,19 +1,55 @@
+import 'package:ecommercial_shopping/core/models/cart.dart';
+import 'package:ecommercial_shopping/core/providers/auth_provider.dart';
+import 'package:ecommercial_shopping/core/providers/cart_provider.dart';
+import 'package:ecommercial_shopping/presentation/widgets/cart/_build_summary_row.dart';
 import 'package:ecommercial_shopping/presentation/widgets/checkout/_build_order_item.dart';
 import 'package:ecommercial_shopping/presentation/widgets/checkout/_build_payment_option.dart';
 import 'package:ecommercial_shopping/presentation/widgets/checkout/_build_section_card.dart';
+import 'package:ecommercial_shopping/presentation/widgets/checkout/_build_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CheckoutScreen extends StatefulWidget {
-  const CheckoutScreen({super.key});
+class CheckoutScreen extends ConsumerStatefulWidget {
+  final Cart? cart; // Optional cart parameter
+
+  const CheckoutScreen({super.key, this.cart});
 
   @override
-  State<CheckoutScreen> createState() => _CheckoutScreenState();
+  ConsumerState<CheckoutScreen> createState() => _CheckoutScreenState();
 }
 
-class _CheckoutScreenState extends State<CheckoutScreen> {
+class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   int _selectedPaymentMethod = 0;
+  final TextEditingController _notesController = TextEditingController();
+  final TextEditingController _cardNumberController = TextEditingController();
+  final TextEditingController _expiryController = TextEditingController();
+  final TextEditingController _cvvController = TextEditingController();
+  final TextEditingController _cardHolderController = TextEditingController();
+
+  @override
+  void dispose() {
+    _notesController.dispose();
+    _cardNumberController.dispose();
+    _expiryController.dispose();
+    _cvvController.dispose();
+    _cardHolderController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authStateProvider);
+    final userId = authState.when(
+      data: (user) => user?.userId ?? '',
+      loading: () => '',
+      error: (_, __) => '',
+    );
+
+    // Use passed cart or fetch from provider
+    final cartAsync = widget.cart != null
+        ? AsyncValue.data([widget.cart!])
+        : ref.watch(cartProvider);
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
@@ -49,116 +85,210 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          Column(
+      body: cartAsync.when(
+        data: (carts) {
+          final cart = carts.firstWhere(
+            (cart) => cart.userId == userId,
+            orElse: () => Cart(id: '', userId: '', items: [], totalPrice: 0),
+          );
+
+          final totalPrice = cart.totalPrice;
+
+          return Stack(
             children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      BuildSectionCard(
-                        title: 'Order Summary',
-                        content: Column(
-                          children: [
-                            BuildOrderItem(
-                              name: 'Pepperoni Pizza',
-                              price: '\$12.99',
-                              description: 'Larger - Extra Cheese',
+              Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          BuildSectionCard(
+                            title: 'Order Summary',
+                            content: Column(
+                              children: cart.items.asMap().entries.map((entry) {
+                                final item = entry.value;
+                                final isLast =
+                                    entry.key == cart.items.length - 1;
+
+                                return Column(
+                                  children: [
+                                    BuildOrderItem(
+                                      name: item.name,
+                                      price:
+                                          '\$${item.price.toStringAsFixed(2)}',
+                                      description: 'Quantity: ${item.quantity}',
+                                      imageUrl: item.image,
+                                    ),
+                                    if (!isLast) Divider(height: 20),
+                                  ],
+                                );
+                              }).toList(),
                             ),
-                            Divider(height: 20),
-                            BuildOrderItem(
-                              name: 'Chicken Burger',
-                              price: '\$8.99',
-                              description: 'Larger - Extra Cheese',
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      BuildSectionCard(
-                        title: 'Payment Method',
-                        content: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
+                          ),
+                          SizedBox(height: 20),
+                          BuildSectionCard(
+                            title: 'Payment Method',
+                            content: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                BuildPaymentOption(
-                                  index: 0,
-                                  title: 'Credit Card',
-                                  icon: Icons.credit_card,
-                                  selectedPaymentMethod: _selectedPaymentMethod,
-                                  onPaymentMethodChanged: (index) {
-                                    setState(
-                                        () => _selectedPaymentMethod = index);
-                                  },
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: BuildPaymentOption(
+                                        index: 0,
+                                        title: 'Credit Card',
+                                        icon: Icons.credit_card,
+                                        selectedPaymentMethod:
+                                            _selectedPaymentMethod,
+                                        onPaymentMethodChanged: (index) {
+                                          setState(() =>
+                                              _selectedPaymentMethod = index);
+                                        },
+                                      ),
+                                    ),
+                                    SizedBox(width: 12),
+                                    Expanded(
+                                      child: BuildPaymentOption(
+                                        index: 1,
+                                        title: 'COD',
+                                        icon: Icons.local_shipping,
+                                        selectedPaymentMethod:
+                                            _selectedPaymentMethod,
+                                        onPaymentMethodChanged: (index) {
+                                          setState(() =>
+                                              _selectedPaymentMethod = index);
+                                        },
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                SizedBox(width: 12),
-                                BuildPaymentOption(
-                                  index: 1,
-                                  title: 'Paypal',
-                                  icon: Icons.payment,
-                                  selectedPaymentMethod: _selectedPaymentMethod,
-                                  onPaymentMethodChanged: (index) {
-                                    setState(
-                                        () => _selectedPaymentMethod = index);
-                                  },
-                                ),
-                                SizedBox(width: 12),
-                                BuildPaymentOption(
-                                  index: 2,
-                                  title: 'COD',
-                                  icon: Icons.home_filled,
-                                  selectedPaymentMethod: _selectedPaymentMethod,
-                                  onPaymentMethodChanged: (index) {
-                                    setState(
-                                        () => _selectedPaymentMethod = index);
-                                  },
-                                ),
+                                if (_selectedPaymentMethod == 0) ...[
+                                  SizedBox(height: 20),
+                                  BuildTextField(
+                                    label: 'Card Number',
+                                    hint: 'XXXX XXXX XXXX XXXX',
+                                    icon: Icons.credit_card,
+                                    controller: _cardNumberController,
+                                  ),
+                                  SizedBox(height: 16),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: BuildTextField(
+                                          label: 'Expiry Date',
+                                          hint: 'MM/YY',
+                                          icon: Icons.calendar_today,
+                                          controller: _expiryController,
+                                        ),
+                                      ),
+                                      SizedBox(width: 16),
+                                      Expanded(
+                                        child: BuildTextField(
+                                          label: 'CVV',
+                                          hint: 'XXX',
+                                          icon: Icons.lock_outline,
+                                          controller: _cvvController,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 16),
+                                  BuildTextField(
+                                    label: 'Card Holder Name',
+                                    hint: 'Enter card holder name',
+                                    icon: Icons.person_outlined,
+                                    controller: _cardHolderController,
+                                  ),
+                                ],
                               ],
                             ),
-                            if (_selectedPaymentMethod == 0) ...[
-                              SizedBox(height: 20),
-                              _buildTextField('Cart Number',
-                                  'XXXX XXXX XXXX XXXX', Icons.credit_card),
-                              SizedBox(height: 16),
-                              Row(
-                                children: [
-                                  Expanded(
-                                      child: _buildTextField('Expiry Date',
-                                          'MM/YY', Icons.calendar_today)),
-                                  SizedBox(width: 16),
-                                  Expanded(
-                                      child: _buildTextField(
-                                          'CVV', 'XXX', Icons.lock_outline)),
-                                ],
+                          ),
+                          SizedBox(height: 20),
+                          BuildSectionCard(
+                            title: 'Additional Notes',
+                            content: TextField(
+                              controller: _notesController,
+                              maxLines: 3,
+                              decoration: InputDecoration(
+                                hintText: 'Add notes for your order (optional)',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade300),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade300),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide:
+                                      BorderSide(color: Colors.deepOrange),
+                                ),
                               ),
-                              SizedBox(height: 16),
-                              _buildTextField(
-                                  'Card Holder Name',
-                                  'Enter card holder name',
-                                  Icons.person_outlined)
-                            ]
-                          ],
-                        ),
+                            ),
+                          ),
+                          SizedBox(height: 150), // Space for bottom container
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(30),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.1),
+                        spreadRadius: 1,
+                        blurRadius: 10,
+                        offset: Offset(0, -5),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      BuildSummaryRow(
+                        label: 'Total',
+                        amount: totalPrice.toStringAsFixed(2),
+                        isTotal: true,
                       ),
                       SizedBox(height: 20),
-                      BuildSectionCard(
-                        title: 'Additional Notes',
-                        content: TextField(
-                          maxLines: 3,
-                          decoration: InputDecoration(
-                            hintText: 'Add notes for your order (optional)',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
-                                  BorderSide(color: Colors.grey.shade300),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: cart.items.isEmpty
+                              ? null
+                              : () => _placeOrder(context, cart, totalPrice),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.deepOrange,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
                             ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide:
-                                  BorderSide(color: Colors.grey.shade300),
+                            disabledBackgroundColor: Colors.grey[300],
+                            disabledForegroundColor: Colors.grey[600],
+                          ),
+                          child: Text(
+                            cart.items.isEmpty
+                                ? "No Items to Order"
+                                : "Place Order - \$${totalPrice.toStringAsFixed(2)}",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -167,186 +297,143 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ),
                 ),
               ),
-              Container(
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(30),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      spreadRadius: 1,
-                      blurRadius: 10,
-                      offset: Offset(0, -5),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    _buildSummaryRow('Subtotal', '28.94'),
-                    SizedBox(height: 8),
-                    _buildSummaryRow('Delivery Fee', '2.50'),
-                    SizedBox(height: 8),
-                    _buildSummaryRow('Tax', '2.99'),
-                    Divider(height: 24),
-                    _buildSummaryRow('Total', '34.32', isTotal: true),
-                    SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.deepOrange,
-                          foregroundColor: Colors.white,
-                          padding: EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                        ),
-                        child: Text(
-                          "Place Order - \$34.32",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             ],
+          );
+        },
+        loading: () => Scaffold(
+          backgroundColor: Colors.grey[100],
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            title: Text('Checkout'),
+          ),
+          body: Center(child: CircularProgressIndicator()),
+        ),
+        error: (error, stack) => Scaffold(
+          backgroundColor: Colors.grey[100],
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            title: Text('Checkout'),
+          ),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.error_outline, size: 64, color: Colors.red),
+                SizedBox(height: 16),
+                Text('Error loading checkout data'),
+                SizedBox(height: 8),
+                ElevatedButton(
+                  onPressed: () => ref.invalidate(cartProvider),
+                  child: Text('Retry'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _placeOrder(BuildContext context, Cart cart, double totalPrice) {
+    // Validate payment method
+    if (_selectedPaymentMethod == 0) {
+      if (_cardNumberController.text.isEmpty ||
+          _expiryController.text.isEmpty ||
+          _cvvController.text.isEmpty ||
+          _cardHolderController.text.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Please fill in all card details')),
+        );
+        return;
+      }
+    }
+
+    // Show confirmation dialog
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Confirm Order'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Total Amount: \$${totalPrice.toStringAsFixed(2)}'),
+            SizedBox(height: 8),
+            Text(
+                'Payment Method: ${_selectedPaymentMethod == 0 ? "Credit Card" : "Cash on Delivery"}'),
+            SizedBox(height: 8),
+            Text('Items: ${cart.items.length}'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _processOrder(context, cart, totalPrice);
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.deepOrange),
+            child: Text('Confirm', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildOrderItem(String name, String price, String description) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                name,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-              Text(
-                description,
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 14,
-                ),
-              ),
-            ],
-          ),
-        ),
-        Text(
-          price,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.deepOrange,
-          ),
-        )
-      ],
-    );
-  }
+  void _processOrder(BuildContext context, Cart cart, double totalPrice) {
+    // TODO: Implement actual order processing
+    // This is where you'd call your order API
 
-  Widget _buildPaymentOption(int index, String title, IconData icon) {
-    final isSelected = _selectedPaymentMethod == index;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => setState(() => _selectedPaymentMethod = index),
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 12),
-          decoration: BoxDecoration(
-            color: isSelected ? Colors.deepOrange : Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isSelected ? Colors.deepOrange : Colors.grey.shade300,
-            ),
-          ),
-          child: Column(
-            children: [
-              Icon(
-                icon,
-                color: isSelected ? Colors.white : Colors.grey[600],
-              ),
-              SizedBox(height: 4),
-              Text(
-                title,
-                style: TextStyle(
-                  color: isSelected ? Colors.white : Colors.grey[600],
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text('Processing your order...'),
+          ],
         ),
       ),
     );
-  }
 
-  Widget _buildTextField(String label, String hint, IconData icon) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(height: 8),
-        TextField(
-          decoration: InputDecoration(
-              hintText: hint,
-              prefixIcon: Icon(icon, color: Colors.deepOrange),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey.shade300),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey.shade300),
-              )),
-        ),
-      ],
-    );
-  }
+    // Simulate order processing
+    Future.delayed(Duration(seconds: 2), () {
+      Navigator.pop(context); // Close loading dialog
 
-  Widget _buildSummaryRow(String label, String amount, {bool isTotal = false}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: isTotal ? Colors.black : Colors.grey[600],
-            fontSize: isTotal ? 18 : 16,
-            fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Row(
+            children: [
+              Icon(Icons.check_circle, color: Colors.green),
+              SizedBox(width: 8),
+              Text('Order Successful!'),
+            ],
           ),
+          content: Text(
+              'Your order has been placed successfully. You will receive a confirmation email shortly.'),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // Close success dialog
+                Navigator.pop(context); // Go back to cart
+                Navigator.pop(context); // Go back to previous screen
+              },
+              style:
+                  ElevatedButton.styleFrom(backgroundColor: Colors.deepOrange),
+              child: Text('OK', style: TextStyle(color: Colors.white)),
+            ),
+          ],
         ),
-        Text(
-          '\$$amount',
-          style: TextStyle(
-            color: isTotal ? Colors.deepOrange : Colors.black,
-            fontSize: isTotal ? 20 : 16,
-            fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-          ),
-        ),
-      ],
-    );
+      );
+    });
   }
 }

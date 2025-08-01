@@ -45,7 +45,7 @@ class SignupScreen extends ConsumerWidget {
     return const Text(
       'Sign Up',
       style: TextStyle(
-          color: Color(0xff2A4ECA), fontWeight: FontWeight.bold, fontSize: 32),
+          color: Colors.deepOrange, fontWeight: FontWeight.bold, fontSize: 32),
     );
   }
 
@@ -55,7 +55,10 @@ class SignupScreen extends ConsumerWidget {
       style: const TextStyle(height: 2.0),
       decoration: const InputDecoration(
         hintText: 'Username',
-        prefixIcon: Icon(Icons.person),
+        prefixIcon: Icon(
+          Icons.person,
+          color: Colors.deepOrange,
+        ),
         prefixIconConstraints: BoxConstraints(minWidth: 40, minHeight: 40),
       ),
     );
@@ -67,7 +70,10 @@ class SignupScreen extends ConsumerWidget {
       style: const TextStyle(height: 2.0),
       decoration: const InputDecoration(
         hintText: 'Email',
-        prefixIcon: Icon(Icons.email),
+        prefixIcon: Icon(
+          Icons.email,
+          color: Colors.deepOrange,
+        ),
         prefixIconConstraints: BoxConstraints(minWidth: 40, minHeight: 40),
       ),
     );
@@ -82,9 +88,15 @@ class SignupScreen extends ConsumerWidget {
       obscureText: isObscured,
       decoration: InputDecoration(
         hintText: 'Password',
-        prefixIcon: const Icon(Icons.lock),
+        prefixIcon: const Icon(
+          Icons.lock,
+          color: Colors.deepOrange,
+        ),
         suffixIcon: IconButton(
-          icon: Icon(isObscured ? Icons.visibility_off : Icons.visibility),
+          icon: Icon(
+            isObscured ? Icons.visibility_off : Icons.visibility,
+            color: Colors.deepOrange,
+          ),
           onPressed: () =>
               ref.read(passwordVisibilityProvider.notifier).toggle(),
         ),
@@ -147,7 +159,7 @@ class SignupScreen extends ConsumerWidget {
               );
             },
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xff3461FD),
+        backgroundColor: Colors.deepOrange,
         minimumSize: const Size(double.infinity, 50),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
@@ -176,7 +188,7 @@ class SignupScreen extends ConsumerWidget {
         TextSpan(
             text: ' Sign In',
             style: const TextStyle(
-                color: Color(0xff3461FD), fontWeight: FontWeight.w500),
+                color: Colors.deepOrange, fontWeight: FontWeight.w500),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 Navigator.push(

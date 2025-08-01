@@ -35,14 +35,12 @@ async def get_order_detail(order_id: str):
 async def create_order(
     user_id: str,
     shipping_address: Dict[str, Any] = Body(...),
-    billing_address: Dict[str, Any] = Body(...),
     payment_method: str = Body(...)
 ):
     try:
         order = await OrderService.create_order(
             user_id=user_id,
             shipping_address=shipping_address,
-            billing_address=billing_address,
             payment_method=payment_method
         )
         return order
