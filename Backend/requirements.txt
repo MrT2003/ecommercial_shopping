@@ -3,3 +3,8 @@ fastapi
 uvicorn
 motor
 pydantic
+gunicorn
+email-validator
+bcrypt
+PyJWT
+passlib

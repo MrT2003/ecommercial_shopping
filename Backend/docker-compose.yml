@@ -1,0 +1,44 @@
+services:
+  api:
+    image: minhtrieu2008/ecommercial-api:1.0.0  # <-- image đã push
+    container_name: api
+    env_file: ./.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongo
+      # Nếu muốn đợi mongo healthy mới start api, thêm healthcheck cho mongo (bên dưới)
+      # và dùng:
+      # depends_on:
+      #   mongo:
+      #     condition: service_healthy
+    restart: unless-stopped
+    pull_policy: always
+    healthcheck:
+      test: ["CMD","curl","-fsS","http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+
+  mongo:
+    image: mongo:7
+    container_name: mongo
+    environment:
+      MONGO_INITDB_DATABASE: Ecommerce
+    # Prod: nên KHÔNG expose cổng DB ra ngoài. Nếu cần dev từ host mới mở:
+    # ports:
+    #   - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+    restart: unless-stopped
+    # (tuỳ chọn) healthcheck để api đợi mongo sẵn sàng:
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --quiet --eval 'db.runCommand({ ping: 1 }).ok' | grep 1"]
+      interval: 10s
+      timeout: 5s
+      start_period: 15s
+      retries: 5
+
+volumes:
+  mongodata:
