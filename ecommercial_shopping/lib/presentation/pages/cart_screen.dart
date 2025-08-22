@@ -1,6 +1,7 @@
 import 'package:ecommercial_shopping/core/models/cart.dart';
 import 'package:ecommercial_shopping/core/providers/auth_provider.dart';
 import 'package:ecommercial_shopping/core/providers/cart_provider.dart';
+import 'package:ecommercial_shopping/core/providers/order_provider.dart';
 import 'package:ecommercial_shopping/presentation/pages/address_screen.dart';
 import 'package:ecommercial_shopping/presentation/pages/checkout_screen.dart';
 import 'package:ecommercial_shopping/presentation/widgets/cart/_build_cart_item.dart';
@@ -21,6 +22,9 @@ class CartScreen extends ConsumerWidget {
     );
 
     final cartAsync = ref.watch(cartProvider);
+    final address = ref.watch(addressProvider);
+    final city = ref.watch(cityProvider);
+    final country = ref.watch(countryProvider);
 
     return cartAsync.when(
       data: (carts) {
@@ -31,6 +35,7 @@ class CartScreen extends ConsumerWidget {
 
         // Lấy tổng giá trị giỏ hàng từ backend
         final totalPrice = cart.totalPrice;
+        final canCheckout = cart.items.isNotEmpty && address.isNotEmpty;
 
         return Scaffold(
           backgroundColor: Colors.grey[100],
@@ -140,7 +145,9 @@ class CartScreen extends ConsumerWidget {
                                   ),
                                 ),
                                 Text(
-                                  '57/1/3, Truong Dang Que, Phuong 1, Go Vap',
+                                  address.isNotEmpty
+                                      ? '$address, $city, $country'
+                                      : 'No address set',
                                   style: TextStyle(
                                     color: Colors.grey,
                                     height: 1.5,
@@ -284,14 +291,25 @@ class CartScreen extends ConsumerWidget {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: cart.items.isEmpty
-                        ? null
-                        : () => Navigator.push(
+                    onPressed: canCheckout
+                        ? () {
+                            // ready to go
+                            Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => CheckoutScreen(),
-                              ),
-                            ),
+                                  builder: (_) => const CheckoutScreen()),
+                            );
+                          }
+                        : () {
+                            if (address.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                      'Please enter your delivery address first!'),
+                                ),
+                              );
+                            }
+                          },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.deepOrange,
                       foregroundColor: Colors.white,
@@ -304,8 +322,10 @@ class CartScreen extends ConsumerWidget {
                     ),
                     child: Text(
                       cart.items.isEmpty
-                          ? "Cart is Empty"
-                          : "Proceed to Checkout (\$${totalPrice.toStringAsFixed(2)})",
+                          ? 'Cart is Empty'
+                          : address.isEmpty
+                              ? 'Enter Address to Checkout'
+                              : 'Proceed to Checkout (\$${totalPrice.toStringAsFixed(2)})',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

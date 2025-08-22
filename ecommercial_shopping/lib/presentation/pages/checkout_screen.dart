@@ -1,6 +1,7 @@
 import 'package:ecommercial_shopping/core/models/cart.dart';
 import 'package:ecommercial_shopping/core/providers/auth_provider.dart';
 import 'package:ecommercial_shopping/core/providers/cart_provider.dart';
+import 'package:ecommercial_shopping/core/utils/place_order.dart';
 import 'package:ecommercial_shopping/presentation/widgets/cart/_build_summary_row.dart';
 import 'package:ecommercial_shopping/presentation/widgets/checkout/_build_order_item.dart';
 import 'package:ecommercial_shopping/presentation/widgets/checkout/_build_payment_option.dart';
@@ -10,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CheckoutScreen extends ConsumerStatefulWidget {
-  final Cart? cart; // Optional cart parameter
+  final Cart? cart;
 
   const CheckoutScreen({super.key, this.cart});
 
@@ -271,7 +272,19 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                         child: ElevatedButton(
                           onPressed: cart.items.isEmpty
                               ? null
-                              : () => _placeOrder(context, cart, totalPrice),
+                              : () => PlaceOrder.show(
+                                    context: context,
+                                    cart: cart,
+                                    totalPrice: totalPrice,
+                                    selectedPaymentMethod:
+                                        _selectedPaymentMethod,
+                                    cardNumberController: _cardNumberController,
+                                    expiryController: _expiryController,
+                                    cvvController: _cvvController,
+                                    cardHolderController: _cardHolderController,
+                                    onProcessOrder: () => _processOrder(
+                                        context, cart, totalPrice),
+                                  ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.deepOrange,
                             foregroundColor: Colors.white,
@@ -332,55 +345,6 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  void _placeOrder(BuildContext context, Cart cart, double totalPrice) {
-    // Validate payment method
-    if (_selectedPaymentMethod == 0) {
-      if (_cardNumberController.text.isEmpty ||
-          _expiryController.text.isEmpty ||
-          _cvvController.text.isEmpty ||
-          _cardHolderController.text.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Please fill in all card details')),
-        );
-        return;
-      }
-    }
-
-    // Show confirmation dialog
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Confirm Order'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Total Amount: \$${totalPrice.toStringAsFixed(2)}'),
-            SizedBox(height: 8),
-            Text(
-                'Payment Method: ${_selectedPaymentMethod == 0 ? "Credit Card" : "Cash on Delivery"}'),
-            SizedBox(height: 8),
-            Text('Items: ${cart.items.length}'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _processOrder(context, cart, totalPrice);
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.deepOrange),
-            child: Text('Confirm', style: TextStyle(color: Colors.white)),
-          ),
-        ],
       ),
     );
   }

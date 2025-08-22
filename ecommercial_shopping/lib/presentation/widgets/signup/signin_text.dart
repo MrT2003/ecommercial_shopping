@@ -1,0 +1,38 @@
+import 'package:ecommercial_shopping/presentation/pages/signin_screen.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+
+class SigninText extends StatelessWidget {
+  const SigninText({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text.rich(
+      TextSpan(
+        children: [
+          const TextSpan(
+            text: 'Do you have an account?',
+            style: TextStyle(
+              color: Color(0xff3B4054),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          TextSpan(
+            text: ' Sign In',
+            style: const TextStyle(
+              color: Colors.deepOrange,
+              fontWeight: FontWeight.w500,
+            ),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => SigninScreen()),
+                );
+              },
+          ),
+        ],
+      ),
+    );
+  }
+}
