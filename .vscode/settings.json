@@ -1,3 +1,7 @@
 {
-    "cmake.sourceDirectory": "C:/Users/Admin/OneDrive/Documents/githubs/ecommercial_shopping/ecommercial_shopping/linux"
+    "cmake.sourceDirectory": "C:/Users/Admin/OneDrive/Documents/githubs/ecommercial_shopping/ecommercial_shopping/linux",
+    "cSpell.words": [
+        "PYTHONDONTWRITEBYTECODE",
+        "PYTHONUNBUFFERED"
+    ]
 }
