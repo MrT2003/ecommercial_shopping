@@ -1,61 +1,52 @@
+import 'package:ecommercial_shopping/core/providers/order_provider.dart';
+import 'package:ecommercial_shopping/core/utils/address_saver.dart';
+import 'package:ecommercial_shopping/presentation/widgets/order/_order_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final addressProvider = StateProvider<String>((ref) => '');
-final cityProvider = StateProvider<String>((ref) => '');
-final countryProvider = StateProvider<String>((ref) => '');
-
 class AddressScreen extends ConsumerWidget {
-  const AddressScreen({super.key});
+  AddressScreen({super.key});
+  final TextEditingController _addressCon = TextEditingController();
+  final TextEditingController _cityCon = TextEditingController();
+  final TextEditingController _countryCon = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: Text('Fillin Address'),
+        title: Text('Filling Address'),
         backgroundColor: Colors.blue,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Trường nhập địa chỉ
-            TextField(
-              onChanged: (value) {
-                ref.read(addressProvider.notifier).state = value;
-              },
-              decoration: InputDecoration(
-                labelText: 'Address',
-                border: OutlineInputBorder(),
-              ),
+            OrderTextField(
+              label: 'Address',
+              hint: '123 Tan Phu Street',
+              icon: Icons.location_on,
+              controller: _addressCon,
+              onChanged: (v) => ref.read(addressProvider.notifier).state = v,
             ),
-            SizedBox(height: 16),
-            // Trường nhập thành phố
-            TextField(
-              onChanged: (value) {
-                ref.read(cityProvider.notifier).state = value;
-              },
-              decoration: InputDecoration(
-                labelText: 'City',
-                border: OutlineInputBorder(),
-              ),
+            OrderTextField(
+              label: 'City',
+              hint: 'Ho Chi Minh',
+              icon: Icons.location_city,
+              controller: _cityCon,
+              onChanged: (v) => ref.read(cityProvider.notifier).state = v,
             ),
-            SizedBox(height: 16),
-            // Trường nhập quốc gia
-            TextField(
-              onChanged: (value) {
-                ref.read(countryProvider.notifier).state = value;
-              },
-              decoration: InputDecoration(
-                labelText: 'Country',
-                border: OutlineInputBorder(),
-              ),
+            OrderTextField(
+              label: 'Country',
+              hint: 'Vietnam',
+              icon: Icons.flag,
+              controller: _countryCon,
+              onChanged: (v) => ref.read(countryProvider.notifier).state = v,
             ),
             SizedBox(height: 32),
             // Nút lưu
             ElevatedButton(
-              onPressed: () => _saveAddress(context, ref),
+              onPressed: () => AddressSaver.save(context, ref),
               child: Text('Lưu'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
@@ -66,36 +57,6 @@ class AddressScreen extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-// Hàm lưu thông tin nhập vào
-void _saveAddress(BuildContext context, WidgetRef ref) {
-  final address = ref.read(addressProvider);
-  final city = ref.read(cityProvider);
-  final country = ref.read(countryProvider);
-
-  if (address.isNotEmpty && city.isNotEmpty && country.isNotEmpty) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Địa chỉ đã được lưu'),
-        content:
-            Text('Địa chỉ: $address, Thành phố: $city, Quốc gia: $country'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text('Đóng'),
-          ),
-        ],
-      ),
-    );
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Vui lòng điền đầy đủ thông tin!')),
     );
   }
 }

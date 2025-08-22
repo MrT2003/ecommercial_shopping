@@ -1,39 +1,35 @@
 import 'dart:convert';
+import 'package:ecommercial_shopping/core/models/order.dart';
 import 'package:http/http.dart' as http;
 
-class CartService {
+class OrderService {
   static const String _baseUrl = "http://10.0.2.2:8000/api/orders";
 
-  Future<bool> addToCart({
-    required String userId,
-    required String productId,
-    required int quantity,
-    required double price,
-    required String name,
-    required String image,
-  }) async {
-    try {
-      final response = await http.post(
-        Uri.parse("$_baseUrl/add"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "user_id": userId,
-          "product_id": productId,
-          "quantity": quantity,
-          "price": price,
-          "name": name,
-          "image": image,
-        }),
-      );
+  Future<bool> placeOrder(Order order) async {
+    final url = Uri.parse("$_baseUrl"); // hoặc "$_baseUrl/place" tuỳ backend
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "items": order.items
+            .map((item) => {
+                  "product": item.productId,
+                  "quantity": item.quantity,
+                  "price": item.price,
+                })
+            .toList(),
+        "payment_method": order.paymentMethod,
+        "payment_status": order.paymentStatus,
+        "shipping_address": order.shippingAddress.toJson(),
+        "total_price": order.totalPrice,
+        "user_id": order.userId,
+      }),
+    );
 
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        print("Error: ${response.body}");
-        return false;
-      }
-    } catch (e) {
-      print("Exception: $e");
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      print("Failed to place order: ${response.statusCode} ${response.body}");
       return false;
     }
   }
