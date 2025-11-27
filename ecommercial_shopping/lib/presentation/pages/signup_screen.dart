@@ -1,7 +1,8 @@
 import 'package:ecommercial_shopping/presentation/widgets/signin/password_field.dart';
-import 'package:ecommercial_shopping/presentation/widgets/signin/signup_text.dart';
+
 import 'package:ecommercial_shopping/presentation/widgets/signup/create_account_button.dart';
 import 'package:ecommercial_shopping/presentation/widgets/signup/email_field.dart';
+import 'package:ecommercial_shopping/presentation/widgets/signup/siginup_text.dart';
 import 'package:ecommercial_shopping/presentation/widgets/signup/signin_text.dart';
 import 'package:ecommercial_shopping/presentation/widgets/signup/username_field.dart';
 import 'package:flutter/material.dart';

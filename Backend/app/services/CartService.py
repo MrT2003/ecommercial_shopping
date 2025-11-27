@@ -5,54 +5,46 @@ class CartService:
     @staticmethod
     async def get_carts():
         carts = []
-        async for cart in cart_collection.find():
+        collection = cart_collection() 
+        products = product_collection() 
+
+        async for cart in collection.find():
             cart["_id"] = str(cart["_id"])
             if "user" in cart:
                 cart["user"] = str(cart["user"])
-
-            # Make sure cart has items array
             if "items" not in cart:
                 cart["items"] = []
 
             for item in cart.get("items", []):
-                # Ensure product ID is converted to string
                 if isinstance(item.get("product"), ObjectId):
                     item["product"] = str(item["product"])
-                
-                # Always add name and image fields, even if product not found
                 if "name" not in item:
                     item["name"] = ""
                 if "image" not in item:
                     item["image"] = ""
-                
                 try:
                     product_id = item["product"]
                     if ObjectId.is_valid(product_id):
-                        product = await product_collection.find_one({"_id": ObjectId(product_id)})
+                        product = await products.find_one({"_id": ObjectId(product_id)})
                         if product:
                             item["name"] = product.get("name", item["name"])
-                            # chỉ cập nhật image nếu trong item chưa có hoặc đang là rỗng
                             if not item.get("image"):
                                 item["image"] = product.get("image", "")
-                    else:
-                        print(f"Invalid ObjectId for product: {product_id}")
                 except Exception as e:
                     print(f"Error fetching product {item.get('product')}: {e}")
 
             carts.append(cart)
         return carts
-
     
     @staticmethod
     async def add_to_cart(user_id: str, product_id: str, quantity: int, price: float, name: str, image: str):
         try:
             user_oid = ObjectId(user_id)
             product_oid = ObjectId(product_id)
-
-            cart = await cart_collection.find_one({"user": user_oid})
+            collection = cart_collection()
+            cart = await collection.find_one({"user": user_oid})
 
             if cart:
-                # Xử lý cart đã tồn tại
                 items = cart.get("items", [])
                 item_found = False
 
@@ -78,7 +70,7 @@ class CartService:
 
                 total_price = sum(item["quantity"] * item["price"] for item in items)
 
-                await cart_collection.update_one(
+                await collection.update_one(
                     {"_id": cart["_id"]},
                     {"$set": {
                         "items": items,
@@ -86,7 +78,6 @@ class CartService:
                     }}
                 )
             else:
-                # Tạo cart mới
                 new_cart = {
                     "user": user_oid,
                     "items": [{
@@ -99,7 +90,7 @@ class CartService:
                     "total_price": quantity * price
                 }
 
-                await cart_collection.insert_one(new_cart)
+                await collection.insert_one(new_cart)
 
             return {"message": "Product added to cart successfully!"}
         except Exception as e:
@@ -111,16 +102,15 @@ class CartService:
         try:
             user_oid = ObjectId(user_id)
             product_oid = ObjectId(product_id)
+            collection = cart_collection()
         except:
             return {"error": "Invalid user_id or product_id. Must be a 24-character hex string"}
         
-        # Tìm giỏ hàng của user
-        cart = await cart_collection.find_one({"user": user_oid})
+        cart = await collection.find_one({"user": user_oid})
         
         if not cart:
             return {"error": "Cart not found for this user"}
         
-        # Tìm sản phẩm trong giỏ hàng
         item_found = False
         items = cart["items"]
         
@@ -138,10 +128,9 @@ class CartService:
         if not item_found:
             return {"error": "Product not found in cart"}
             
-        # Tính lại tổng giá trị giỏ hàng
         cart["total_price"] = sum(item["quantity"] * item["price"] for item in items)
         
-        await cart_collection.update_one(
+        await collection.update_one(
             {"_id": cart["_id"]}, 
             {"$set": {"items": items, "total_price": cart["total_price"]}}
         )
@@ -153,10 +142,11 @@ class CartService:
         try:
             user_oid = ObjectId(user_id)
             product_oid = ObjectId(product_id)
+            collection = cart_collection()
         except:
             return {"error": "Invalid user_id or item_id. Must be a 24-character hex string"}
         
-        cart = await cart_collection.find_one({"user": user_oid})
+        cart = await collection.find_one({"user": user_oid})
         
         if not cart:
             return {"error": "Cart not found for this user"}
@@ -176,11 +166,9 @@ class CartService:
         else:
             return {"error": "Product not found in cart"}
         
-        # Cập nhật lại tổng giá trị giỏ hàng
         cart["total_price"] = sum(item["quantity"] * item["price"] for item in items)
         
-        # Cập nhật giỏ hàng trong database
-        await cart_collection.update_one(
+        await collection.update_one(
             {"_id": cart["_id"]}, 
             {"$set": {"items": items, "total_price": cart["total_price"]}}
         )

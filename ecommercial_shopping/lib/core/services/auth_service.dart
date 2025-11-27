@@ -4,7 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  static const String _baseUrl = "http://10.0.2.2:8000/api/auth";
+  // static const String _baseUrl = "http://10.0.2.2:8000/api/auth";
+  static const String _baseUrl = "http://192.168.1.12:8000/api/auth";
 
   Future<UserAuth> signup({
     required String name,

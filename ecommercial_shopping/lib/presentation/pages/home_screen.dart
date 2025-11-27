@@ -5,6 +5,7 @@ import 'package:ecommercial_shopping/presentation/pages/cart_screen.dart';
 import 'package:ecommercial_shopping/presentation/pages/category_detail_screen.dart';
 import 'package:ecommercial_shopping/presentation/pages/product_detail_screen.dart';
 import 'package:ecommercial_shopping/presentation/pages/search_screen.dart';
+import 'package:ecommercial_shopping/presentation/pages/voice_input_screen.dart';
 import 'package:ecommercial_shopping/presentation/widgets/home/_build_category_chip.dart';
 import 'package:ecommercial_shopping/presentation/widgets/home/_build_food_card.dart';
 import 'package:ecommercial_shopping/presentation/widgets/home/_build_recommend_item.dart';
@@ -62,21 +63,21 @@ class HomeScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Delicious Food",
+              const Text(
+                "TTH Food",
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text(
+              const Text(
                 "Delivered To Your Door",
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.grey,
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Container(
                 height: 45,
                 decoration: BoxDecoration(
@@ -95,7 +96,7 @@ class HomeScreen extends ConsumerWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SearchScreen(),
+                        builder: (context) => const SearchScreen(),
                       ),
                     );
                   },
@@ -105,9 +106,17 @@ class HomeScreen extends ConsumerWidget {
                       Icons.search,
                       color: Colors.deepOrange,
                     ),
-                    suffixIcon: Icon(
-                      Icons.filter_alt,
-                      color: Colors.deepOrange,
+                    suffixIcon: IconButton(
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const VoiceInputScreen(),
+                        ),
+                      ),
+                      icon: Icon(
+                        Icons.mic_rounded,
+                        color: Colors.deepOrange,
+                      ),
                     ),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),

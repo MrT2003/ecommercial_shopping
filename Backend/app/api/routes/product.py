@@ -5,7 +5,7 @@ from app.models.product import Product
 
 router = APIRouter()
 
-#http://127.0.0.1:8000/api/products/
+# http://127.0.0.1:8000/api/products/
 @router.get("/", response_model=list)
 async def get_products():
     products = await ProductService.get_all_products()
