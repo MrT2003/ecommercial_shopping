@@ -162,36 +162,97 @@
 //   sleep(1); // mỗi VU đợi 1s trước vòng lặp tiếp theo
 // }
 
+// { duration: "5m", target: 50 },
+// { duration: "10m", target: 500},
+// { duration: "15m", target: 1000 },
+// { duration: "10m", target: 0 },
+
 import http from "k6/http";
 
-// =======================================
-// CONFIG
-// =======================================
-
 const BASE_URL = "http://my-api-alb-469487783.ap-northeast-1.elb.amazonaws.com";
-
+// 3
 // Điều khiển theo RPS, không phải VU
+// export const options = {
+//   scenarios: {
+//     shock_wave: {
+//       executor: "ramping-vus", // Đổi về test User (VUs) cho dễ kiểm soát
+//       startVUs: 0,
+//       stages: [
+//         // --- Giai đoạn 1: Warm-up & Cao điểm sáng ---
+//         { duration: "2m", target: 1000 }, // Ramp-up nhanh (2p lên 1000 user)
+//         { duration: "5m", target: 1000 }, // GIỮ (Hold) tải 1000 user trong 5p để ép hệ thống
+
+//         // --- Giai đoạn 2: Giờ nghỉ trưa (Scale-in) ---
+//         { duration: "2m", target: 200 }, // Giảm nhanh xuống 200
+//         { duration: "5m", target: 200 }, // GIỮ mức thấp để dụ hệ thống tắt bớt server (Scale-in)
+
+//         // --- Giai đoạn 3: Cú sốc chiều (Spike/Shock) ---
+//         { duration: "1m", target: 1500 }, // SỐC! Tăng vọt từ 200 -> 1500 chỉ trong 1p (Cực gắt)
+//         { duration: "5m", target: 1500 }, // GIỮ mức đỉnh điểm này để xem server mới có kịp cứu ko?
+
+//         // --- Kết thúc ---
+//         { duration: "2m", target: 0 }, // Giảm dần về 0
+//       ],
+//       gracefulRampDown: "30s",
+//     },
+//   },
+// };
+// 2
 export const options = {
   scenarios: {
-    high_rps: {
-      executor: "ramping-arrival-rate",
-      startRate: 0, // 100 req/s lúc bắt đầu
-      timeUnit: "1s", // đơn vị của target là "per second"
-      preAllocatedVUs: 200, // VUs tối thiểu k6 giữ sẵn
-      maxVUs: 3000, // VUs tối đa cho phép scale lên
+    spike_test: { // Đặt tên là Spike Test
+      executor: "ramping-vus", // QUAN TRỌNG: Dùng User làm chuẩn
+      startVUs: 0,
       stages: [
-        { duration: "5m", target: 50 },
-        { duration: "10m", target: 500},
-        { duration: "15m", target: 1000 },
-        { duration: "10m", target: 0 },
+        // Giai đoạn 1: Warm-up nhẹ nhàng (giả lập traffic bình thường)
+        { duration: "2m", target: 100 }, 
+        
+        // Giai đoạn 2: CÚ SỐC (Spike) - Tăng gấp 15 lần trong 1 phút
+        // Đây là lúc xem AI hay AWS phản ứng nhanh hơn
+        { duration: "3m", target: 1500 }, 
+        
+        // Giai đoạn 3: Duy trì áp lực (Sustain)
+        // Xem hệ thống nào ổn định Memory tốt hơn khi giữ tải cao
+        { duration: "10m", target: 1500 }, 
+        
+        // Giai đoạn 4: Kết thúc
+        { duration: "5m", target: 0 }, 
       ],
+      gracefulRampDown: "30s",
     },
   },
 };
+// 1
+// export const options = {
+//   scenarios: {
+//     capacity_ramp_up: { // Tên scenario: Kiểm tra sức chứa
+//       executor: "ramping-vus", // Dùng User ảo (VUs) làm chuẩn
+//       startVUs: 0,
+//       stages: [
+//         // Giai đoạn 1: Khởi động nhẹ (Warm up)
+//         // Tăng từ 0 lên 50 user trong 5 phút. 
+//         // Mục đích: Để cache được làm nóng, hệ thống thoát khỏi trạng thái ngủ.
+//         { duration: "5m", target: 50 },
 
-// =======================================
-// ENDPOINT MIX (giữ giống script cũ)
-// =======================================
+//         // Giai đoạn 2: Tăng tốc (Ramp up)
+//         // Tăng từ 50 lên 500 user trong 10 phút.
+//         // Mục đích: Xem hệ thống bắt đầu scale ở mốc nào (ví dụ ở user thứ 200 hay 300?).
+//         { duration: "10m", target: 500 },
+
+//         // Giai đoạn 3: Về đích (Stress / Peak)
+//         // Tăng từ 500 lên 1000 user trong 15 phút.
+//         // Mục đích: Ép hệ thống lên tải cực đại. Quan sát xem 5 tasks của Custom AI có chịu nổi 1000 user không.
+//         { duration: "15m", target: 1000 },
+
+//         // Giai đoạn 4: Hạ nhiệt (Cool down)
+//         // Giảm từ từ về 0.
+//         // Mục đích: Xem hệ thống scale-in (tắt bớt máy) có mượt không hay bị lỗi.
+//         { duration: "10m", target: 0 },
+//       ],
+//       gracefulRampDown: "30s", // Cho phép 30s để các request cuối cùng hoàn tất
+//     },
+//   },
+// };
 
 const endpoints = [
   { method: "GET", url: "/api/products/", weight: 0.5 },

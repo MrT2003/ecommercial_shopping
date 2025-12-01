@@ -1,10 +1,11 @@
 import 'dart:convert';
+import 'package:ecommercial_shopping/core/constants/app_config.dart';
 import 'package:ecommercial_shopping/core/models/order.dart';
 import 'package:http/http.dart' as http;
 
 class OrderService {
   // static const String _baseUrl = "http://10.0.2.2:8000/api/orders";
-  static const String _baseUrl = "http://192.168.1.12:8000/api/orders";
+  static const String _baseUrl = AppConfig.orderEndpoint;
 
   Future<bool> placeOrder(Order order) async {
     final url = Uri.parse("$_baseUrl"); // hoặc "$_baseUrl/place" tuỳ backend

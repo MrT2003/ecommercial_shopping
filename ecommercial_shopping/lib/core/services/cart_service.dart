@@ -1,10 +1,11 @@
 import 'dart:convert';
+import 'package:ecommercial_shopping/core/constants/app_config.dart';
 import 'package:ecommercial_shopping/core/models/cart.dart';
 import 'package:http/http.dart' as http;
 
 class CartService {
   // static const String _baseUrl = "http://10.0.2.2:8000/api/carts";
-  static const String _baseUrl = "http://192.168.1.12:8000/api/carts";
+  static const String _baseUrl = AppConfig.cartEndpoint;
 
   Future<bool> addToCart({
     required String userId,
@@ -131,54 +132,4 @@ class CartService {
       throw Exception("Error getting total price: $e");
     }
   }
-
-//   // Get user's cart with total price
-//   Future<Cart?> getUserCart(String userId) async {
-//     try {
-//       final carts = await fetchProductsInCart();
-
-//       // Find cart by userId
-//       for (var cart in carts) {
-//         if (cart.userId == userId) {
-//           return cart;
-//         }
-//       }
-
-//       // Return empty cart if not found
-//       return Cart(
-//         id: '',
-//         userId: userId,
-//         items: [],
-//         totalPrice: 0.0,
-//       );
-//     } catch (e) {
-//       print("Error getting user cart: $e");
-//       throw Exception("Error getting user cart: $e");
-//     }
-//   }
-
-//   // Remove item from cart
-//   Future<bool> removeFromCart({
-//     required String userId,
-//     required String productId,
-//   }) async {
-//     try {
-//       final response = await http.delete(
-//         Uri.parse("$_baseUrl/remove"),
-//         headers: {"Content-Type": "application/json"},
-//         body: jsonEncode({
-//           "user_id": userId,
-//           "product_id": productId,
-//         }),
-//       );
-
-//       print("Remove response status: ${response.statusCode}");
-//       print("Remove response body: ${response.body}");
-
-//       return response.statusCode == 200;
-//     } catch (e) {
-//       print("Exception in removeFromCart: $e");
-//       return false;
-//     }
-//   }
 }
