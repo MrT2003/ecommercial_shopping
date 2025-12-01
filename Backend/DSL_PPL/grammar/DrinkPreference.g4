@@ -6,15 +6,15 @@ program
     : request EOF
     ;
 
-// Ví dụ: "i want cold coffee with low sugar and no caffeine"
+// Ví dụ: "i want a cold coffee with low sugar and no caffeine"
 request
     : (prefix)* drinkPref (AND drinkPref)*
     ;
 
 // "i want" | "give me"
 prefix
-    : I WANT
-    | GIVE ME
+    : I WANT A
+    | GIVE ME A
     ;
 
 // 1 cụm mô tả đồ uống
@@ -77,6 +77,7 @@ I       : 'i'     | 'I'     ;
 WANT    : 'want'  | 'Want'  ;
 GIVE    : 'give'  | 'Give'  ;
 ME      : 'me'    | 'Me'    ;
+A       : 'a'     | 'A'     ;
 
 // temperature
 HOT     : 'hot'   | 'Hot'   ;

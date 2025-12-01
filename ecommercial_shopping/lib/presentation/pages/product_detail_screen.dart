@@ -1,15 +1,25 @@
 import 'package:ecommercial_shopping/core/models/product.dart';
+import 'package:ecommercial_shopping/core/providers/auth_provider.dart';
+import 'package:ecommercial_shopping/core/providers/cart_provider.dart';
 import 'package:ecommercial_shopping/presentation/widgets/detail/_build_extra_item.dart';
 import 'package:ecommercial_shopping/presentation/widgets/detail/_build_info_chip.dart';
 import 'package:ecommercial_shopping/presentation/widgets/detail/_build_size_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProductDetailScreen extends StatelessWidget {
+class ProductDetailScreen extends ConsumerWidget {
   final Product product;
+
   const ProductDetailScreen({super.key, required this.product});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authStateProvider);
+    final userId = authState.when(
+      data: (user) => user?.userId ?? '',
+      loading: () => '',
+      error: (_, __) => '',
+    );
     return Scaffold(
       backgroundColor: Colors.white,
       body: CustomScrollView(
@@ -263,7 +273,24 @@ class ProductDetailScreen extends StatelessWidget {
             ),
             Expanded(
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  // print("DEBUG: Giá trị price nhận được: $price");
+                  final result = await ref.read(
+                    cartAddProvider({
+                      'userId': userId,
+                      'productId': product.id,
+                      'quantity': 1,
+                      'price': product.price,
+                      'name': product.name,
+                      'image': product.imageUrl,
+                    }).future,
+                  );
+                  ref.invalidate(cartProvider);
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content:
+                        Text(result ? 'Thêm thành công!' : 'Thêm thất bại.'),
+                  ));
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepOrange,
                   foregroundColor: Colors.white,

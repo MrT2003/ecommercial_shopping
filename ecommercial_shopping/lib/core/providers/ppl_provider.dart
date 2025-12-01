@@ -4,36 +4,35 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PplState {
   final bool isLoading;
+  final String? error;
   final PplParseResult? parseResult;
   final List<PplDrinkRecommendation> recommendations;
-  final String? error;
 
-  const PplState({
+  PplState({
     required this.isLoading,
+    required this.error,
     required this.parseResult,
     required this.recommendations,
-    required this.error,
   });
 
-  factory PplState.initial() => const PplState(
+  factory PplState.initial() => PplState(
         isLoading: false,
-        parseResult: null,
-        recommendations: [],
         error: null,
+        parseResult: null,
+        recommendations: const [],
       );
 
   PplState copyWith({
     bool? isLoading,
+    String? error,
     PplParseResult? parseResult,
     List<PplDrinkRecommendation>? recommendations,
-    String? error,
   }) {
     return PplState(
       isLoading: isLoading ?? this.isLoading,
+      error: error,
       parseResult: parseResult ?? this.parseResult,
       recommendations: recommendations ?? this.recommendations,
-      // cho phép truyền null để clear error
-      error: error,
     );
   }
 }
@@ -52,34 +51,44 @@ class PplNotifier extends StateNotifier<PplState> {
     if (trimmed.isEmpty) return;
 
     try {
+      // reset error + set loading
       state = state.copyWith(
         isLoading: true,
         error: null,
+        parseResult: null,
         recommendations: [],
       );
 
+      // 1) Gọi /parse
       final parseRes = await _service.parseText(text: trimmed);
+
+      // 2) Gọi /recommend với kết quả parse
       final recs = await _service.recommend(query: parseRes);
 
       state = state.copyWith(
         isLoading: false,
+        error: null,
         parseResult: parseRes,
         recommendations: recs,
       );
     } catch (e) {
+      // e sẽ là Exception("...message từ backend...")
+      var msg = e.toString();
+      if (msg.startsWith('Exception: ')) {
+        msg = msg.replaceFirst('Exception: ', '');
+      }
+
       state = state.copyWith(
         isLoading: false,
-        error: e.toString(),
+        error: msg,
+        parseResult: null,
+        recommendations: [],
       );
     }
-  }
-
-  void clear() {
-    state = PplState.initial();
   }
 }
 
 final pplProvider = StateNotifierProvider<PplNotifier, PplState>((ref) {
-  final service = ref.watch(pplServiceProvider);
+  final service = PplService();
   return PplNotifier(service);
 });

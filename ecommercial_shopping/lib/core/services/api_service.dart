@@ -30,13 +30,18 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        List jsonData = json.decode(response.body);
+        final jsonData = json.decode(response.body) as List;
         return jsonData.map((json) => Product.fromJson(json)).toList();
       } else {
-        throw Exception("Failed to load products");
+        // ❗ Với search: coi như không tìm thấy sản phẩm → trả [] thay vì throw
+        print(
+            "Search failed ${response.statusCode}: ${response.body}"); // log để debug
+        return [];
       }
     } catch (e) {
-      throw Exception("Error: $e");
+      // ❗ Lỗi mạng/bất ngờ → cũng trả [] cho user, không quăng exception ra UI
+      print("Search exception: $e");
+      return [];
     }
   }
 

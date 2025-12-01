@@ -1,6 +1,3 @@
-# syntax_checker.py
-# Vị trí: PPLPROJECT/CompiledFiles/grammar/syntax_checker.py
-
 from antlr4 import InputStream, CommonTokenStream
 from antlr4.error.ErrorListener import ErrorListener
 

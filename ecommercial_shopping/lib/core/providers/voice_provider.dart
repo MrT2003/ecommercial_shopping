@@ -29,18 +29,15 @@ class VoiceNotifier extends Notifier<VoiceState> {
     state = state.copyWith(isAvailable: available);
   }
 
-  // Hàm quan trọng nhất: Bật/Tắt Mic
   void toggleListening() async {
     if (!state.isAvailable) {
-      await initSpeech(); // Thử khởi tạo lại nếu chưa có
+      await initSpeech();
     }
 
     if (state.isListening) {
-      // Đang nghe -> Dừng lại
       _speech.stop();
       state = state.copyWith(isListening: false);
     } else {
-      // Chưa nghe -> Bắt đầu nghe
       state = state.copyWith(isListening: true, text: ''); // Reset text cũ
 
       _speech.listen(

@@ -11,3 +11,5 @@ class RecommendRequest(BaseModel):
     sweetness: Optional[str] = None
     caffeine: Optional[str] = None
     size: Optional[str] = None
+
+

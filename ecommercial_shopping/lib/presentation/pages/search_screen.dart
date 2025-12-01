@@ -1,20 +1,90 @@
 import 'package:ecommercial_shopping/core/providers/product_provider.dart';
+import 'package:ecommercial_shopping/core/providers/ppl_provider.dart';
 import 'package:ecommercial_shopping/presentation/pages/product_detail_screen.dart';
+import 'package:ecommercial_shopping/presentation/pages/ppl_resule_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SearchScreen extends ConsumerWidget {
   const SearchScreen({super.key});
 
+  Future<void> _runDslSearch(BuildContext context, WidgetRef ref) async {
+    // Lấy text hiện tại từ searchQueryProvider
+    final text = ref.read(searchQueryProvider).trim();
+
+    if (text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Hãy nhập câu để tìm bằng DSL')),
+      );
+      return;
+    }
+
+    final pplState = ref.read(pplProvider);
+    if (pplState.isLoading) return;
+
+    final notifier = ref.read(pplProvider.notifier);
+    await notifier.parseAndRecommend(text);
+
+    final resultState = ref.read(pplProvider);
+    if (!context.mounted) return;
+
+    // 1) Lỗi cú pháp / lỗi backend
+    if (resultState.error != null) {
+      await showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Lỗi cú pháp'),
+          content: Text(resultState.error!),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    // 2) Không tìm thấy sản phẩm
+    if (resultState.recommendations.isEmpty) {
+      await showDialog(
+        context: context,
+        builder: (ctx) => const AlertDialog(
+          title: Text('Không tìm thấy sản phẩm'),
+          content: Text(
+            'Không tìm thấy sản phẩm phù hợp với yêu cầu của bạn.\n'
+            'Hãy thử:\n'
+            '- "I want a cold coffee"\n'
+            '- "Give me a warm tea without caffeine"',
+          ),
+        ),
+      );
+      return;
+    }
+
+    // 3) Có kết quả → sang PPL result screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PplResultScreen(
+          queryText: text,
+          results: resultState.recommendations,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final searchProducts = ref.watch(searchProductsProvider);
+    final pplState = ref.watch(pplProvider);
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Colors.deepOrange,
         ),
         elevation: 0,
@@ -27,29 +97,41 @@ class SearchScreen extends ConsumerWidget {
           ),
           child: TextField(
             decoration: InputDecoration(
-              hintText: "Search your favourite food",
-              prefixIcon: Icon(Icons.search, color: Colors.deepOrange),
-              suffixIcon: Icon(Icons.filter_alt, color: Colors.deepOrange),
+              hintText: "Search name or type DSL...",
+              prefixIcon: const Icon(Icons.search, color: Colors.deepOrange),
+              // Nút DSL search
+              suffixIcon: IconButton(
+                onPressed: () => _runDslSearch(context, ref),
+                icon: pplState.isLoading
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.auto_awesome, color: Colors.deepOrange),
+                tooltip: 'Smart search (DSL)',
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
                 borderSide: BorderSide.none,
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
-                borderSide: BorderSide(
+                borderSide: const BorderSide(
                   color: Colors.deepOrange,
                   width: 1.0,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
-                borderSide: BorderSide(
+                borderSide: const BorderSide(
                   color: Colors.deepOrange,
                   width: 1.0,
                 ),
               ),
-              contentPadding: EdgeInsets.symmetric(vertical: 10),
+              contentPadding: const EdgeInsets.symmetric(vertical: 10),
             ),
+            // Gõ là search theo tên như cũ
             onChanged: (value) {
               ref.read(searchQueryProvider.notifier).state = value;
             },
@@ -59,50 +141,55 @@ class SearchScreen extends ConsumerWidget {
       body: searchProducts.when(
         data: (products) {
           if (products.isEmpty) {
-            return Center(child: Text('No products found.'));
+            return const Center(child: Text('No products found.'));
           }
           return ListView.builder(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             itemCount: products.length,
             itemBuilder: (context, index) {
               final product = products[index];
               return Card(
                 child: ListTile(
-                    leading: Image.network(product.imageUrl,
-                        width: 50, height: 50, fit: BoxFit.cover),
-                    title: Text(product.name),
-                    subtitle: Text("\$${product.price.toStringAsFixed(2)}"),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        PageRouteBuilder(
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  ProductDetailScreen(product: product),
-                          transitionsBuilder:
-                              (context, animation, secondaryAnimation, child) {
-                            const begin =
-                                Offset(1.0, 0.0); // Trượt từ phải sang
-                            const end = Offset.zero;
-                            const curve = Curves.ease;
+                  leading: Image.network(
+                    product.imageUrl,
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.cover,
+                  ),
+                  title: Text(product.name),
+                  subtitle: Text(
+                    "\$${product.price.toStringAsFixed(2)}",
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            ProductDetailScreen(product: product),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          const begin = Offset(1.0, 0.0);
+                          const end = Offset.zero;
+                          const curve = Curves.ease;
 
-                            var tween = Tween(begin: begin, end: end)
-                                .chain(CurveTween(curve: curve));
-                            var offsetAnimation = animation.drive(tween);
+                          final tween = Tween(begin: begin, end: end)
+                              .chain(CurveTween(curve: curve));
+                          final offsetAnimation = animation.drive(tween);
 
-                            return SlideTransition(
-                              position: offsetAnimation,
-                              child: child,
-                            );
-                          },
-                        ),
-                      );
-                    }),
+                          return SlideTransition(
+                            position: offsetAnimation,
+                            child: child,
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
               );
             },
           );
         },
-        loading: () => Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(child: Text('Error: $error')),
       ),
     );

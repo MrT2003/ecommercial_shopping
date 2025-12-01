@@ -1,10 +1,12 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
 
-from DSL_PPL.src.drink_semantics import DrinkPreference, parse_request
+from DSL_PPL.src.drink_semantics import DrinkPreference, PreferenceVisitor
+from DSL_PPL.src.syntax_checker import check_syntax   # 👈 TẬN DỤNG file này
 from DSL_PPL.src.mongo_query import build_mongo_query
-from app.db.database import product_collection  # <-- dùng Product
+from app.db.database import product_collection
+
 
 router = APIRouter(
     prefix="/ppl",
@@ -25,10 +27,6 @@ class PreferenceOut(BaseModel):
 
 
 class RecommendRequest(BaseModel):
-  """
-  Request body cho /ppl/recommend
-  Giống hệt PreferenceOut để nhận JSON từ Flutter
-  """
   temperature: Optional[str] = None
   baseType: Optional[str] = None
   sweetness: Optional[str] = None
@@ -50,57 +48,86 @@ class ProductOut(BaseModel):
 
 @router.post("/parse", response_model=PreferenceOut)
 def parse_text(body: ParseRequest):
-  """
-  Nhận text DSL -> trả về semantic (PreferenceOut) để Flutter hiển thị.
-  """
-  pref: DrinkPreference = parse_request(body.text)
-  return PreferenceOut(
-      temperature=pref.temperature,
-      baseType=pref.baseType,
-      sweetness=pref.sweetness,
-      caffeine=pref.caffeine,
-      size=pref.size,
-  )
+    # 1) Check syntax bằng syntax_checker
+    ok, errs, tree = check_syntax(body.text)
+
+    if not ok:
+        # Sai grammar: ví dụ chỉ nói "I want a", "Give me a", hoặc lung tung
+        # Bạn có thể log thêm errs nếu cần debug
+        # print("DSL errors:", errs)
+
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "message": (
+                    "Cú pháp không hợp lệ.\n"
+                    "Ví dụ đúng:\n"
+                    "- \"I want a cold coffee\"\n"
+                    "- \"Give me a iced tea with low sugar\""
+                )
+            },
+        )
+
+    # 2) Grammar OK → dùng visitor để lấy meaning
+    visitor = PreferenceVisitor()
+    pref: DrinkPreference = visitor.visit(tree)  # tree = program
+
+    # 3) Nếu tất cả field đều None → coi như user không nói rõ đồ uống
+    if all(
+        getattr(pref, field) is None
+        for field in ("temperature", "baseType", "sweetness", "caffeine", "size")
+    ):
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "message": (
+                    "Thiếu thông tin đồ uống.\n"
+                    "Bạn cần nói rõ hơn, ví dụ:\n"
+                    "- \"I want a cold coffee\"\n"
+                    "- \"Give me a warm tea without caffeine\""
+                )
+            },
+        )
+
+    # 4) Trả kết quả như cũ
+    return PreferenceOut(
+        temperature=pref.temperature,
+        baseType=pref.baseType,
+        sweetness=pref.sweetness,
+        caffeine=pref.caffeine,
+        size=pref.size,
+    )
 
 
 @router.post("/recommend", response_model=List[ProductOut])
 async def recommend_products(body: RecommendRequest):
-  """
-  Nhận semantic (đã parse sẵn từ Flutter) -> build query -> trả về list Product.
-  """
-  # 1. Map RecommendRequest -> DrinkPreference (cho hàm build_mongo_query)
-  pref = DrinkPreference(
-      temperature=body.temperature,
-      baseType=body.baseType,
-      sweetness=body.sweetness,
-      caffeine=body.caffeine,
-      size=body.size,
-  )
+    # Map sang DrinkPreference để tái dùng build_mongo_query
+    pref = DrinkPreference(
+        temperature=body.temperature,
+        baseType=body.baseType,
+        sweetness=body.sweetness,
+        caffeine=body.caffeine,
+        size=body.size,
+    )
 
-  # 2. Build filter Mongo theo schema Product
-  mongo_filter = build_mongo_query(pref)
+    mongo_filter = build_mongo_query(pref)
+    coll = product_collection()
+    docs = await coll.find(mongo_filter).to_list(length=50)
 
-  # 3. Collection Product (Motor async)
-  coll = product_collection()
+    products: List[ProductOut] = []
+    for doc in docs:
+        products.append(
+            ProductOut(
+                id=str(doc.get("_id")),
+                name=doc.get("name", ""),
+                description=doc.get("description"),
+                category=doc.get("category"),
+                drinkCategory=doc.get("drinkCategory"),
+                temperatures=doc.get("temperatures"),
+                sweetnessLevel=doc.get("sweetnessLevel"),
+                price=doc.get("price"),
+                imageURL=doc.get("imageURL"),
+            )
+        )
 
-  # 4. Query async
-  docs = await coll.find(mongo_filter).to_list(length=50)
-
-  # 5. Map sang ProductOut
-  products: List[ProductOut] = []
-  for doc in docs:
-      products.append(
-          ProductOut(
-              id=str(doc.get("_id")),
-              name=doc.get("name", ""),
-              description=doc.get("description"),
-              category=doc.get("category"),
-              drinkCategory=doc.get("drinkCategory"),
-              temperatures=doc.get("temperatures"),
-              sweetnessLevel=doc.get("sweetnessLevel"),
-              price=doc.get("price"),
-              imageURL=doc.get("imageURL"),
-          )
-      )
-
-  return products
+    return products

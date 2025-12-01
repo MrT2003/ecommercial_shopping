@@ -1,6 +1,6 @@
 import 'package:ecommercial_shopping/core/providers/ppl_provider.dart';
 import 'package:ecommercial_shopping/core/providers/voice_provider.dart';
-import 'package:ecommercial_shopping/presentation/pages/category_detail_screen.dart';
+import 'package:ecommercial_shopping/presentation/pages/ppl_resule_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -43,6 +43,7 @@ class _VoiceInputScreenState extends ConsumerState<VoiceInputScreen>
 
   @override
   Widget build(BuildContext context) {
+    // điều khiển animation theo state listening
     ref.listen(voiceProvider, (previous, next) {
       if (next.isListening) {
         _controller.repeat(reverse: true);
@@ -54,123 +55,228 @@ class _VoiceInputScreenState extends ConsumerState<VoiceInputScreen>
 
     final voiceState = ref.watch(voiceProvider);
     final pplState = ref.watch(pplProvider);
-    final textController = TextEditingController(text: voiceState.text);
-
-    textController.selection = TextSelection.fromPosition(
-      TextPosition(offset: textController.text.length),
-    );
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Tìm kiếm bằng giọng nói')),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
+      backgroundColor: Colors.white,
+      body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextField(
-              controller: textController,
-              readOnly: true,
-              decoration: const InputDecoration(
-                hintText: 'Nhấn mic và nói...',
-                border: OutlineInputBorder(),
+            /// Top bar: "Speak now" + nút X
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Speak now',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close, size: 28),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 20),
-            if (voiceState.text.isNotEmpty)
-              Text(
-                "Độ chính xác: ${(voiceState.confidence * 100).toStringAsFixed(1)}%",
-                style: const TextStyle(color: Colors.grey),
-              ),
-            const SizedBox(height: 40),
-            AnimatedBuilder(
-              animation: _controller,
-              builder: (context, child) {
-                return Transform.scale(
-                  scale: voiceState.isListening ? _scaleAnim.value : 1.0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: voiceState.isListening
-                          ? [
-                              BoxShadow(
-                                color: Colors.red.withOpacity(0.5),
-                                blurRadius: 20 + _glowAnim.value,
-                                spreadRadius: 5 + _glowAnim.value,
-                              ),
-                            ]
-                          : [],
+
+            /// PHẦN SPACE Ở GIỮA – hiện câu nói nếu có
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (voiceState.text.trim().isNotEmpty) ...[
+                    const Text(
+                      'You said',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.grey,
+                      ),
                     ),
-                    child: GestureDetector(
-                      onTap: () {
-                        ref.read(voiceProvider.notifier).toggleListening();
-                      },
-                      child: CircleAvatar(
-                        radius: 35,
-                        backgroundColor:
-                            voiceState.isListening ? Colors.red : Colors.blue,
-                        child: Icon(
-                          voiceState.isListening ? Icons.mic : Icons.mic_none,
-                          color: Colors.white,
-                          size: 30,
+                    const SizedBox(height: 8),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Text(
+                        voiceState.text,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
+                    const SizedBox(height: 40),
+                  ],
+                  SizedBox(height: 50),
+
+                  /// Gợi ý "Try saying..."
+                  const Text(
+                    'Try saying',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                );
-              },
-            ),
-            const SizedBox(height: 10),
-            Text(
-              voiceState.isListening ? "Listening..." : "Search products...",
-            ),
-            const SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: voiceState.text.isEmpty || pplState.isLoading
-                  ? null
-                  : () async {
-                      // 1) Gọi parse + recommend
-                      final notifier = ref.read(pplProvider.notifier);
-                      await notifier.parseAndRecommend(voiceState.text);
+                  const SizedBox(height: 4),
+                  const Text(
+                    '"I want a ....."',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
 
-                      // 2) Lấy state mới
-                      final resultState = ref.read(pplProvider);
+                  const SizedBox(height: 24),
 
-                      if (!mounted) return; // tránh lỗi nếu widget bị dispose
-
-                      if (resultState.error != null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(resultState.error!)),
-                        );
-                        return;
-                      }
-
-                      if (resultState.recommendations.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Không tìm thấy sản phẩm phù hợp 🤔'),
+                  /// Nút mic với animation
+                  AnimatedBuilder(
+                    animation: _controller,
+                    builder: (context, child) {
+                      return Transform.scale(
+                        scale: voiceState.isListening ? _scaleAnim.value : 1.0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            boxShadow: voiceState.isListening
+                                ? [
+                                    BoxShadow(
+                                      color: Colors.deepOrange.withOpacity(0.5),
+                                      blurRadius: 20 + _glowAnim.value,
+                                      spreadRadius: 5 + _glowAnim.value,
+                                    ),
+                                  ]
+                                : [],
                           ),
-                        );
-                        return;
-                      }
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => CategoryDetailScreen(
-                            categoryName: 'Kết quả cho "${voiceState.text}"',
-                            pplResults: resultState.recommendations,
+                          child: GestureDetector(
+                            onTap: () {
+                              ref
+                                  .read(voiceProvider.notifier)
+                                  .toggleListening();
+                            },
+                            child: const CircleAvatar(
+                              radius: 50,
+                              backgroundColor: Colors.deepOrange,
+                              child: Icon(
+                                Icons.mic,
+                                color: Colors.white,
+                                size: 40,
+                              ),
+                            ),
                           ),
                         ),
                       );
                     },
-              child: pplState.isLoading
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Text("Tìm kiếm sản phẩm"),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  /// Trạng thái Listening / Tap to speak
+                  Text(
+                    voiceState.isListening ? 'Listening...' : 'Tap to speak',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
             ),
+
+            /// Nút "Tìm kiếm sản phẩm" ở dưới
+            Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
+                child: ElevatedButton(
+                  onPressed: voiceState.text.isEmpty || pplState.isLoading
+                      ? null
+                      : () async {
+                          final text = voiceState.text.trim();
+                          if (text.isEmpty) return;
+
+                          final notifier = ref.read(pplProvider.notifier);
+
+                          await notifier.parseAndRecommend(text);
+
+                          final resultState = ref.read(pplProvider);
+                          if (!mounted) return;
+
+                          // 1) LỖI CÚ PHÁP / LỖI TỪ BACKEND
+                          if (resultState.error != null) {
+                            await showDialog(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                title: const Text('Lỗi cú pháp'),
+                                content: Text(resultState.error!),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.of(ctx).pop(),
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              ),
+                            );
+                            return;
+                          }
+
+                          // 2) KHÔNG TÌM THẤY SẢN PHẨM PHÙ HỢP
+                          if (resultState.recommendations.isEmpty) {
+                            await showDialog(
+                              context: context,
+                              builder: (ctx) => const AlertDialog(
+                                title: Text('Không tìm thấy sản phẩm'),
+                                content: Text(
+                                  'Không tìm thấy sản phẩm phù hợp với yêu cầu của bạn.\n'
+                                  'Hãy thử nói một câu khác, ví dụ:\n'
+                                  '- "I want a cold coffee"\n'
+                                  '- "Give me a warm tea without caffeine"',
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+
+                          // 3) Có kết quả → sang screen PPL
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => PplResultScreen(
+                                queryText: text,
+                                results: resultState.recommendations,
+                              ),
+                            ),
+                          );
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepOrange,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                  ),
+                  child: pplState.isLoading
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text(
+                          "Tìm kiếm sản phẩm",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                )),
           ],
         ),
       ),
