@@ -44,13 +44,13 @@ class DrinkPreferenceVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by DrinkPreferenceParser#sweetness.
-    def visitSweetness(self, ctx:DrinkPreferenceParser.SweetnessContext):
+    # Visit a parse tree produced by DrinkPreferenceParser#caffeine.
+    def visitCaffeine(self, ctx:DrinkPreferenceParser.CaffeineContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by DrinkPreferenceParser#caffeine.
-    def visitCaffeine(self, ctx:DrinkPreferenceParser.CaffeineContext):
+    # Visit a parse tree produced by DrinkPreferenceParser#sweetness.
+    def visitSweetness(self, ctx:DrinkPreferenceParser.SweetnessContext):
         return self.visitChildren(ctx)
 
 

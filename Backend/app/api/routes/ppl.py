@@ -101,7 +101,7 @@ def parse_text(body: ParseRequest):
 
 @router.post("/recommend", response_model=List[ProductOut])
 async def recommend_products(body: RecommendRequest):
-    # Map sang DrinkPreference để tái dùng build_mongo_query
+    # 1) Map sang DrinkPreference
     pref = DrinkPreference(
         temperature=body.temperature,
         baseType=body.baseType,
@@ -109,11 +109,23 @@ async def recommend_products(body: RecommendRequest):
         caffeine=body.caffeine,
         size=body.size,
     )
+    if pref.caffeine is not None:
+        return []
+    
+    print("PREF:", pref)  # ✅ đặt ở đây
 
+    # 2) Build filter Mongo
     mongo_filter = build_mongo_query(pref)
+
+    print("MONGO FILTER:", mongo_filter)  # ✅ đặt ở đây
+
+    # 3) Query DB
     coll = product_collection()
     docs = await coll.find(mongo_filter).to_list(length=50)
 
+    print("DOCS COUNT:", len(docs))  # (tuỳ chọn) để biết có match không
+
+    # 4) Map sang ProductOut
     products: List[ProductOut] = []
     for doc in docs:
         products.append(

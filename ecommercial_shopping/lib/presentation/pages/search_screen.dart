@@ -14,7 +14,8 @@ class SearchScreen extends ConsumerWidget {
 
     if (text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Hãy nhập câu để tìm bằng DSL')),
+        const SnackBar(
+            content: Text('Please enter a sentence to search with DSL')),
       );
       return;
     }
@@ -33,7 +34,7 @@ class SearchScreen extends ConsumerWidget {
       await showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: const Text('Lỗi cú pháp'),
+          title: const Text('Syntax Error'),
           content: Text(resultState.error!),
           actions: [
             TextButton(
@@ -51,12 +52,12 @@ class SearchScreen extends ConsumerWidget {
       await showDialog(
         context: context,
         builder: (ctx) => const AlertDialog(
-          title: Text('Không tìm thấy sản phẩm'),
+          title: Text('Do not found'),
           content: Text(
-            'Không tìm thấy sản phẩm phù hợp với yêu cầu của bạn.\n'
-            'Hãy thử:\n'
+            'There is no available product matching your request.\n'
+            'Let\'s try:\n'
             '- "I want a cold coffee"\n'
-            '- "Give me a warm tea without caffeine"',
+            '- "Give a cold tea and medium sugar and large"',
           ),
         ),
       );

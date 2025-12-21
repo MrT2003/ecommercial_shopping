@@ -166,61 +166,62 @@ class ProductDetailScreen extends ConsumerWidget {
                       ),
                     ),
                     SizedBox(height: 20),
-                    Text(
-                      "Size",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        BuildSizeButton(
-                          size: "S",
-                          isSelected: false,
-                          onTap: () {
-                            // Handle size selection
-                          },
-                        ),
-                        const SizedBox(width: 12),
-                        BuildSizeButton(
-                          size: "M",
-                          isSelected: true,
-                          onTap: () {
-                            // Handle size selection
-                          },
-                        ),
-                        const SizedBox(width: 12),
-                        BuildSizeButton(
-                          size: "L",
-                          isSelected: false,
-                          onTap: () {
-                            // Handle size selection
-                          },
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    Text(
-                      "Extra",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 12),
-                    BuildExtraItem(
-                      name: "Extra Cheese",
-                      price: "2.50",
-                    ),
-                    BuildExtraItem(
-                      name: "Double Pepperoni",
-                      price: "3.00",
-                    ),
-                    BuildExtraItem(
-                      name: "Mushroom",
-                      price: "1.50",
-                    ),
+                    // Text(
+                    //   "Size",
+                    //   style: TextStyle(
+                    //     fontSize: 20,
+                    //     fontWeight: FontWeight.bold,
+                    //   ),
+                    // ),
+                    // Row(
+                    //   children: [
+                    //     BuildSizeButton(
+                    //       size: "S",
+                    //       isSelected: false,
+                    //       onTap: () {
+                    //         // Handle size selection
+                    //       },
+                    //     ),
+                    //     const SizedBox(width: 12),
+                    //     BuildSizeButton(
+                    //       size: "M",
+                    //       isSelected: true,
+                    //       onTap: () {
+                    //         // Handle size selection
+                    //       },
+                    //     ),
+                    //     const SizedBox(width: 12),
+                    //     BuildSizeButton(
+                    //       size: "L",
+                    //       isSelected: false,
+                    //       onTap: () {
+                    //         // Handle size selection
+                    //       },
+                    //     ),
+                    //   ],
+                    // ),
+
+                    // SizedBox(height: 20),
+                    // Text(
+                    //   "Extra",
+                    //   style: TextStyle(
+                    //     fontSize: 20,
+                    //     fontWeight: FontWeight.bold,
+                    //   ),
+                    // ),
+                    // SizedBox(height: 12),
+                    // BuildExtraItem(
+                    //   name: "Extra Cheese",
+                    //   price: "2.50",
+                    // ),
+                    // BuildExtraItem(
+                    //   name: "Double Pepperoni",
+                    //   price: "3.00",
+                    // ),
+                    // BuildExtraItem(
+                    //   name: "Mushroom",
+                    //   price: "1.50",
+                    // ),
                     SizedBox(height: 100),
                   ],
                 ),
@@ -287,8 +288,7 @@ class ProductDetailScreen extends ConsumerWidget {
                   );
                   ref.invalidate(cartProvider);
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content:
-                        Text(result ? 'Thêm thành công!' : 'Thêm thất bại.'),
+                    content: Text(result ? 'Add Successfully!' : 'Add failed.'),
                   ));
                 },
                 style: ElevatedButton.styleFrom(

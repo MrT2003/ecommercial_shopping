@@ -270,7 +270,7 @@ class _VoiceInputScreenState extends ConsumerState<VoiceInputScreen>
                           ),
                         )
                       : const Text(
-                          "Tìm kiếm sản phẩm",
+                          "Search Products",
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,

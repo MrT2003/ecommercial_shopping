@@ -144,8 +144,8 @@ class BuildRecommendItem extends ConsumerWidget {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
                                   content: Text(result
-                                      ? 'Thêm thành công!'
-                                      : 'Thêm thất bại.'),
+                                      ? 'Add Successfully!'
+                                      : 'Add failed.'),
                                 ));
                               },
                             ),

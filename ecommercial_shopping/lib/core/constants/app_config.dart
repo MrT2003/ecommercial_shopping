@@ -1,6 +1,6 @@
 class AppConfig {
   // --- CHỈ CẦN SỬA IP Ở DÒNG NÀY LÀ XONG ---
-  static const String serverIp = "192.168.1.17";
+  static const String serverIp = "192.168.1.14";
   static const String port = "8000";
 
   // Base URL gốc

@@ -67,12 +67,35 @@ class PreferenceVisitor(DrinkPreferenceVisitor):
         return self.pref
 
     def visitSweetness(self, ctx):
-        self.pref.sweetness = ctx.getText().lower()
+        t = ctx.getText().lower()
+
+        # xử lý dính token: nosugar, lowsugar...
+        t = {
+            "nosugar": "no sugar",
+            "lowsugar": "low sugar",
+            "lesssugar": "less sugar",
+            "mediumsugar": "medium sugar",
+            "highsugar": "high sugar",
+        }.get(t, t)
+
+        if t == "low sugar":
+            t = "less sugar"
+
+        self.pref.sweetness = t
         return self.pref
 
+
+
     def visitCaffeine(self, ctx):
-        self.pref.caffeine = ctx.getText().lower()
+        t = ctx.getText().lower()
+        mapping = {
+            "nocaffeine": "no caffeine",
+            "withoutcaffeine": "without caffeine",
+            "withcaffeine": "with caffeine",
+        }
+        self.pref.caffeine = mapping.get(t, t)
         return self.pref
+
 
     def visitSize(self, ctx):
         self.pref.size = ctx.getText().lower()

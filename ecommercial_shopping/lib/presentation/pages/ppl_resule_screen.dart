@@ -21,12 +21,12 @@ class PplResultScreen extends ConsumerWidget {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        title: Text('Kết quả cho "$queryText"'),
+        title: Text('The result for "$queryText"'),
         centerTitle: true,
       ),
       body: results.isEmpty
           ? const Center(
-              child: Text('Không tìm thấy sản phẩm phù hợp 🤔'),
+              child: Text('No matching products found 🤔'),
             )
           : GridView.builder(
               padding: const EdgeInsets.all(8.0),
@@ -62,8 +62,7 @@ class PplResultScreen extends ConsumerWidget {
                           if (foundProduct == null) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content:
-                                    Text('Không tìm thấy chi tiết sản phẩm'),
+                                content: Text('No matching product found 🤔'),
                               ),
                             );
                             return;
@@ -81,14 +80,14 @@ class PplResultScreen extends ConsumerWidget {
                         loading: () {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Đang tải danh sách sản phẩm...'),
+                              content: Text('Loading product list...'),
                             ),
                           );
                         },
                         error: (err, _) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Lỗi tải sản phẩm: $err'),
+                              content: Text('Error loading product: $err'),
                             ),
                           );
                         },

@@ -16,7 +16,7 @@ class AddressScreen extends ConsumerWidget {
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: Text('Filling Address'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.deepOrange,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -47,9 +47,12 @@ class AddressScreen extends ConsumerWidget {
             // Nút lưu
             ElevatedButton(
               onPressed: () => AddressSaver.save(context, ref),
-              child: Text('Lưu'),
+              child: Text(
+                'Save Address',
+                style: TextStyle(color: Colors.white),
+              ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
+                backgroundColor: Colors.deepOrange,
                 padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
                 textStyle: TextStyle(fontSize: 16),
               ),

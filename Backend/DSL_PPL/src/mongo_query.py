@@ -3,8 +3,6 @@ from .drink_semantics import DrinkPreference
 
 def build_mongo_query(pref: DrinkPreference) -> dict:
     """
-    Chuyển DrinkPreference -> MongoDB filter cho collection Product.
-
     Schema Product (drink):
       - category: "Drink"
       - drinkCategory: "Milk tea", "Coffee", ...
@@ -56,17 +54,17 @@ def build_mongo_query(pref: DrinkPreference) -> dict:
     if pref.sweetness:
         s = pref.sweetness.strip().lower()
 
+        # map DSL -> dạng chuẩn để match DB bằng regex
         sweet_map = {
-            "no sugar": "No sugar",
-            "low sugar": "Low",
-            "medium sugar": "Medium",
-            # Bạn có thể đổi "Extra" thành "High" nếu DB dùng giá trị khác
-            "high sugar": "Extra",
+            "no sugar": "no sugar",
+            "low sugar": "low sugar",
+            "less sugar": "less sugar",
+            "medium sugar": "medium sugar",
+            "high sugar": "high sugar",
         }
-        sweetness_value = sweet_map.get(s)
-        if sweetness_value:
-            query["sweetnessLevel"] = sweetness_value
 
-    # 4. caffeine, size: schema hiện tại chưa có field tương ứng → tạm thời bỏ qua
-
+        v = sweet_map.get(s)
+        if v:
+            query["sweetnessLevel"] = {"$regex": f"^{v}$", "$options": "i"}
+            
     return query

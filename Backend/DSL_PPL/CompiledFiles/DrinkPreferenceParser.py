@@ -11,36 +11,39 @@ else:
 
 def serializedATN():
     with StringIO() as buf:
-        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\35")
-        buf.write("Z\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b")
+        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\37")
+        buf.write("b\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b")
         buf.write("\t\b\4\t\t\t\4\n\t\n\4\13\t\13\3\2\3\2\3\2\3\3\7\3\33")
         buf.write("\n\3\f\3\16\3\36\13\3\3\3\3\3\3\3\7\3#\n\3\f\3\16\3&\13")
-        buf.write("\3\3\4\3\4\3\4\3\4\5\4,\n\4\3\5\3\5\7\5\60\n\5\f\5\16")
-        buf.write("\5\63\13\5\3\6\3\6\3\6\3\6\3\6\5\6:\n\6\3\7\3\7\3\b\3")
-        buf.write("\b\3\b\3\b\3\b\3\b\5\bD\n\b\3\t\3\t\3\t\3\t\3\t\3\t\3")
-        buf.write("\t\3\t\5\tN\n\t\3\n\3\n\3\n\3\n\3\n\3\n\5\nV\n\n\3\13")
-        buf.write("\3\13\3\13\2\2\f\2\4\6\b\n\f\16\20\22\24\2\4\3\2\b\13")
-        buf.write("\4\2\24\24\32\33\2`\2\26\3\2\2\2\4\34\3\2\2\2\6+\3\2\2")
-        buf.write("\2\b-\3\2\2\2\n9\3\2\2\2\f;\3\2\2\2\16C\3\2\2\2\20M\3")
-        buf.write("\2\2\2\22U\3\2\2\2\24W\3\2\2\2\26\27\5\4\3\2\27\30\7\2")
-        buf.write("\2\3\30\3\3\2\2\2\31\33\5\6\4\2\32\31\3\2\2\2\33\36\3")
-        buf.write("\2\2\2\34\32\3\2\2\2\34\35\3\2\2\2\35\37\3\2\2\2\36\34")
-        buf.write("\3\2\2\2\37$\5\b\5\2 !\7\3\2\2!#\5\b\5\2\" \3\2\2\2#&")
-        buf.write("\3\2\2\2$\"\3\2\2\2$%\3\2\2\2%\5\3\2\2\2&$\3\2\2\2\'(")
-        buf.write("\7\4\2\2(,\7\5\2\2)*\7\6\2\2*,\7\7\2\2+\'\3\2\2\2+)\3")
-        buf.write("\2\2\2,\7\3\2\2\2-\61\5\n\6\2.\60\5\n\6\2/.\3\2\2\2\60")
-        buf.write("\63\3\2\2\2\61/\3\2\2\2\61\62\3\2\2\2\62\t\3\2\2\2\63")
-        buf.write("\61\3\2\2\2\64:\5\f\7\2\65:\5\16\b\2\66:\5\20\t\2\67:")
-        buf.write("\5\22\n\28:\5\24\13\29\64\3\2\2\29\65\3\2\2\29\66\3\2")
-        buf.write("\2\29\67\3\2\2\298\3\2\2\2:\13\3\2\2\2;<\t\2\2\2<\r\3")
-        buf.write("\2\2\2=D\7\f\2\2>D\7\r\2\2?D\7\16\2\2@A\7\17\2\2AD\7\r")
-        buf.write("\2\2BD\7\20\2\2C=\3\2\2\2C>\3\2\2\2C?\3\2\2\2C@\3\2\2")
-        buf.write("\2CB\3\2\2\2D\17\3\2\2\2EF\7\22\2\2FN\7\21\2\2GH\7\23")
-        buf.write("\2\2HN\7\21\2\2IJ\7\24\2\2JN\7\21\2\2KL\7\25\2\2LN\7\21")
-        buf.write("\2\2ME\3\2\2\2MG\3\2\2\2MI\3\2\2\2MK\3\2\2\2N\21\3\2\2")
-        buf.write("\2OP\7\26\2\2PV\7\30\2\2QR\7\27\2\2RV\7\30\2\2ST\7\22")
-        buf.write("\2\2TV\7\30\2\2UO\3\2\2\2UQ\3\2\2\2US\3\2\2\2V\23\3\2")
-        buf.write("\2\2WX\t\3\2\2X\25\3\2\2\2\n\34$+\619CMU")
+        buf.write("\3\3\4\3\4\3\4\5\4+\n\4\3\4\3\4\3\4\5\4\60\n\4\5\4\62")
+        buf.write("\n\4\3\5\3\5\7\5\66\n\5\f\5\16\59\13\5\3\6\3\6\3\6\3\6")
+        buf.write("\3\6\5\6@\n\6\3\7\3\7\3\b\3\b\3\b\3\b\3\b\3\b\5\bJ\n\b")
+        buf.write("\3\t\3\t\3\t\3\t\3\t\3\t\5\tR\n\t\3\n\3\n\3\n\3\n\3\n")
+        buf.write("\3\n\3\n\3\n\3\n\3\n\5\n^\n\n\3\13\3\13\3\13\2\2\f\2\4")
+        buf.write("\6\b\n\f\16\20\22\24\2\4\3\2\t\f\4\2\26\26\34\35\2k\2")
+        buf.write("\26\3\2\2\2\4\34\3\2\2\2\6\61\3\2\2\2\b\63\3\2\2\2\n?")
+        buf.write("\3\2\2\2\fA\3\2\2\2\16I\3\2\2\2\20Q\3\2\2\2\22]\3\2\2")
+        buf.write("\2\24_\3\2\2\2\26\27\5\4\3\2\27\30\7\2\2\3\30\3\3\2\2")
+        buf.write("\2\31\33\5\6\4\2\32\31\3\2\2\2\33\36\3\2\2\2\34\32\3\2")
+        buf.write("\2\2\34\35\3\2\2\2\35\37\3\2\2\2\36\34\3\2\2\2\37$\5\b")
+        buf.write("\5\2 !\7\3\2\2!#\5\b\5\2\" \3\2\2\2#&\3\2\2\2$\"\3\2\2")
+        buf.write("\2$%\3\2\2\2%\5\3\2\2\2&$\3\2\2\2\'(\7\4\2\2(*\7\5\2\2")
+        buf.write(")+\7\b\2\2*)\3\2\2\2*+\3\2\2\2+\62\3\2\2\2,-\7\6\2\2-")
+        buf.write("/\7\7\2\2.\60\7\b\2\2/.\3\2\2\2/\60\3\2\2\2\60\62\3\2")
+        buf.write("\2\2\61\'\3\2\2\2\61,\3\2\2\2\62\7\3\2\2\2\63\67\5\n\6")
+        buf.write("\2\64\66\5\n\6\2\65\64\3\2\2\2\669\3\2\2\2\67\65\3\2\2")
+        buf.write("\2\678\3\2\2\28\t\3\2\2\29\67\3\2\2\2:@\5\f\7\2;@\5\16")
+        buf.write("\b\2<@\5\22\n\2=@\5\20\t\2>@\5\24\13\2?:\3\2\2\2?;\3\2")
+        buf.write("\2\2?<\3\2\2\2?=\3\2\2\2?>\3\2\2\2@\13\3\2\2\2AB\t\2\2")
+        buf.write("\2B\r\3\2\2\2CJ\7\r\2\2DJ\7\16\2\2EJ\7\17\2\2FG\7\20\2")
+        buf.write("\2GJ\7\16\2\2HJ\7\21\2\2IC\3\2\2\2ID\3\2\2\2IE\3\2\2\2")
+        buf.write("IF\3\2\2\2IH\3\2\2\2J\17\3\2\2\2KL\7\30\2\2LR\7\32\2\2")
+        buf.write("MN\7\31\2\2NR\7\32\2\2OP\7\23\2\2PR\7\32\2\2QK\3\2\2\2")
+        buf.write("QM\3\2\2\2QO\3\2\2\2R\21\3\2\2\2ST\7\23\2\2T^\7\22\2\2")
+        buf.write("UV\7\24\2\2V^\7\22\2\2WX\7\26\2\2X^\7\22\2\2YZ\7\27\2")
+        buf.write("\2Z^\7\22\2\2[\\\7\25\2\2\\^\7\22\2\2]S\3\2\2\2]U\3\2")
+        buf.write("\2\2]W\3\2\2\2]Y\3\2\2\2][\3\2\2\2^\23\3\2\2\2_`\t\3\2")
+        buf.write("\2`\25\3\2\2\2\f\34$*/\61\67?IQ]")
         return buf.getvalue()
 
 
@@ -56,9 +59,9 @@ class DrinkPreferenceParser ( Parser ):
 
     literalNames = [  ]
 
-    symbolicNames = [ "<INVALID>", "AND", "I", "WANT", "GIVE", "ME", "HOT", 
-                      "WARM", "COLD", "ICED", "COFFEE", "TEA", "JUICE", 
-                      "MILK", "YOGURT", "SUGAR", "NO", "LOW", "MEDIUM", 
+    symbolicNames = [ "<INVALID>", "AND", "I", "WANT", "GIVE", "ME", "A", 
+                      "HOT", "WARM", "COLD", "ICED", "COFFEE", "TEA", "JUICE", 
+                      "MILK", "YOGURT", "SUGAR", "NO", "LOW", "LESS", "MEDIUM", 
                       "HIGH", "WITH", "WITHOUT", "CAFFEINE", "UNDER", "SMALL", 
                       "LARGE", "NUMBER", "WS" ]
 
@@ -69,12 +72,12 @@ class DrinkPreferenceParser ( Parser ):
     RULE_prorule = 4
     RULE_temperature = 5
     RULE_baseType = 6
-    RULE_sweetness = 7
-    RULE_caffeine = 8
+    RULE_caffeine = 7
+    RULE_sweetness = 8
     RULE_size = 9
 
     ruleNames =  [ "program", "request", "prefix", "drinkPref", "prorule", 
-                   "temperature", "baseType", "sweetness", "caffeine", "size" ]
+                   "temperature", "baseType", "caffeine", "sweetness", "size" ]
 
     EOF = Token.EOF
     AND=1
@@ -82,28 +85,30 @@ class DrinkPreferenceParser ( Parser ):
     WANT=3
     GIVE=4
     ME=5
-    HOT=6
-    WARM=7
-    COLD=8
-    ICED=9
-    COFFEE=10
-    TEA=11
-    JUICE=12
-    MILK=13
-    YOGURT=14
-    SUGAR=15
-    NO=16
-    LOW=17
-    MEDIUM=18
-    HIGH=19
-    WITH=20
-    WITHOUT=21
-    CAFFEINE=22
-    UNDER=23
-    SMALL=24
-    LARGE=25
-    NUMBER=26
-    WS=27
+    A=6
+    HOT=7
+    WARM=8
+    COLD=9
+    ICED=10
+    COFFEE=11
+    TEA=12
+    JUICE=13
+    MILK=14
+    YOGURT=15
+    SUGAR=16
+    NO=17
+    LOW=18
+    LESS=19
+    MEDIUM=20
+    HIGH=21
+    WITH=22
+    WITHOUT=23
+    CAFFEINE=24
+    UNDER=25
+    SMALL=26
+    LARGE=27
+    NUMBER=28
+    WS=29
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
@@ -267,6 +272,9 @@ class DrinkPreferenceParser ( Parser ):
         def WANT(self):
             return self.getToken(DrinkPreferenceParser.WANT, 0)
 
+        def A(self):
+            return self.getToken(DrinkPreferenceParser.A, 0)
+
         def GIVE(self):
             return self.getToken(DrinkPreferenceParser.GIVE, 0)
 
@@ -297,8 +305,9 @@ class DrinkPreferenceParser ( Parser ):
 
         localctx = DrinkPreferenceParser.PrefixContext(self, self._ctx, self.state)
         self.enterRule(localctx, 4, self.RULE_prefix)
+        self._la = 0 # Token type
         try:
-            self.state = 41
+            self.state = 47
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [DrinkPreferenceParser.I]:
@@ -307,13 +316,29 @@ class DrinkPreferenceParser ( Parser ):
                 self.match(DrinkPreferenceParser.I)
                 self.state = 38
                 self.match(DrinkPreferenceParser.WANT)
+                self.state = 40
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+                if _la==DrinkPreferenceParser.A:
+                    self.state = 39
+                    self.match(DrinkPreferenceParser.A)
+
+
                 pass
             elif token in [DrinkPreferenceParser.GIVE]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 39
+                self.state = 42
                 self.match(DrinkPreferenceParser.GIVE)
-                self.state = 40
+                self.state = 43
                 self.match(DrinkPreferenceParser.ME)
+                self.state = 45
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+                if _la==DrinkPreferenceParser.A:
+                    self.state = 44
+                    self.match(DrinkPreferenceParser.A)
+
+
                 pass
             else:
                 raise NoViableAltException(self)
@@ -368,15 +393,15 @@ class DrinkPreferenceParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 43
+            self.state = 49
             self.prorule()
-            self.state = 47
+            self.state = 53
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << DrinkPreferenceParser.HOT) | (1 << DrinkPreferenceParser.WARM) | (1 << DrinkPreferenceParser.COLD) | (1 << DrinkPreferenceParser.ICED) | (1 << DrinkPreferenceParser.COFFEE) | (1 << DrinkPreferenceParser.TEA) | (1 << DrinkPreferenceParser.JUICE) | (1 << DrinkPreferenceParser.MILK) | (1 << DrinkPreferenceParser.YOGURT) | (1 << DrinkPreferenceParser.NO) | (1 << DrinkPreferenceParser.LOW) | (1 << DrinkPreferenceParser.MEDIUM) | (1 << DrinkPreferenceParser.HIGH) | (1 << DrinkPreferenceParser.WITH) | (1 << DrinkPreferenceParser.WITHOUT) | (1 << DrinkPreferenceParser.SMALL) | (1 << DrinkPreferenceParser.LARGE))) != 0):
-                self.state = 44
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << DrinkPreferenceParser.HOT) | (1 << DrinkPreferenceParser.WARM) | (1 << DrinkPreferenceParser.COLD) | (1 << DrinkPreferenceParser.ICED) | (1 << DrinkPreferenceParser.COFFEE) | (1 << DrinkPreferenceParser.TEA) | (1 << DrinkPreferenceParser.JUICE) | (1 << DrinkPreferenceParser.MILK) | (1 << DrinkPreferenceParser.YOGURT) | (1 << DrinkPreferenceParser.NO) | (1 << DrinkPreferenceParser.LOW) | (1 << DrinkPreferenceParser.LESS) | (1 << DrinkPreferenceParser.MEDIUM) | (1 << DrinkPreferenceParser.HIGH) | (1 << DrinkPreferenceParser.WITH) | (1 << DrinkPreferenceParser.WITHOUT) | (1 << DrinkPreferenceParser.SMALL) | (1 << DrinkPreferenceParser.LARGE))) != 0):
+                self.state = 50
                 self.prorule()
-                self.state = 49
+                self.state = 55
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -441,36 +466,36 @@ class DrinkPreferenceParser ( Parser ):
         localctx = DrinkPreferenceParser.ProruleContext(self, self._ctx, self.state)
         self.enterRule(localctx, 8, self.RULE_prorule)
         try:
-            self.state = 55
+            self.state = 61
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,4,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,6,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 50
+                self.state = 56
                 self.temperature()
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 51
+                self.state = 57
                 self.baseType()
                 pass
 
             elif la_ == 3:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 52
+                self.state = 58
                 self.sweetness()
                 pass
 
             elif la_ == 4:
                 self.enterOuterAlt(localctx, 4)
-                self.state = 53
+                self.state = 59
                 self.caffeine()
                 pass
 
             elif la_ == 5:
                 self.enterOuterAlt(localctx, 5)
-                self.state = 54
+                self.state = 60
                 self.size()
                 pass
 
@@ -530,7 +555,7 @@ class DrinkPreferenceParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 57
+            self.state = 63
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << DrinkPreferenceParser.HOT) | (1 << DrinkPreferenceParser.WARM) | (1 << DrinkPreferenceParser.COLD) | (1 << DrinkPreferenceParser.ICED))) != 0)):
                 self._errHandler.recoverInline(self)
@@ -593,125 +618,35 @@ class DrinkPreferenceParser ( Parser ):
         localctx = DrinkPreferenceParser.BaseTypeContext(self, self._ctx, self.state)
         self.enterRule(localctx, 12, self.RULE_baseType)
         try:
-            self.state = 65
+            self.state = 71
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [DrinkPreferenceParser.COFFEE]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 59
+                self.state = 65
                 self.match(DrinkPreferenceParser.COFFEE)
                 pass
             elif token in [DrinkPreferenceParser.TEA]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 60
+                self.state = 66
                 self.match(DrinkPreferenceParser.TEA)
                 pass
             elif token in [DrinkPreferenceParser.JUICE]:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 61
+                self.state = 67
                 self.match(DrinkPreferenceParser.JUICE)
                 pass
             elif token in [DrinkPreferenceParser.MILK]:
                 self.enterOuterAlt(localctx, 4)
-                self.state = 62
+                self.state = 68
                 self.match(DrinkPreferenceParser.MILK)
-                self.state = 63
+                self.state = 69
                 self.match(DrinkPreferenceParser.TEA)
                 pass
             elif token in [DrinkPreferenceParser.YOGURT]:
                 self.enterOuterAlt(localctx, 5)
-                self.state = 64
-                self.match(DrinkPreferenceParser.YOGURT)
-                pass
-            else:
-                raise NoViableAltException(self)
-
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.exitRule()
-        return localctx
-
-
-    class SweetnessContext(ParserRuleContext):
-        __slots__ = 'parser'
-
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
-            super().__init__(parent, invokingState)
-            self.parser = parser
-
-        def NO(self):
-            return self.getToken(DrinkPreferenceParser.NO, 0)
-
-        def SUGAR(self):
-            return self.getToken(DrinkPreferenceParser.SUGAR, 0)
-
-        def LOW(self):
-            return self.getToken(DrinkPreferenceParser.LOW, 0)
-
-        def MEDIUM(self):
-            return self.getToken(DrinkPreferenceParser.MEDIUM, 0)
-
-        def HIGH(self):
-            return self.getToken(DrinkPreferenceParser.HIGH, 0)
-
-        def getRuleIndex(self):
-            return DrinkPreferenceParser.RULE_sweetness
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterSweetness" ):
-                listener.enterSweetness(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitSweetness" ):
-                listener.exitSweetness(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitSweetness" ):
-                return visitor.visitSweetness(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-
-
-    def sweetness(self):
-
-        localctx = DrinkPreferenceParser.SweetnessContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 14, self.RULE_sweetness)
-        try:
-            self.state = 75
-            self._errHandler.sync(self)
-            token = self._input.LA(1)
-            if token in [DrinkPreferenceParser.NO]:
-                self.enterOuterAlt(localctx, 1)
-                self.state = 67
-                self.match(DrinkPreferenceParser.NO)
-                self.state = 68
-                self.match(DrinkPreferenceParser.SUGAR)
-                pass
-            elif token in [DrinkPreferenceParser.LOW]:
-                self.enterOuterAlt(localctx, 2)
-                self.state = 69
-                self.match(DrinkPreferenceParser.LOW)
                 self.state = 70
-                self.match(DrinkPreferenceParser.SUGAR)
-                pass
-            elif token in [DrinkPreferenceParser.MEDIUM]:
-                self.enterOuterAlt(localctx, 3)
-                self.state = 71
-                self.match(DrinkPreferenceParser.MEDIUM)
-                self.state = 72
-                self.match(DrinkPreferenceParser.SUGAR)
-                pass
-            elif token in [DrinkPreferenceParser.HIGH]:
-                self.enterOuterAlt(localctx, 4)
-                self.state = 73
-                self.match(DrinkPreferenceParser.HIGH)
-                self.state = 74
-                self.match(DrinkPreferenceParser.SUGAR)
+                self.match(DrinkPreferenceParser.YOGURT)
                 pass
             else:
                 raise NoViableAltException(self)
@@ -767,31 +702,131 @@ class DrinkPreferenceParser ( Parser ):
     def caffeine(self):
 
         localctx = DrinkPreferenceParser.CaffeineContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 16, self.RULE_caffeine)
+        self.enterRule(localctx, 14, self.RULE_caffeine)
         try:
-            self.state = 83
+            self.state = 79
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [DrinkPreferenceParser.WITH]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 77
+                self.state = 73
                 self.match(DrinkPreferenceParser.WITH)
-                self.state = 78
+                self.state = 74
                 self.match(DrinkPreferenceParser.CAFFEINE)
                 pass
             elif token in [DrinkPreferenceParser.WITHOUT]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 79
+                self.state = 75
                 self.match(DrinkPreferenceParser.WITHOUT)
-                self.state = 80
+                self.state = 76
                 self.match(DrinkPreferenceParser.CAFFEINE)
                 pass
             elif token in [DrinkPreferenceParser.NO]:
                 self.enterOuterAlt(localctx, 3)
+                self.state = 77
+                self.match(DrinkPreferenceParser.NO)
+                self.state = 78
+                self.match(DrinkPreferenceParser.CAFFEINE)
+                pass
+            else:
+                raise NoViableAltException(self)
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class SweetnessContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def NO(self):
+            return self.getToken(DrinkPreferenceParser.NO, 0)
+
+        def SUGAR(self):
+            return self.getToken(DrinkPreferenceParser.SUGAR, 0)
+
+        def LOW(self):
+            return self.getToken(DrinkPreferenceParser.LOW, 0)
+
+        def MEDIUM(self):
+            return self.getToken(DrinkPreferenceParser.MEDIUM, 0)
+
+        def HIGH(self):
+            return self.getToken(DrinkPreferenceParser.HIGH, 0)
+
+        def LESS(self):
+            return self.getToken(DrinkPreferenceParser.LESS, 0)
+
+        def getRuleIndex(self):
+            return DrinkPreferenceParser.RULE_sweetness
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterSweetness" ):
+                listener.enterSweetness(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitSweetness" ):
+                listener.exitSweetness(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitSweetness" ):
+                return visitor.visitSweetness(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def sweetness(self):
+
+        localctx = DrinkPreferenceParser.SweetnessContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 16, self.RULE_sweetness)
+        try:
+            self.state = 91
+            self._errHandler.sync(self)
+            token = self._input.LA(1)
+            if token in [DrinkPreferenceParser.NO]:
+                self.enterOuterAlt(localctx, 1)
                 self.state = 81
                 self.match(DrinkPreferenceParser.NO)
                 self.state = 82
-                self.match(DrinkPreferenceParser.CAFFEINE)
+                self.match(DrinkPreferenceParser.SUGAR)
+                pass
+            elif token in [DrinkPreferenceParser.LOW]:
+                self.enterOuterAlt(localctx, 2)
+                self.state = 83
+                self.match(DrinkPreferenceParser.LOW)
+                self.state = 84
+                self.match(DrinkPreferenceParser.SUGAR)
+                pass
+            elif token in [DrinkPreferenceParser.MEDIUM]:
+                self.enterOuterAlt(localctx, 3)
+                self.state = 85
+                self.match(DrinkPreferenceParser.MEDIUM)
+                self.state = 86
+                self.match(DrinkPreferenceParser.SUGAR)
+                pass
+            elif token in [DrinkPreferenceParser.HIGH]:
+                self.enterOuterAlt(localctx, 4)
+                self.state = 87
+                self.match(DrinkPreferenceParser.HIGH)
+                self.state = 88
+                self.match(DrinkPreferenceParser.SUGAR)
+                pass
+            elif token in [DrinkPreferenceParser.LESS]:
+                self.enterOuterAlt(localctx, 5)
+                self.state = 89
+                self.match(DrinkPreferenceParser.LESS)
+                self.state = 90
+                self.match(DrinkPreferenceParser.SUGAR)
                 pass
             else:
                 raise NoViableAltException(self)
@@ -848,7 +883,7 @@ class DrinkPreferenceParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 85
+            self.state = 93
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << DrinkPreferenceParser.MEDIUM) | (1 << DrinkPreferenceParser.SMALL) | (1 << DrinkPreferenceParser.LARGE))) != 0)):
                 self._errHandler.recoverInline(self)

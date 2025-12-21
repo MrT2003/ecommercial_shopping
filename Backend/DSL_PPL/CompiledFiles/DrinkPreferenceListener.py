@@ -71,21 +71,21 @@ class DrinkPreferenceListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by DrinkPreferenceParser#sweetness.
-    def enterSweetness(self, ctx:DrinkPreferenceParser.SweetnessContext):
-        pass
-
-    # Exit a parse tree produced by DrinkPreferenceParser#sweetness.
-    def exitSweetness(self, ctx:DrinkPreferenceParser.SweetnessContext):
-        pass
-
-
     # Enter a parse tree produced by DrinkPreferenceParser#caffeine.
     def enterCaffeine(self, ctx:DrinkPreferenceParser.CaffeineContext):
         pass
 
     # Exit a parse tree produced by DrinkPreferenceParser#caffeine.
     def exitCaffeine(self, ctx:DrinkPreferenceParser.CaffeineContext):
+        pass
+
+
+    # Enter a parse tree produced by DrinkPreferenceParser#sweetness.
+    def enterSweetness(self, ctx:DrinkPreferenceParser.SweetnessContext):
+        pass
+
+    # Exit a parse tree produced by DrinkPreferenceParser#sweetness.
+    def exitSweetness(self, ctx:DrinkPreferenceParser.SweetnessContext):
         pass
 
 
