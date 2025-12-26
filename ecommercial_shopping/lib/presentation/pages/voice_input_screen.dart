@@ -196,7 +196,7 @@ class _VoiceInputScreenState extends ConsumerState<VoiceInputScreen>
                             await showDialog(
                               context: context,
                               builder: (ctx) => AlertDialog(
-                                title: const Text('Lỗi cú pháp'),
+                                title: const Text('Syntax Error'),
                                 content: Text(resultState.error!),
                                 actions: [
                                   TextButton(

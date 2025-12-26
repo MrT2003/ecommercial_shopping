@@ -55,8 +55,8 @@ def parse_text(body: ParseRequest):
             status_code=400,
             detail={
                 "message": (
-                    "Cú pháp không hợp lệ.\n"
-                    "Ví dụ đúng:\n"
+                    "Syntax Error.\n"
+                    "Example:\n"
                     "- \"I want a cold coffee\"\n"
                     "- \"Give me a iced tea with low sugar\""
                 )
