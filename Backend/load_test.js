@@ -198,61 +198,55 @@ const BASE_URL = "http://my-api-alb-469487783.ap-northeast-1.elb.amazonaws.com";
 //   },
 // };
 // 2
-export const options = {
-  scenarios: {
-    spike_test: { // Đặt tên là Spike Test
-      executor: "ramping-vus", // QUAN TRỌNG: Dùng User làm chuẩn
-      startVUs: 0,
-      stages: [
-        // Giai đoạn 1: Warm-up nhẹ nhàng (giả lập traffic bình thường)
-        { duration: "2m", target: 100 }, 
-        
-        // Giai đoạn 2: CÚ SỐC (Spike) - Tăng gấp 15 lần trong 1 phút
-        // Đây là lúc xem AI hay AWS phản ứng nhanh hơn
-        { duration: "3m", target: 1500 }, 
-        
-        // Giai đoạn 3: Duy trì áp lực (Sustain)
-        // Xem hệ thống nào ổn định Memory tốt hơn khi giữ tải cao
-        { duration: "10m", target: 1500 }, 
-        
-        // Giai đoạn 4: Kết thúc
-        { duration: "5m", target: 0 }, 
-      ],
-      gracefulRampDown: "30s",
-    },
-  },
-};
-// 1
 // export const options = {
 //   scenarios: {
-//     capacity_ramp_up: { // Tên scenario: Kiểm tra sức chứa
-//       executor: "ramping-vus", // Dùng User ảo (VUs) làm chuẩn
+//     spike_test: { // Đặt tên là Spike Test
+//       executor: "ramping-vus", // QUAN TRỌNG: Dùng User làm chuẩn
 //       startVUs: 0,
 //       stages: [
-//         // Giai đoạn 1: Khởi động nhẹ (Warm up)
-//         // Tăng từ 0 lên 50 user trong 5 phút. 
-//         // Mục đích: Để cache được làm nóng, hệ thống thoát khỏi trạng thái ngủ.
-//         { duration: "5m", target: 50 },
+//         // Giai đoạn 1: Warm-up nhẹ nhàng (giả lập traffic bình thường)
+//         { duration: "2m", target: 100 },
 
-//         // Giai đoạn 2: Tăng tốc (Ramp up)
-//         // Tăng từ 50 lên 500 user trong 10 phút.
-//         // Mục đích: Xem hệ thống bắt đầu scale ở mốc nào (ví dụ ở user thứ 200 hay 300?).
-//         { duration: "10m", target: 500 },
+//         // Giai đoạn 2: CÚ SỐC (Spike) - Tăng gấp 15 lần trong 1 phút
+//         // Đây là lúc xem AI hay AWS phản ứng nhanh hơn
+//         { duration: "3m", target: 1500 },
 
-//         // Giai đoạn 3: Về đích (Stress / Peak)
-//         // Tăng từ 500 lên 1000 user trong 15 phút.
-//         // Mục đích: Ép hệ thống lên tải cực đại. Quan sát xem 5 tasks của Custom AI có chịu nổi 1000 user không.
-//         { duration: "15m", target: 1000 },
+//         // Giai đoạn 3: Duy trì áp lực (Sustain)
+//         // Xem hệ thống nào ổn định Memory tốt hơn khi giữ tải cao
+//         { duration: "10m", target: 1500 },
 
-//         // Giai đoạn 4: Hạ nhiệt (Cool down)
-//         // Giảm từ từ về 0.
-//         // Mục đích: Xem hệ thống scale-in (tắt bớt máy) có mượt không hay bị lỗi.
-//         { duration: "10m", target: 0 },
+//         // Giai đoạn 4: Kết thúc
+//         { duration: "5m", target: 0 },
 //       ],
-//       gracefulRampDown: "30s", // Cho phép 30s để các request cuối cùng hoàn tất
+//       gracefulRampDown: "30s",
 //     },
 //   },
 // };
+
+// 1
+export const options = {
+  scenarios: {
+    capacity_ramp_up: {
+      // Tên scenario: Kiểm tra sức chứa
+      executor: "ramping-vus", // Dùng User ảo (VUs) làm chuẩn
+      startVUs: 0,
+      stages: [
+        // Giai đoạn 1: Khởi động nhẹ (Warm up)
+        { duration: "5m", target: 50 },
+
+        // Giai đoạn 2: Tăng tốc (Ramp up)
+        { duration: "10m", target: 500 },
+
+        // Giai đoạn 3: Về đích (Stress / Peak)
+        { duration: "15m", target: 1000 },
+
+        // Giai đoạn 4: Hạ nhiệt (Cool down)
+        { duration: "10m", target: 0 },
+      ],
+      gracefulRampDown: "30s", // Cho phép 30s để các request cuối cùng hoàn tất
+    },
+  },
+};
 
 const endpoints = [
   { method: "GET", url: "/api/products/", weight: 0.5 },
