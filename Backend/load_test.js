@@ -170,34 +170,60 @@
 import http from "k6/http";
 
 const BASE_URL = "http://my-api-alb-469487783.ap-northeast-1.elb.amazonaws.com";
-// 3
-// Điều khiển theo RPS, không phải VU
+
+// DEMO
 // export const options = {
 //   scenarios: {
-//     shock_wave: {
-//       executor: "ramping-vus", // Đổi về test User (VUs) cho dễ kiểm soát
+//     demo_shock_wave: {
+//       executor: "ramping-vus",
 //       startVUs: 0,
 //       stages: [
-//         // --- Giai đoạn 1: Warm-up & Cao điểm sáng ---
-//         { duration: "2m", target: 1000 }, // Ramp-up nhanh (2p lên 1000 user)
-//         { duration: "5m", target: 1000 }, // GIỮ (Hold) tải 1000 user trong 5p để ép hệ thống
+//         // 1) Ramp up to 50 VUs (2m)
+//         { duration: "2m", target: 100 },
 
-//         // --- Giai đoạn 2: Giờ nghỉ trưa (Scale-in) ---
-//         { duration: "2m", target: 200 }, // Giảm nhanh xuống 200
-//         { duration: "5m", target: 200 }, // GIỮ mức thấp để dụ hệ thống tắt bớt server (Scale-in)
+//         // 2) Hold 50 VUs (2m)
+//         { duration: "2m", target: 100 },
 
-//         // --- Giai đoạn 3: Cú sốc chiều (Spike/Shock) ---
-//         { duration: "1m", target: 1500 }, // SỐC! Tăng vọt từ 200 -> 1500 chỉ trong 1p (Cực gắt)
-//         { duration: "5m", target: 1500 }, // GIỮ mức đỉnh điểm này để xem server mới có kịp cứu ko?
+//         // 3) Spike to 80 VUs (2m)
+//         { duration: "2m", target: 200 },
 
-//         // --- Kết thúc ---
-//         { duration: "2m", target: 0 }, // Giảm dần về 0
+//         // 4) Ramp down to 0 (2m)
+//         { duration: "2m", target: 0 },
 //       ],
 //       gracefulRampDown: "30s",
 //     },
 //   },
 // };
+
+// 3
+// export const options = {
+//   scenarios: {
+//     shock_wave: {
+//       executor: "ramping-vus",
+//       startVUs: 0,
+//       stages: [
+//         // --- Stage 1: Warm up  ---
+//         { duration: "2m", target: 1000 },
+//         { duration: "5m", target: 1000 },
+
+//         // --- Stage 2: Cool down ---
+//         { duration: "2m", target: 200 },
+//         { duration: "5m", target: 200 },
+
+//         // --- Stage 3: Spike/Shock ---
+//         { duration: "1m", target: 1500 },
+//         { duration: "5m", target: 1500 },
+
+//         // --- Stage 4: End ---
+//         { duration: "2m", target: 0 },
+//       ],
+//       gracefulRampDown: "30s",
+//     },
+//   },
+// };
+
 // 2
+<<<<<<< Updated upstream
 // export const options = {
 //   scenarios: {
 //     spike_test: { // Đặt tên là Spike Test
@@ -217,6 +243,49 @@ const BASE_URL = "http://my-api-alb-469487783.ap-northeast-1.elb.amazonaws.com";
 
 //         // Giai đoạn 4: Kết thúc
 //         { duration: "5m", target: 0 },
+=======
+export const options = {
+  scenarios: {
+    spike_test: {
+      executor: "ramping-vus",
+      startVUs: 0,
+      stages: [
+        // --- Stage 1: Warm up  ---
+        { duration: "2m", target: 100 },
+
+        // --- Stage 2: Spike up ---
+        { duration: "3m", target: 1500 },
+
+        // --- Stage 3: Sustain ---
+        { duration: "10m", target: 1500 },
+
+        // --- Stage 4: End ---
+        { duration: "5m", target: 0 },
+      ],
+      gracefulRampDown: "30s",
+    },
+  },
+};
+
+// 1
+// export const options = {
+//   scenarios: {
+//     capacity_ramp_up: {
+//       executor: "ramping-vus",
+//       startVUs: 0,
+//       stages: [
+//         // --- Stage 1: Warm up ---
+//         { duration: "5m", target: 50 },
+
+//         // --- Stage 2: Ramp up ---
+//         { duration: "10m", target: 500 },
+
+//         // --- Stage 3: Stress / Peak ---
+//         { duration: "15m", target: 1000 },
+
+//         // --- Stage 4: End ---
+//         { duration: "10m", target: 0 },
+>>>>>>> Stashed changes
 //       ],
 //       gracefulRampDown: "30s",
 //     },
@@ -289,7 +358,4 @@ export default function () {
   } catch (err) {
     console.error(`🚫 Lỗi kết nối: ${ep.method} ${ep.url} → ${err.message}`);
   }
-
-  // ❌ KHÔNG sleep ở đây để k6 bắn đúng RPS target
-  // sleep(1);
 }
