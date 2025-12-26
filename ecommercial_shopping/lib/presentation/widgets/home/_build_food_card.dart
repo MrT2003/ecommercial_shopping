@@ -48,7 +48,6 @@ class BuildFoodCard extends ConsumerWidget {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              // color: Colors.grey.withOpacity(0.1),
               color: Colors.black12,
               spreadRadius: 1,
               blurRadius: 5,
@@ -79,9 +78,8 @@ class BuildFoodCard extends ConsumerWidget {
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
-                    overflow: TextOverflow
-                        .ellipsis, // Thêm dấu "..." khi text quá dài
-                    maxLines: 1, // Giới hạn số dòng là 1
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                   ),
                   SizedBox(height: 5),
                   Row(
@@ -127,9 +125,9 @@ class BuildFoodCard extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: IconButton(
-                          icon: Icon(Icons.add), // Đúng định dạng
+                          icon: Icon(Icons.add),
                           color: Colors.white,
-                          iconSize: 20, // Sử dụng iconSize thay vì size
+                          iconSize: 20,
                           onPressed: () async {
                             print("DEBUG: Giá trị price nhận được: $price");
                             final result = await ref.read(cartAddProvider({

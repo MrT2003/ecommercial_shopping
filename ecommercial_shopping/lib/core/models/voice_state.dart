@@ -1,4 +1,3 @@
-// voice_state.dart
 class VoiceState {
   final String text;
   final bool isListening;

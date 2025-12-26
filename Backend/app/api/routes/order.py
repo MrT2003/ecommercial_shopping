@@ -18,7 +18,6 @@ async def get_all_orders():
 @router.get("/{order_id}", response_description="Xem chi tiết đơn hàng", response_model=Order)
 async def get_order_detail(order_id: str):
     try:
-        # Call the service method
         order = await OrderService.get_order_by_id(order_id)
         
         if not order:

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ecommercial_shopping/core/models/cart.dart';
 
-/// Utility class to handle order placement logic and confirmation.
 class PlaceOrder {
-  /// Shows order confirmation dialog and handles validation.
   static void show({
     required BuildContext context,
     required Cart cart,
@@ -15,7 +13,6 @@ class PlaceOrder {
     required TextEditingController cardHolderController,
     required VoidCallback onProcessOrder,
   }) {
-    // Credit card validation
     if (selectedPaymentMethod == 0) {
       if (cardNumberController.text.isEmpty ||
           expiryController.text.isEmpty ||
@@ -27,8 +24,6 @@ class PlaceOrder {
         return;
       }
     }
-
-    // Show confirmation dialog
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

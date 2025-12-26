@@ -38,7 +38,7 @@ class PplState {
 }
 
 final pplServiceProvider = Provider<PplService>((ref) {
-  return PplService(); // dùng _baseUrl = AppConfig.pplEndpoint
+  return PplService();
 });
 
 class PplNotifier extends StateNotifier<PplState> {
@@ -51,7 +51,6 @@ class PplNotifier extends StateNotifier<PplState> {
     if (trimmed.isEmpty) return;
 
     try {
-      // reset error + set loading
       state = state.copyWith(
         isLoading: true,
         error: null,
@@ -59,10 +58,7 @@ class PplNotifier extends StateNotifier<PplState> {
         recommendations: [],
       );
 
-      // 1) Gọi /parse
       final parseRes = await _service.parseText(text: trimmed);
-
-      // 2) Gọi /recommend với kết quả parse
       final recs = await _service.recommend(query: parseRes);
 
       state = state.copyWith(
@@ -72,7 +68,6 @@ class PplNotifier extends StateNotifier<PplState> {
         recommendations: recs,
       );
     } catch (e) {
-      // e sẽ là Exception("...message từ backend...")
       var msg = e.toString();
       if (msg.startsWith('Exception: ')) {
         msg = msg.replaceFirst('Exception: ', '');

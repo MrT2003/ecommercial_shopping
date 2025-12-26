@@ -5,7 +5,6 @@ import 'package:ecommercial_shopping/core/constants/app_config.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  // static const String baseUrl = "http://10.0.2.2:8000/api";
   static const String baseUrl = AppConfig.baseUrl;
 
   Future<List<Product>> fetchProducts() async {
@@ -33,13 +32,10 @@ class ApiService {
         final jsonData = json.decode(response.body) as List;
         return jsonData.map((json) => Product.fromJson(json)).toList();
       } else {
-        // ❗ Với search: coi như không tìm thấy sản phẩm → trả [] thay vì throw
-        print(
-            "Search failed ${response.statusCode}: ${response.body}"); // log để debug
+        print("Search failed ${response.statusCode}: ${response.body}");
         return [];
       }
     } catch (e) {
-      // ❗ Lỗi mạng/bất ngờ → cũng trả [] cho user, không quăng exception ra UI
       print("Search exception: $e");
       return [];
     }

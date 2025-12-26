@@ -16,8 +16,7 @@ class PplParseResult {
   factory PplParseResult.fromJson(Map<String, dynamic> json) {
     String? normalize(dynamic v) {
       if (v == null) return null;
-      if (v is String && v.toLowerCase() == 'null')
-        return null; // trường hợp "null" dạng string
+      if (v is String && v.toLowerCase() == 'null') return null;
       return v.toString();
     }
 
@@ -41,7 +40,6 @@ class PplParseResult {
   }
 }
 
-/// Một món nước được recommend bởi /api/ppl/recommend
 class PplDrinkRecommendation {
   final String id;
   final String name;

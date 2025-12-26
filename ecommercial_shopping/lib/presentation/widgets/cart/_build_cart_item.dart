@@ -45,7 +45,6 @@ class BuildCartItem extends ConsumerWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(15),
-            // Truyền ảnh vào
             child: Image.network(
               imageUrl,
               width: 80,

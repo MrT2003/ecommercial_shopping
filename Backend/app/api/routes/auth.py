@@ -1,4 +1,3 @@
-# app/routers/auth.py
 from fastapi import APIRouter, HTTPException, Depends
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 from app.models.user import UserCreate, UserDB
@@ -47,7 +46,7 @@ async def login(login_data: LoginRequest, db: AsyncIOMotorDatabase = Depends(get
             "_id": user.id,
             "name": user.name,
             "email": user.email,
-            "password": user.password,  # ❌ bỏ dòng này để tránh lộ mật khẩu
+            "password": user.password, 
             "phone": user.phone,
             "address": user.address,
             "role": user.role,

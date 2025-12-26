@@ -9,7 +9,6 @@ class SearchScreen extends ConsumerWidget {
   const SearchScreen({super.key});
 
   Future<void> _runDslSearch(BuildContext context, WidgetRef ref) async {
-    // Lấy text hiện tại từ searchQueryProvider
     final text = ref.read(searchQueryProvider).trim();
 
     if (text.isEmpty) {
@@ -29,7 +28,6 @@ class SearchScreen extends ConsumerWidget {
     final resultState = ref.read(pplProvider);
     if (!context.mounted) return;
 
-    // 1) Lỗi cú pháp / lỗi backend
     if (resultState.error != null) {
       await showDialog(
         context: context,
@@ -46,8 +44,6 @@ class SearchScreen extends ConsumerWidget {
       );
       return;
     }
-
-    // 2) Không tìm thấy sản phẩm
     if (resultState.recommendations.isEmpty) {
       await showDialog(
         context: context,
@@ -64,7 +60,6 @@ class SearchScreen extends ConsumerWidget {
       return;
     }
 
-    // 3) Có kết quả → sang PPL result screen
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -100,7 +95,6 @@ class SearchScreen extends ConsumerWidget {
             decoration: InputDecoration(
               hintText: "Search name or type DSL...",
               prefixIcon: const Icon(Icons.search, color: Colors.deepOrange),
-              // Nút DSL search
               suffixIcon: IconButton(
                 onPressed: () => _runDslSearch(context, ref),
                 icon: pplState.isLoading
@@ -132,7 +126,6 @@ class SearchScreen extends ConsumerWidget {
               ),
               contentPadding: const EdgeInsets.symmetric(vertical: 10),
             ),
-            // Gõ là search theo tên như cũ
             onChanged: (value) {
               ref.read(searchQueryProvider.notifier).state = value;
             },

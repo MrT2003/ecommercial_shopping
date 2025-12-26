@@ -27,16 +27,14 @@ class AuthNotifier extends StateNotifier<AsyncValue<UserAuth?>> {
         name: name,
         email: email,
         password: password,
-        phone: phone, // Không cần kiểm tra null ở đây
+        phone: phone,
         address: address,
       );
 
-      print("Signup successful, user: ${user.toJson()}"); // Debug
-
-      // Không cần check user.id.isNotEmpty
+      print("Signup successful, user: ${user.toJson()}");
       state = AsyncValue.data(user);
     } catch (e, stackTrace) {
-      print("Signup failed with error: $e"); // Debug lỗi
+      print("Signup failed with error: $e");
 
       state = AsyncValue.error(e, stackTrace);
     }

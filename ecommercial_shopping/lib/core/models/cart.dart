@@ -16,16 +16,14 @@ class Cart {
     List<CartItem> itemsList =
         itemsJson.map((item) => CartItem.fromJson(item)).toList();
 
-    // Tính total price nếu backend không có hoặc null
     double calculatedTotal =
         itemsList.fold(0.0, (sum, item) => sum + (item.price * item.quantity));
 
     return Cart(
-      id: json['_id'] ?? '', // Backend dùng _id thay vì id
-      userId: json['user'] ?? '', // Backend dùng user thay vì user_id
+      id: json['_id'] ?? '',
+      userId: json['user'] ?? '',
       items: itemsList,
-      totalPrice: json['total_price']?.toDouble() ??
-          calculatedTotal, // Fallback nếu backend không có total_price
+      totalPrice: json['total_price']?.toDouble() ?? calculatedTotal,
     );
   }
 
@@ -56,8 +54,7 @@ class CartItem {
 
   factory CartItem.fromJson(Map<String, dynamic> json) {
     return CartItem(
-      productId:
-          json['product'] ?? '', // Backend dùng product thay vì product_id
+      productId: json['product'] ?? '',
       quantity: json['quantity'] ?? 0,
       price: (json['price'] ?? 0).toDouble(),
       name: json['name'] ?? '',

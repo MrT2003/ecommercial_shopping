@@ -37,7 +37,6 @@ class PplService {
     }
   }
 
-  /// Gọi POST /api/ppl/parse với text người dùng nói
   Future<PplParseResult> parseText({
     required String text,
   }) async {
@@ -49,7 +48,6 @@ class PplService {
       }),
     );
 
-    // 🔥 TỰ decode UTF-8, bỏ qua charset trong header
     final responseBody = utf8.decode(response.bodyBytes);
     print("PPL Parse response: $responseBody");
 
@@ -63,7 +61,6 @@ class PplService {
     }
   }
 
-  /// Gọi POST /api/ppl/recommend với kết quả parse
   Future<List<PplDrinkRecommendation>> recommend({
     required PplParseResult query,
   }) async {
@@ -73,7 +70,6 @@ class PplService {
       body: jsonEncode(query.toJson()),
     );
 
-    // 🔥 Tương tự, decode bodyBytes
     final responseBody = utf8.decode(response.bodyBytes);
     print("PPL Recommend response: $responseBody");
 

@@ -43,7 +43,6 @@ class _VoiceInputScreenState extends ConsumerState<VoiceInputScreen>
 
   @override
   Widget build(BuildContext context) {
-    // điều khiển animation theo state listening
     ref.listen(voiceProvider, (previous, next) {
       if (next.isListening) {
         _controller.repeat(reverse: true);
@@ -62,7 +61,6 @@ class _VoiceInputScreenState extends ConsumerState<VoiceInputScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            /// Top bar: "Speak now" + nút X
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Row(
@@ -82,8 +80,6 @@ class _VoiceInputScreenState extends ConsumerState<VoiceInputScreen>
                 ],
               ),
             ),
-
-            /// PHẦN SPACE Ở GIỮA – hiện câu nói nếu có
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -111,8 +107,6 @@ class _VoiceInputScreenState extends ConsumerState<VoiceInputScreen>
                     const SizedBox(height: 40),
                   ],
                   SizedBox(height: 50),
-
-                  /// Gợi ý "Try saying..."
                   const Text(
                     'Try saying',
                     style: TextStyle(
@@ -128,10 +122,7 @@ class _VoiceInputScreenState extends ConsumerState<VoiceInputScreen>
                       fontStyle: FontStyle.italic,
                     ),
                   ),
-
                   const SizedBox(height: 24),
-
-                  /// Nút mic với animation
                   AnimatedBuilder(
                     animation: _controller,
                     builder: (context, child) {
@@ -170,10 +161,7 @@ class _VoiceInputScreenState extends ConsumerState<VoiceInputScreen>
                       );
                     },
                   ),
-
                   const SizedBox(height: 12),
-
-                  /// Trạng thái Listening / Tap to speak
                   Text(
                     voiceState.isListening ? 'Listening...' : 'Tap to speak',
                     textAlign: TextAlign.center,
@@ -185,8 +173,6 @@ class _VoiceInputScreenState extends ConsumerState<VoiceInputScreen>
                 ],
               ),
             ),
-
-            /// Nút "Tìm kiếm sản phẩm" ở dưới
             Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
@@ -206,7 +192,6 @@ class _VoiceInputScreenState extends ConsumerState<VoiceInputScreen>
                           final resultState = ref.read(pplProvider);
                           if (!mounted) return;
 
-                          // 1) LỖI CÚ PHÁP / LỖI TỪ BACKEND
                           if (resultState.error != null) {
                             await showDialog(
                               context: context,
@@ -224,7 +209,6 @@ class _VoiceInputScreenState extends ConsumerState<VoiceInputScreen>
                             return;
                           }
 
-                          // 2) KHÔNG TÌM THẤY SẢN PHẨM PHÙ HỢP
                           if (resultState.recommendations.isEmpty) {
                             await showDialog(
                               context: context,
@@ -241,7 +225,6 @@ class _VoiceInputScreenState extends ConsumerState<VoiceInputScreen>
                             return;
                           }
 
-                          // 3) Có kết quả → sang screen PPL
                           Navigator.push(
                             context,
                             MaterialPageRoute(

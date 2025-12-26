@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 
 from DSL_PPL.src.drink_semantics import DrinkPreference, PreferenceVisitor
-from DSL_PPL.src.syntax_checker import check_syntax   # 👈 TẬN DỤNG file này
+from DSL_PPL.src.syntax_checker import check_syntax 
 from DSL_PPL.src.mongo_query import build_mongo_query
 from app.db.database import product_collection
 
@@ -38,8 +38,8 @@ class ProductOut(BaseModel):
   id: str
   name: str
   description: Optional[str] = None
-  category: Optional[str] = None          # "Drink"
-  drinkCategory: Optional[str] = None     # "Milk tea", "Coffee", ...
+  category: Optional[str] = None        
+  drinkCategory: Optional[str] = None   
   temperatures: Optional[List[str]] = None
   sweetnessLevel: Optional[str] = None
   price: Optional[float] = None
@@ -48,14 +48,9 @@ class ProductOut(BaseModel):
 
 @router.post("/parse", response_model=PreferenceOut)
 def parse_text(body: ParseRequest):
-    # 1) Check syntax bằng syntax_checker
     ok, errs, tree = check_syntax(body.text)
 
     if not ok:
-        # Sai grammar: ví dụ chỉ nói "I want a", "Give me a", hoặc lung tung
-        # Bạn có thể log thêm errs nếu cần debug
-        # print("DSL errors:", errs)
-
         raise HTTPException(
             status_code=400,
             detail={
@@ -68,11 +63,9 @@ def parse_text(body: ParseRequest):
             },
         )
 
-    # 2) Grammar OK → dùng visitor để lấy meaning
     visitor = PreferenceVisitor()
-    pref: DrinkPreference = visitor.visit(tree)  # tree = program
+    pref: DrinkPreference = visitor.visit(tree) 
 
-    # 3) Nếu tất cả field đều None → coi như user không nói rõ đồ uống
     if all(
         getattr(pref, field) is None
         for field in ("temperature", "baseType", "sweetness", "caffeine", "size")
@@ -89,7 +82,6 @@ def parse_text(body: ParseRequest):
             },
         )
 
-    # 4) Trả kết quả như cũ
     return PreferenceOut(
         temperature=pref.temperature,
         baseType=pref.baseType,
@@ -101,7 +93,6 @@ def parse_text(body: ParseRequest):
 
 @router.post("/recommend", response_model=List[ProductOut])
 async def recommend_products(body: RecommendRequest):
-    # 1) Map sang DrinkPreference
     pref = DrinkPreference(
         temperature=body.temperature,
         baseType=body.baseType,
@@ -112,20 +103,16 @@ async def recommend_products(body: RecommendRequest):
     if pref.caffeine is not None:
         return []
     
-    print("PREF:", pref)  # ✅ đặt ở đây
-
-    # 2) Build filter Mongo
+    print("PREF:", pref)
     mongo_filter = build_mongo_query(pref)
 
-    print("MONGO FILTER:", mongo_filter)  # ✅ đặt ở đây
+    print("MONGO FILTER:", mongo_filter) 
 
-    # 3) Query DB
     coll = product_collection()
     docs = await coll.find(mongo_filter).to_list(length=50)
 
-    print("DOCS COUNT:", len(docs))  # (tuỳ chọn) để biết có match không
+    print("DOCS COUNT:", len(docs))
 
-    # 4) Map sang ProductOut
     products: List[ProductOut] = []
     for doc in docs:
         products.append(

@@ -1,18 +1,16 @@
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import RedirectResponse
 from contextlib import asynccontextmanager
-import asyncio  # <--- NEW: Cần cái này
+import asyncio 
 
 from app.api import api_router
 from app.db.database import get_db, get_client, close_client, ping
-# <--- NEW: Import service mình vừa tạo
 from app.monitoring import monitor_service
 
 from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
 from starlette.middleware.base import BaseHTTPMiddleware
 import time
 
-# --- Metrics ---
 REQUEST_COUNT = Counter(
     "http_requests_total",
     "Total HTTP requests",
@@ -32,10 +30,8 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
         start_time = time.perf_counter()
         response = await call_next(request)
         
-        # Tính thời gian xử lý
         process_time = time.perf_counter() - start_time
 
-        # 1. Ghi nhận cho Prometheus (Code cũ của bạn)
         REQUEST_COUNT.labels(
             method=request.method,
             path=request.url.path,
@@ -46,9 +42,6 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
             method=request.method,
             path=request.url.path
         ).observe(process_time)
-
-        # 2. <--- NEW: Ghi nhận cho CloudWatch (Thêm dòng này)
-        # Đổi sang milliseconds cho CloudWatch
         await monitor_service.record_request(process_time * 1000)
 
         return response
@@ -56,21 +49,16 @@ class PrometheusMiddleware(BaseHTTPMiddleware):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Database setup
     client = get_client()
     app.state.db_client = client
     app.state.db = get_db()
 
-    # <--- NEW: Khởi động vòng lặp gửi CloudWatch ngầm
-    # Nó sẽ chạy song song, không chặn ứng dụng chính
     task = asyncio.create_task(monitor_service.start_background_loop())
 
     try:
         yield
     finally:
         close_client()
-        # (Tùy chọn) Bạn có thể cancel task ở đây nếu muốn clean up kỹ
-        # task.cancel()
 
 
 app = FastAPI(title="Commercial Projects", version="1.0", lifespan=lifespan)

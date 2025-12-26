@@ -36,14 +36,12 @@ class CreateAccountButton extends ConsumerWidget {
                 return;
               }
 
-              // Call signup on provider
               await ref.read(authStateProvider.notifier).signup(
                     name: username,
                     email: email,
                     password: password,
                   );
 
-              // Read new state and show feedback
               ref.watch(authStateProvider).when(
                     data: (user) {
                       if (user != null) {

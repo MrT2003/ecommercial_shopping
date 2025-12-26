@@ -127,9 +127,9 @@ class BuildRecommendItem extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: IconButton(
-                              icon: Icon(Icons.add), // Đúng định dạng
+                              icon: Icon(Icons.add),
                               color: Colors.white,
-                              iconSize: 20, // Sử dụng iconSize thay vì size
+                              iconSize: 20,
                               onPressed: () async {
                                 print("DEBUG: Giá trị price nhận được: $price");
                                 final result = await ref.read(cartAddProvider({

@@ -4,7 +4,6 @@ import 'package:ecommercial_shopping/core/services/order_service.dart';
 import 'package:flutter/material.dart';
 
 class OrderProcessor {
-  /// Processes the order, showing a loading dialog and then success or error alert.
   static Future<void> process({
     required BuildContext context,
     required Order order,
@@ -18,7 +17,6 @@ class OrderProcessor {
     required TextEditingController cardHolderController,
     required OrderService orderService,
   }) async {
-    // Build the Order model
     final newOrder = Order(
       id: '',
       shippingAddress: Address(
@@ -39,7 +37,6 @@ class OrderProcessor {
       userId: userId,
     );
 
-    // Show loading dialog
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -54,18 +51,15 @@ class OrderProcessor {
         ),
       ),
     );
-
-    // Call API
     bool success = false;
     try {
       success = await orderService.placeOrder(newOrder);
     } catch (e) {
       success = false;
     } finally {
-      Navigator.pop(context); // Close loading
+      Navigator.pop(context);
     }
 
-    // Show result
     if (success) {
       showDialog(
         context: context,
@@ -83,8 +77,8 @@ class OrderProcessor {
           actions: [
             ElevatedButton(
               onPressed: () {
-                Navigator.pop(context); // Close success dialog
-                Navigator.pop(context); // Back to previous
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.deepOrange,

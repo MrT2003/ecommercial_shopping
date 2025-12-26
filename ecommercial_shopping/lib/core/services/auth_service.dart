@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ecommercial_shopping/core/constants/app_config.dart';
 
 class AuthService {
-  // static const String _baseUrl = "http://10.0.2.2:8000/api/auth";
   static const String _baseUrl = AppConfig.authEndpoint;
 
   Future<UserAuth> signup({
@@ -62,8 +61,7 @@ class AuthService {
     if (response.statusCode == 200 || response.statusCode == 201) {
       final Map<String, dynamic> responseData = jsonDecode(responseBody);
 
-      final userAuth =
-          UserAuth.fromResponseJson(responseData); // Parse user + token
+      final userAuth = UserAuth.fromResponseJson(responseData);
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('access_token', userAuth.accessToken ?? "");

@@ -14,7 +14,6 @@ class SigninScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authStateProvider);
     return Scaffold(
       body: SafeArea(
         minimum: const EdgeInsets.only(top: 100, right: 16, left: 16),

@@ -4,7 +4,6 @@ import 'package:ecommercial_shopping/core/models/cart.dart';
 import 'package:http/http.dart' as http;
 
 class CartService {
-  // static const String _baseUrl = "http://10.0.2.2:8000/api/carts";
   static const String _baseUrl = AppConfig.cartEndpoint;
 
   Future<bool> addToCart({
@@ -48,14 +47,11 @@ class CartService {
       print("Body: ${response.body}");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        // Kiểm tra xem response body có rỗng không
         if (response.body.isEmpty) {
           return [];
         }
 
         List<dynamic> jsonData = json.decode(response.body);
-
-        // Kiểm tra từng item trong jsonData
         List<Cart> carts = [];
         for (var item in jsonData) {
           try {
@@ -64,7 +60,6 @@ class CartService {
           } catch (e) {
             print("Error parsing cart item: $e");
             print("Item data: $item");
-            // Bỏ qua item lỗi và tiếp tục
             continue;
           }
         }
@@ -108,19 +103,15 @@ class CartService {
     }
   }
 
-  // Get total price directly from backend
   Future<double> getTotalPrice(String userId) async {
     try {
       final carts = await fetchProductsInCart();
-
-      // Find the cart for the specific user
       final userCart = carts.where((cart) => cart.userId == userId);
 
       if (userCart.isEmpty) {
         return 0.0;
       }
 
-      // Tính tổng từ tất cả cart của user (nếu có nhiều cart)
       double total = 0.0;
       for (var cart in userCart) {
         total += cart.totalPrice;

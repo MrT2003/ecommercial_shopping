@@ -33,7 +33,6 @@ class CartScreen extends ConsumerWidget {
           orElse: () => Cart(id: '', userId: '', items: [], totalPrice: 0),
         );
 
-        // Lấy tổng giá trị giỏ hàng từ backend
         final totalPrice = cart.totalPrice;
         final canCheckout = cart.items.isNotEmpty && address.isNotEmpty;
 
@@ -77,7 +76,6 @@ class CartScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Delivery Address
                 Container(
                   padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
@@ -161,10 +159,7 @@ class CartScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-
                 SizedBox(height: 20),
-
-                // Order Items
                 Text(
                   'Order Items',
                   style: TextStyle(
@@ -173,8 +168,6 @@ class CartScreen extends ConsumerWidget {
                   ),
                 ),
                 SizedBox(height: 12),
-
-                // Hiển thị các sản phẩm trong giỏ hàng
                 if (cart.items.isEmpty)
                   Container(
                     height: 200,
@@ -224,7 +217,7 @@ class CartScreen extends ConsumerWidget {
                                     productId: item.productId,
                                     quantity: updatedQuantity,
                                   );
-                              // Refresh cart data
+
                               ref.invalidate(cartProvider);
                             } catch (e) {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -244,7 +237,7 @@ class CartScreen extends ConsumerWidget {
                                       productId: item.productId,
                                       quantity: updatedQuantity,
                                     );
-                                // Refresh cart data
+
                                 ref.invalidate(cartProvider);
                               } catch (e) {
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -258,7 +251,6 @@ class CartScreen extends ConsumerWidget {
                       },
                     ),
                   ),
-
                 SizedBox(height: 20),
               ],
             ),
@@ -293,7 +285,6 @@ class CartScreen extends ConsumerWidget {
                   child: ElevatedButton(
                     onPressed: canCheckout
                         ? () {
-                            // ready to go
                             Navigator.push(
                               context,
                               MaterialPageRoute(

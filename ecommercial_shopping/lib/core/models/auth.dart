@@ -7,7 +7,7 @@ class UserAuth {
   final String? address;
   final String role;
   final List<dynamic> orders;
-  final String? accessToken; // Thêm accessToken
+  final String? accessToken;
 
   UserAuth({
     required this.userId,
@@ -18,7 +18,7 @@ class UserAuth {
     this.address,
     required this.role,
     required this.orders,
-    this.accessToken, // Thêm accessToken vào constructor
+    this.accessToken,
   });
 
   factory UserAuth.fromResponseJson(Map<String, dynamic> json) {
@@ -32,7 +32,7 @@ class UserAuth {
       address: user['address'],
       role: user['role'],
       orders: user['orders'] ?? [],
-      accessToken: json['access_token'], // Lưu access_token
+      accessToken: json['access_token'],
     );
   }
 
@@ -46,7 +46,7 @@ class UserAuth {
       "address": address,
       "role": role,
       "orders": orders,
-      "access_token": accessToken, // Đảm bảo lưu token khi cần
+      "access_token": accessToken,
     };
   }
 }
